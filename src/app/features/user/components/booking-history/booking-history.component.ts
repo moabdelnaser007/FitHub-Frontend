@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 
 type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled' | 'No-Show';
@@ -16,7 +17,7 @@ interface BookingItem {
 @Component({
   selector: 'app-booking-history',
   standalone: true,
-  imports: [CommonModule, NgIf, NgFor, RouterModule, HeaderComponent],
+  imports: [CommonModule, NgIf, NgFor, RouterModule, FormsModule, HeaderComponent],
   templateUrl: './booking-history.component.html',
   styleUrls: ['./booking-history.component.css'],
 })
@@ -26,6 +27,14 @@ export class BookingHistoryComponent {
   currentPage = 1;
   itemsPerPage = 7;
   readonly math = Math;
+
+  // Review modal state
+  showReviewModal = false;
+  selectedBookingCode = '';
+  selectedGymName = '';
+  rating = 0;
+  reviewText = '';
+  isAnonymous = false;
 
   bookings: BookingItem[] = [
     {
@@ -130,6 +139,43 @@ export class BookingHistoryComponent {
   }
 
   leaveReview(code: string): void {
-    console.log('Leave review for booking', code);
+    const booking = this.bookings.find((b) => b.code === code);
+    if (booking) {
+      this.selectedBookingCode = code;
+      this.selectedGymName = booking.gym;
+      this.rating = 0;
+      this.reviewText = '';
+      this.isAnonymous = false;
+      this.showReviewModal = true;
+    }
+  }
+
+  setRating(stars: number): void {
+    this.rating = stars;
+  }
+
+  closeReviewModal(): void {
+    this.showReviewModal = false;
+  }
+
+  submitReview(): void {
+    if (this.rating === 0) {
+      alert('Please select a rating');
+      return;
+    }
+    console.log('Submitting review:', {
+      bookingCode: this.selectedBookingCode,
+      gym: this.selectedGymName,
+      rating: this.rating,
+      review: this.reviewText,
+      anonymous: this.isAnonymous,
+    });
+    // Here you would typically call a service to submit the review
+    this.closeReviewModal();
+  }
+
+  logout(): void {
+    console.log('Logout clicked');
+    // TODO: Implement logout functionality
   }
 }

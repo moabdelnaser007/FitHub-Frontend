@@ -112,7 +112,7 @@ export class BillingComponent implements OnInit {
     // TODO: Implement recharge functionality
   }
 
-  onLogOut(): void {
+  logout(): void {
     console.log('Log out clicked');
     // TODO: Implement logout functionality
   }

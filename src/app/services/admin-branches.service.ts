@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 // Interfaces
 export interface Branch {
@@ -46,67 +47,63 @@ export interface UpdateBranchRequest {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BranchService {
-  private apiUrl = 'http://localhost:5024/api/AdminBranch';
+  private apiUrl = `${environment.apiBaseUrl}/AdminBranch`;
 
   constructor(private http: HttpClient) {}
 
   // Get HTTP Headers with Authorization
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('fitHubToken');
-    
+
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
   }
 
   // Get All Branches
   getAllBranches(): Observable<ApiResponse<Branch[]>> {
-    return this.http.get<ApiResponse<Branch[]>>(
-      `${this.apiUrl}/GetAllBranches`,
-      { headers: this.getHeaders() }
-    );
+    return this.http.get<ApiResponse<Branch[]>>(`${this.apiUrl}/GetAllBranches`, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Get Branches By Owner ID
   getBranchesByOwner(ownerId: number): Observable<ApiResponse<Branch[]>> {
-    return this.http.get<ApiResponse<Branch[]>>(
-      `${this.apiUrl}/GetBranchesByOwner/${ownerId}`,
-      { headers: this.getHeaders() }
-    );
+    return this.http.get<ApiResponse<Branch[]>>(`${this.apiUrl}/GetBranchesByOwner/${ownerId}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Get Branch By ID
   getBranchById(branchId: number): Observable<ApiResponse<Branch>> {
-    return this.http.get<ApiResponse<Branch>>(
-      `${this.apiUrl}/GetBranchById/${branchId}`,
-      { headers: this.getHeaders() }
-    );
+    return this.http.get<ApiResponse<Branch>>(`${this.apiUrl}/GetBranchById/${branchId}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Suspend Branch (Change status to INACTIVE)
   suspendBranch(branchId: number): Observable<ApiResponse<boolean>> {
-    return this.http.post<ApiResponse<boolean>>(
-      `${this.apiUrl}/SuspendBranch/${branchId}`,
-      null,
-      { headers: this.getHeaders() }
-    );
+    return this.http.post<ApiResponse<boolean>>(`${this.apiUrl}/SuspendBranch/${branchId}`, null, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Resume Branch (Change status to ACTIVE)
   resumeBranch(branchId: number): Observable<ApiResponse<boolean>> {
-    return this.http.post<ApiResponse<boolean>>(
-      `${this.apiUrl}/ResumeBranch/${branchId}`,
-      null,
-      { headers: this.getHeaders() }
-    );
+    return this.http.post<ApiResponse<boolean>>(`${this.apiUrl}/ResumeBranch/${branchId}`, null, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Update Branch - استخدام PUT API
-  updateBranch(branchId: number, branchData: UpdateBranchRequest): Observable<ApiResponse<UpdateBranchRequest>> {
+  updateBranch(
+    branchId: number,
+    branchData: UpdateBranchRequest
+  ): Observable<ApiResponse<UpdateBranchRequest>> {
     return this.http.put<ApiResponse<UpdateBranchRequest>>(
       `${this.apiUrl}/UpdateBranch/${branchId}`,
       branchData,

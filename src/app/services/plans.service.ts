@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 /* =======================
    Interfaces
@@ -54,11 +55,10 @@ export interface UpdatePlanRequest {
 ======================= */
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlansService {
-
-  private apiUrl = 'http://localhost:5024/api/owner/Plans';
+  private apiUrl = `${environment.apiBaseUrl}/owner/Plans`;
 
   constructor(private http: HttpClient) {}
 
@@ -67,12 +67,10 @@ export class PlansService {
      GET /ByBranch/{branchId}
   ======================= */
   getPlansByBranch(branchId: number): Observable<Plan[]> {
-    return this.http
-      .get<ApiResponse<Plan[]>>(`${this.apiUrl}/ByBranch/${branchId}`)
-      .pipe(
-        map(res => res.data ?? []),
-        catchError(() => of([]))
-      );
+    return this.http.get<ApiResponse<Plan[]>>(`${this.apiUrl}/ByBranch/${branchId}`).pipe(
+      map((res) => res.data ?? []),
+      catchError(() => of([]))
+    );
   }
 
   /* =======================
@@ -80,31 +78,21 @@ export class PlansService {
      GET /{planId}
   ======================= */
   getPlan(planId: number): Observable<Plan> {
-    return this.http
-      .get<ApiResponse<Plan>>(`${this.apiUrl}/${planId}`)
-      .pipe(
-        map(res => res.data),
-        catchError(err => throwError(() => err))
-      );
+    return this.http.get<ApiResponse<Plan>>(`${this.apiUrl}/${planId}`).pipe(
+      map((res) => res.data),
+      catchError((err) => throwError(() => err))
+    );
   }
 
   /* =======================
      CREATE Plan
      POST /{branchId}/Create
   ======================= */
-  createPlan(
-    branchId: number,
-    planData: CreatePlanRequest
-  ): Observable<Plan> {
-    return this.http
-      .post<ApiResponse<Plan>>(
-        `${this.apiUrl}/${branchId}/Create`,
-        planData
-      )
-      .pipe(
-        map(res => res.data),
-        catchError(err => throwError(() => err))
-      );
+  createPlan(branchId: number, planData: CreatePlanRequest): Observable<Plan> {
+    return this.http.post<ApiResponse<Plan>>(`${this.apiUrl}/${branchId}/Create`, planData).pipe(
+      map((res) => res.data),
+      catchError((err) => throwError(() => err))
+    );
   }
 
   /* =======================
@@ -112,15 +100,10 @@ export class PlansService {
      PUT /Update
   ======================= */
   updatePlan(planData: UpdatePlanRequest): Observable<Plan> {
-    return this.http
-      .put<ApiResponse<Plan>>(
-        `${this.apiUrl}/Update`,
-        planData
-      )
-      .pipe(
-        map(res => res.data),
-        catchError(err => throwError(() => err))
-      );
+    return this.http.put<ApiResponse<Plan>>(`${this.apiUrl}/Update`, planData).pipe(
+      map((res) => res.data),
+      catchError((err) => throwError(() => err))
+    );
   }
 
   /* =======================
@@ -128,14 +111,10 @@ export class PlansService {
      DELETE /Delete/{planId}
   ======================= */
   deletePlan(planId: number): Observable<boolean> {
-    return this.http
-      .delete<ApiResponse<boolean>>(
-        `${this.apiUrl}/Delete/${planId}`
-      )
-      .pipe(
-        map(res => res.data === true),
-        catchError(() => of(false))
-      );
+    return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/Delete/${planId}`).pipe(
+      map((res) => res.data === true),
+      catchError(() => of(false))
+    );
   }
 
   /* =======================
@@ -143,15 +122,10 @@ export class PlansService {
      PUT /Activate/{planId}
   ======================= */
   activatePlan(planId: number): Observable<boolean> {
-    return this.http
-      .put<ApiResponse<boolean>>(
-        `${this.apiUrl}/Activate/${planId}`,
-        {}
-      )
-      .pipe(
-        map(res => res.data === true),
-        catchError(() => of(false))
-      );
+    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/Activate/${planId}`, {}).pipe(
+      map((res) => res.data === true),
+      catchError(() => of(false))
+    );
   }
 
   /* =======================
@@ -159,14 +133,9 @@ export class PlansService {
      PUT /Deactivate/{planId}
   ======================= */
   deactivatePlan(planId: number): Observable<boolean> {
-    return this.http
-      .put<ApiResponse<boolean>>(
-        `${this.apiUrl}/Deactivate/${planId}`,
-        {}
-      )
-      .pipe(
-        map(res => res.data === true),
-        catchError(() => of(false))
-      );
+    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/Deactivate/${planId}`, {}).pipe(
+      map((res) => res.data === true),
+      catchError(() => of(false))
+    );
   }
 }

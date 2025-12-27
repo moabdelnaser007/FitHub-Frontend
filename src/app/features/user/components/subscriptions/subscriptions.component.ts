@@ -81,7 +81,7 @@ export class SubscriptionsComponent {
     console.log('Renewing subscription:', sub.gymName);
   }
 
-  onLogout(): void {
+  logout(): void {
     console.log('Logout clicked');
     // TODO: Implement logout functionality
   }

@@ -22,6 +22,8 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   showProfileMenu = false;
+  userName: string = 'User'; // Default value
+  userEmail: string = '';
   private destroy$ = new Subject<void>();
   private loginCheckInterval: any;
 
@@ -81,17 +83,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   checkLoginStatus(): void {
     const loggedIn = this.authService.isLoggedIn();
     console.log('🔐 Header - Checking login status:', loggedIn);
-    console.log(
-      '🔐 Token in localStorage:',
-      this.authService.getToken() ? 'Found ✅' : 'NOT FOUND ❌'
-    );
 
-    // تحديث الـ property
+    if (loggedIn) {
+      const user = this.authService.getUser();
+      if (user) {
+        // Use first name or full name
+        this.userName = user.fullName || 'User';
+        this.userEmail = user.email || '';
+      }
+    }
+
     this.isLoggedIn = loggedIn;
-
-    // تحديث الـ change detection يدويًا
     this.cdr.markForCheck();
-    console.log('🔐 isLoggedIn property updated to:', this.isLoggedIn);
   }
 
   closeProfileMenu(): void {
@@ -115,13 +118,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateToSignup(): void {
-    this.router.navigate(['/signup']);
+    this.router.navigate(['/register']); // Changed to register based on routes
   }
 
   logout(): void {
     this.closeProfileMenu();
     this.authService.logout();
     this.isLoggedIn = false;
+    this.userName = 'User';
     this.cdr.markForCheck();
     this.router.navigate(['/login']);
   }
