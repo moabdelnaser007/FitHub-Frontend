@@ -1,0 +1,161 @@
+<!-- Billing Page Component -->
+<div class="profile-page">
+  <app-header></app-header>
+
+  <main class="profile-container">
+    <!-- Sidebar (hidden on small screens) -->
+    <aside class="profile-sidebar" aria-label="Profile navigation">
+      <div class="sidebar-inner">
+        <div class="user-mini">
+          <div
+            class="avatar-lg"
+            style="background-image: url('https://via.placeholder.com/200')"
+          ></div>
+          <div class="user-meta">
+            <div class="user-name">Alex Doe</div>
+            <div class="user-email">alex.doe@email.com</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a
+            routerLink="/profile"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Profile</a
+          >
+          <a
+            routerLink="/billing"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Billing</a
+          >
+          <a
+            routerLink="/subscriptions"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Subscriptions</a
+          >
+          <a
+            routerLink="/booking-history"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Booking History</a
+          >
+        </nav>
+
+        <div class="sidebar-cta">
+          <a (click)="onLogOut()" class="sidebar-link">Log Out</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <section class="profile-main">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Billing & Transactions</h2>
+          <p class="page-sub">View your credit plan purchases and transaction history.</p>
+        </div>
+      </div>
+
+      <!-- Transaction History Section -->
+      <div class="card transaction-card">
+        <div class="transaction-header">
+          <h3 class="card-title">Transaction History</h3>
+          <div class="transaction-controls">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search..."
+              [(ngModel)]="searchQuery"
+            />
+            <button class="btn btn-icon" title="Filter">
+              <span class="filter-icon">⚙️</span>
+              Filter
+            </button>
+          </div>
+        </div>
+
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>
+                Date
+                <span class="sort-icon">↓</span>
+              </th>
+              <th>Description</th>
+              <th>Amount Paid</th>
+              <th>Credits</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let transaction of paginatedTransactions">
+              <td class="date-cell">{{ transaction.date }}</td>
+              <td>{{ transaction.description }}</td>
+              <td>{{ transaction.amountPaid }}</td>
+              <td class="credits-cell">
+                <span class="credits-badge">{{ transaction.credits }}</span>
+                <a href="#" class="invoice-link">
+                  <span class="invoice-icon">📄</span>
+                  Invoice
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+          <span class="pagination-info"
+            >Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ currentPage === totalPages ? totalItems : currentPage * itemsPerPage }} of
+            {{ totalItems }} results</span
+          >
+          <div class="pagination-controls">
+            <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+              <
+            </button>
+            <span
+              *ngFor="let page of [1, 2, 3]; let i = index"
+              class="page-number"
+              [class.active]="page === currentPage"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </span>
+            <span class="page-number">...</span>
+            <span class="page-number" (click)="goToPage(totalPages)">{{ totalPages }}</span>
+            <button
+              class="pagination-btn"
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages"
+            >
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wallet & Quick Actions Section -->
+      <div class="card wallet-card">
+        <div class="wallet-header">
+          <div class="wallet-info">
+            <h3 class="card-title">Wallet & Quick Actions</h3>
+            <div class="credits-display">
+              <span class="credits-count">{{ currentCredits }} Credits</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" (click)="onRecharge()">
+            <span class="recharge-icon">⚡</span>
+            Recharge
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

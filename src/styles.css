@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary: #1d9bf0;
+  --primary-dark: #0f6fad;
+  --text: #0f172a;
+  --muted: #4b5563;
+  --surface: #f8fafc;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  line-height: 1.6;
+  min-height: 100vh;
+  scroll-padding-top: 96px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Sticky header: keep headers visible on non-auth pages without overlapping content */
+.page-header,
+.top-nav,
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--card);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+  will-change: transform;
+}
+
+/* Auth pages (login/register/business signup) use .auth-header and should remain non-sticky */
+.auth-header {
+  position: static !important;
+}
+
+/* Force the Find Gym page filter panel to be fixed on the left viewport edge.
+   This is a global rule (not component-scoped) so it will apply to the
+   `.filter-panel` element inside the `app-gym-filter` component only when
+   it's rendered inside `.find-gym-page`. */
+.find-gym-page .filter-panel {
+  position: fixed !important;
+  left: calc(max(16px, (100% - 1400px) / 2 + 32px)) !important;
+  top: calc(var(--header-height, 96px) + 12px) !important;
+  width: calc(var(--filter-width) - var(--filter-gap)) !important;
+  z-index: 55 !important;
+  max-height: calc(100vh - (var(--header-height, 96px) + 40px)) !important;
+  overflow: auto !important;
+  background: #fff; /* ensure visible background */
+  border-radius: 14px;
+}
+
+/* Do not add extra margin to the centered page — the grid already reserves the column */
+.find-gym-page .page-main {
+  margin-left: 0 !important;
+}
+
+/* On smaller screens disable fixed behavior so the filter doesn't obstruct content */
+@media (max-width: 1024px) {
+  .find-gym-page .filter-panel {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border-radius: 14px;
+  }
+
+  .find-gym-page .page-main {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+}

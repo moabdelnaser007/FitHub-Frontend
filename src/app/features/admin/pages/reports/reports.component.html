@@ -1,0 +1,110 @@
+<div class="financial-reports-wrapper">
+  <!-- Page Header -->
+  <div>
+    <div>
+      <h1 class="page-title">Financial Reports & Settlements</h1>
+      <p class="page-description">Manage monthly financial reports and settlements with partner gyms.</p>
+    </div>
+    <button class="btn-export" (click)="onExportCSV()">
+      <span class="material-symbols-outlined">download</span>
+      Export as CSV
+    </button>
+    <br>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="month-select" class="filter-label">Month</label>
+      <select
+        id="month-select"
+        class="filter-select"
+        [(ngModel)]="selectedMonth"
+      >
+        <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="year-select" class="filter-label">Year</label>
+      <select
+        id="year-select"
+        class="filter-select"
+        [(ngModel)]="selectedYear"
+      >
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+    </div>
+
+    <button class="btn-apply" (click)="onApplyFilters()">
+      Apply Filters
+    </button>
+  </div>
+
+  <!-- Reports Table -->
+  <div class="table-card">
+    <div class="table-wrapper">
+      <table class="reports-table">
+        <thead>
+          <tr>
+            <th class="checkbox-col">
+              <input
+                type="checkbox"
+                class="table-checkbox"
+                [(ngModel)]="selectAll"
+                (change)="onToggleSelectAll()"
+              />
+            </th>
+            <th>Gym</th>
+            <th>Period</th>
+            <th class="text-right">Credits Consumed</th>
+            <th class="text-right">Payout Amount ($)</th>
+            <th>Status</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let report of filteredReports">
+            <td class="checkbox-col">
+              <input
+                type="checkbox"
+                class="table-checkbox"
+                [(ngModel)]="report.isSelected"
+                (change)="onToggleReportSelect(report)"
+              />
+            </td>
+            <td class="gym-name">{{ report.gymName }}</td>
+            <td class="period">{{ report.period }}</td>
+            <td class="text-right">{{ formatNumber(report.creditsConsumed) }}</td>
+            <td class="payout text-right">{{ formatCurrency(report.payoutAmount) }}</td>
+            <td>
+              <span [class]="'status-badge ' + getStatusClass(report.status)">
+                {{ report.status }}
+              </span>
+            </td>
+            <td class="text-right">
+              <div class="action-buttons">
+                <button
+                  *ngIf="report.status === 'Pending'"
+                  class="btn-mark-paid"
+                  (click)="onMarkAsPaid(report)"
+                >
+                  Mark as Paid
+                </button>
+                <button class="btn-view" (click)="onViewReport(report)">
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredReports.length === 0">
+            <td colspan="7" class="empty-state">
+              <p>No reports found for the selected period</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

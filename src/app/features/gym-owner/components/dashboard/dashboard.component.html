@@ -1,0 +1,35 @@
+<div class="dashboard-wrapper">
+  <!-- Page Header -->
+  <div >
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-description">Welcome back, here's a summary of your gym's performance.</p>
+    <br>
+  </div>
+
+  <!-- Stats Content -->
+  <div class="stats-content">
+    <!-- Today Stats -->
+    <div class="stats-grid">
+      <div *ngFor="let stat of todayStats" class="stat-card">
+        <p class="stat-label">{{ stat.label }}</p>
+        <p class="stat-value">{{ stat.value }}</p>
+      </div>
+    </div>
+
+    <!-- Month Stats -->
+    <div class="stats-grid">
+      <div *ngFor="let stat of monthStats" class="stat-card">
+        <p class="stat-label">{{ stat.label }}</p>
+        <p class="stat-value">{{ stat.value }}</p>
+      </div>
+    </div>
+
+    <!-- Year Stats -->
+    <div class="stats-grid">
+      <div *ngFor="let stat of yearStats" class="stat-card">
+        <p class="stat-label">{{ stat.label }}</p>
+        <p class="stat-value">{{ stat.value }}</p>
+      </div>
+    </div>
+  </div>
+</div>

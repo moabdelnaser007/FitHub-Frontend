@@ -1,0 +1,83 @@
+<div class="branches-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Branches & Plans</h1>
+      <p class="subtitle">Manage your gym locations and their subscription offerings.</p>
+    </div>
+  </div>
+
+  <!-- Branches List -->
+  <div class="branches-list">
+    <div *ngFor="let branch of branches" class="branch-card">
+      <!-- Branch Header -->
+      <div class="branch-header">
+        <div class="branch-info">
+          <span class="branch-icon">🏪</span>
+          <div>
+            <h2>{{ branch.name }}</h2>
+            <p class="branch-address">{{ branch.address }}</p>
+          </div>
+        </div>
+        <div class="branch-actions">
+          <button class="btn-icon" (click)="onEditBranch(branch)" title="Edit Branch">
+            <span class="icon">✏️</span>
+          </button>
+          <button class="btn-primary-small" (click)="onAddPlan(branch)">
+            <span class="icon">➕</span>
+            <span>New Plan</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Plans Table -->
+      <div class="table-container">
+        <table class="plans-table">
+          <thead>
+            <tr>
+              <th>Plan Name</th>
+              <th>Credits</th>
+              <th>Price</th>
+              <th>Duration</th>
+              <th class="text-center">Status</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let plan of branch.plans">
+              <td class="font-medium">{{ plan.name }}</td>
+              <td>{{ plan.credits }}</td>
+              <td>{{ formatPrice(plan.price) }}</td>
+              <td>{{ plan.duration }}</td>
+              <td class="text-center">
+                <span class="status-badge" [ngClass]="'status-' + plan.status.toLowerCase()">
+                  {{ plan.status }}
+                </span>
+              </td>
+              <td class="text-right">
+                <button class="action-btn" (click)="onEditPlan(branch, plan)" title="Edit Plan">
+                  <span class="icon">✏️</span>
+                </button>
+                <button class="action-btn delete" (click)="onDeletePlan(branch, plan)" title="Delete Plan">
+                  <span class="icon">🗑️</span>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="branch.plans.length === 0">
+              <td colspan="6" class="empty-state">
+                No plans available. Click "New Plan" to add one.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="branches.length === 0" class="empty-branches">
+    <span class="empty-icon">🏪</span>
+    <h3>No Branches Yet</h3>
+    <p>Add your first branch to start managing subscription plans.</p>
+  </div>
+</div>

@@ -1,0 +1,173 @@
+<div class="manage-users-container">
+  <div class="users-card">
+    <!-- Header with Search and Filters -->
+    <div class="users-header">
+      <div class="header-controls">
+        <!-- Search Input -->
+        <div class="search-wrapper">
+          <span class="material-icons search-icon">search</span>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search users..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+          />
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-wrapper">
+          <label for="status-filter" class="sr-only">Filter by status</label>
+          <select
+            id="status-filter"
+            class="status-filter"
+            [(ngModel)]="statusFilter"
+            (change)="onStatusFilterChange()"
+          >
+            <option value="all">Status: All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Add User Button -->
+      <button class="btn-add-user" (click)="onAddUser()">
+        <span class="material-icons">add</span>
+        Add User
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading users...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="loadError && !isLoading" class="error-state">
+      <span class="material-icons error-icon">error</span>
+      <p>{{ loadError }}</p>
+      <button class="btn-retry" (click)="retryLoad()">Retry</button>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-wrapper" *ngIf="!isLoading && !loadError">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Phone</th>
+            <th>City</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers">
+            <!-- User Info -->
+            <td class="user-info">
+              <div class="user-details">
+                <p class="user-name">{{ user.fullName }}</p>
+                <p class="user-email">{{ user.email }}</p>
+              </div>
+            </td>
+
+            <!-- Phone -->
+            <td>{{ user.phone }}</td>
+
+            <!-- City -->
+            <td>{{ user.city }}</td>
+
+            <!-- Role -->
+            <td>
+              <span class="role-badge">{{ user.role }}</span>
+            </td>
+
+            <!-- Status Toggle -->
+            <td>
+              <div class="status-toggle-wrapper" [ngClass]="getStatusClass(user.status)">
+                <label class="toggle-label" [class.disabled]="user.status === 'Suspended'">
+                  <input
+                    type="checkbox"
+                    class="toggle-input"
+                    [checked]="user.isActive"
+                    [disabled]="user.status === 'Suspended'"
+                    (change)="onToggleStatus(user)"
+                  />
+                  <div class="toggle-slider"></div>
+                  <span class="status-text">{{ user.status }}</span>
+                </label>
+              </div>
+            </td>
+
+            <!-- Actions -->
+            <td class="text-center">
+              <div class="action-buttons">
+                <button class="btn-action btn-view" (click)="onViewUser(user)" title="View">
+                  <span class="material-icons">visibility</span>
+                </button>
+                <button class="btn-action btn-edit" (click)="onEditUser(user)" title="Edit">
+                  <span class="material-icons">edit</span>
+                </button>
+                <button class="btn-action btn-delete" (click)="onDeleteUser(user)" title="Delete">
+                  <span class="material-icons">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="filteredUsers.length === 0 && !isLoading">
+            <td colspan="6" class="empty-state">
+              <span class="material-icons empty-icon">person_off</span>
+              <p>No users found</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Modal Icon -->
+      <div class="modal-icon-wrapper">
+        <div class="modal-icon">
+          <span class="material-icons">warning</span>
+        </div>
+      </div>
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3 class="modal-title">Delete User</h3>
+        <p class="modal-description">
+          Are you sure you want to delete <strong>{{ userToDelete?.fullName }}</strong> 
+          ({{ userToDelete?.email }})?
+          This action cannot be undone.
+        </p>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="modal-actions">
+        <button
+          class="modal-btn modal-btn-cancel"
+          (click)="closeDeleteModal()"
+          [disabled]="isDeleting"
+        >
+          Cancel
+        </button>
+        <button
+          class="modal-btn modal-btn-delete"
+          (click)="confirmDelete()"
+          [disabled]="isDeleting"
+        >
+          {{ isDeleting ? 'Deleting...' : 'Delete User' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

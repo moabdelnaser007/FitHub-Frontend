@@ -1,0 +1,90 @@
+<div class="booking-page">
+  <app-header></app-header>
+
+  <main class="page-container">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Booking History</h1>
+        <p class="page-subtitle">View your past and upcoming class bookings.</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-header">
+        <h2 class="card-title">My Bookings</h2>
+        <div class="filters">
+          <label class="search-box">
+            <span class="icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search by gym"
+              [value]="searchTerm"
+              (input)="onSearch($any($event.target).value)"
+            />
+          </label>
+          <select
+            class="select"
+            [value]="statusFilter"
+            (change)="onStatusChange($any($event.target).value)"
+          >
+            <option value="all">All Statuses</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="No-Show">No-Show</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Gym / Branch</th>
+              <th>Booking Code</th>
+              <th>Date & Time</th>
+              <th>Credits Cost</th>
+              <th>Status</th>
+              <th>Reviews</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of paginatedBookings">
+              <td>{{ booking.gym }}</td>
+              <td class="muted">{{ booking.code }}</td>
+              <td class="muted">{{ booking.date }}</td>
+              <td class="credits">{{ booking.credits }}</td>
+              <td>
+                <span class="status" [ngClass]="booking.status.toLowerCase()">{{
+                  booking.status
+                }}</span>
+              </td>
+              <td>
+                <button class="link" (click)="leaveReview(booking.code)">☆ Leave Review</button>
+              </td>
+            </tr>
+            <tr *ngIf="paginatedBookings.length === 0">
+              <td colspan="6" class="empty">No bookings found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span class="muted">
+          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+          {{ math.min(currentPage * itemsPerPage, filteredBookings.length) }}
+          of {{ filteredBookings.length }} results
+        </span>
+        <div class="pager">
+          <button class="btn ghost" [disabled]="currentPage === 1" (click)="prevPage()">
+            Previous
+          </button>
+          <button class="btn ghost" [disabled]="currentPage === totalPages" (click)="nextPage()">
+            Next
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

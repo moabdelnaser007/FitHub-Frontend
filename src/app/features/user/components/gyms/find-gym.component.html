@@ -1,0 +1,92 @@
+<div class="find-gym-page">
+  <header class="page-header">
+    <div class="header-brand">
+      <div class="brand-icon">F</div>
+      <span class="brand-name">FitHub</span>
+    </div>
+
+    <nav class="header-nav">
+      <a routerLink="/find-gym" class="nav-link active">Find a Gym</a>
+      <a routerLink="/account" class="nav-link">Account</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"
+          />
+        </svg>
+      </button>
+      <div class="user-avatar">
+        <span>U</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <aside class="sidebar">
+      <app-gym-filter></app-gym-filter>
+    </aside>
+
+    <section class="content">
+      <div class="content-header">
+        <h1>Find a Gym</h1>
+
+        <div class="search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+            />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by gym name, location..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+          />
+        </div>
+      </div>
+
+      <app-gym-list (rateGym)="onRateGym($event)"></app-gym-list>
+    </section>
+  </main>
+
+  <!-- Review Modal -->
+  <div class="modal-backdrop" *ngIf="showReview" (click)="closeReview()"></div>
+  <div class="modal" *ngIf="showReview" role="dialog" aria-modal="true">
+    <h2 class="modal-title">Leave a Review</h2>
+    <p class="modal-subtitle">Share your experience about {{ selectedGym?.name }}</p>
+
+    <label class="field-label">Your Rating</label>
+    <div class="stars-select" aria-label="Select rating">
+      <button
+        type="button"
+        *ngFor="let i of [1, 2, 3, 4, 5]"
+        class="star-btn"
+        [class.filled]="rating >= i"
+        (click)="setRating(i)"
+        aria-label="Rate {{ i }} star"
+      ></button>
+    </div>
+
+    <label class="field-label" for="review-text">Write your review here...</label>
+    <textarea
+      id="review-text"
+      class="textarea"
+      [(ngModel)]="reviewText"
+      rows="5"
+      placeholder="Write your review here..."
+    ></textarea>
+
+    <label class="checkbox">
+      <input type="checkbox" [(ngModel)]="anonymous" />
+      <span>Make my review anonymous</span>
+    </label>
+
+    <div class="modal-actions">
+      <button class="btn primary" (click)="submitReview()">Submit Review</button>
+      <button class="btn ghost" (click)="closeReview()">Cancel</button>
+    </div>
+  </div>
+</div>

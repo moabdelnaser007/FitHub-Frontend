@@ -1,0 +1,246 @@
+<div class="edit-gym-wrapper">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading gym data...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading">
+    <!-- Page Header -->
+    <div >
+      <h1 class="page-title">Edit Gym Details</h1>
+      <p class="page-description">Modify and update the information for this gym.</p>
+      <br>
+    </div>
+
+    <!-- Form Content -->
+    <div class="form-content">
+      <!-- Gym Information Card -->
+      <div class="form-card">
+        <h2 class="form-card-title">Gym Information</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="gym-name" class="form-label">Gym Name</label>
+            <input
+              type="text"
+              id="gym-name"
+              class="form-input"
+              [(ngModel)]="gym.name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="owner-name" class="form-label">Owner Name</label>
+            <input
+              type="text"
+              id="owner-name"
+              class="form-input disabled"
+              [(ngModel)]="gym.owner"
+              disabled
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              [(ngModel)]="gym.email"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input
+              type="tel"
+              id="phone"
+              class="form-input"
+              [(ngModel)]="gym.phone"
+            />
+          </div>
+
+          <div class="form-group form-group-full">
+            <label for="address" class="form-label">Full Address</label>
+            <input
+              type="text"
+              id="address"
+              class="form-input"
+              [(ngModel)]="gym.address"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="city" class="form-label">City</label>
+            <input
+              type="text"
+              id="city"
+              class="form-input"
+              [(ngModel)]="gym.city"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="country" class="form-label">Country</label>
+            <select
+              id="country"
+              class="form-select"
+              [(ngModel)]="gym.country"
+            >
+              <option *ngFor="let country of countries" [value]="country">
+                {{ country }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group form-group-full">
+            <label for="website" class="form-label">Website (Optional)</label>
+            <input
+              type="url"
+              id="website"
+              class="form-input"
+              [(ngModel)]="gym.website"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="two-column-layout">
+        <!-- Left Column -->
+        <div class="left-column">
+          <!-- Business Documents Card -->
+          <div class="form-card">
+            <h2 class="form-card-title">Business Documents</h2>
+            <div class="document-box">
+              <div class="document-info">
+                <span class="material-symbols-outlined">description</span>
+                <span class="document-name">{{ gym.document }}</span>
+              </div>
+              <button class="btn-replace" (click)="onReplaceFile()">
+                Replace File
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Card -->
+          <div class="form-card">
+            <h2 class="form-card-title">Gym Status</h2>
+            <div class="status-row">
+              <p class="status-text">Set gym as active or inactive</p>
+              <label class="status-toggle">
+                <input
+                  type="checkbox"
+                  class="toggle-input"
+                  [checked]="gym.isActive"
+                  (change)="onToggleStatus()"
+                />
+                <div class="toggle-slider"></div>
+                <span class="status-label">{{ gym.status }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Staff -->
+        <div class="right-column">
+          <div class="form-card">
+            <h2 class="form-card-title">Staff Overview</h2>
+            <div class="staff-list">
+              <div *ngFor="let staff of gym.staff" class="staff-item">
+                <img [src]="staff.avatar" [alt]="staff.name" class="staff-avatar" />
+                <div class="staff-info">
+                  <p class="staff-name">{{ staff.name }}</p>
+                  <p class="staff-role">{{ staff.role }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Amenities Card -->
+      <div class="form-card">
+        <h2 class="form-card-title">Amenities</h2>
+        <div class="amenities-list">
+          <span *ngFor="let amenity of gym.amenities" class="amenity-tag">
+            {{ amenity }}
+            <button class="amenity-remove" (click)="onRemoveAmenity(amenity)">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </span>
+        </div>
+        <div class="amenity-add">
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Add a new amenity..."
+            [(ngModel)]="newAmenity"
+            (keyup.enter)="onAddAmenity()"
+          />
+          <button class="btn-add" (click)="onAddAmenity()">Add</button>
+        </div>
+      </div>
+
+      <!-- Operating Hours Card -->
+      <div class="form-card">
+        <h2 class="form-card-title">Operating Hours</h2>
+        <div class="hours-layout">
+          <div class="hours-inputs">
+            <div class="form-group">
+              <label for="opening-time" class="form-label">Opening Time</label>
+              <input
+                type="time"
+                id="opening-time"
+                class="form-input"
+                [(ngModel)]="gym.openingTime"
+              />
+            </div>
+            <div class="form-group">
+              <label for="closing-time" class="form-label">Closing Time</label>
+              <input
+                type="time"
+                id="closing-time"
+                class="form-input"
+                [(ngModel)]="gym.closingTime"
+              />
+            </div>
+          </div>
+
+          <div class="working-days-section">
+            <label class="form-label">Working Days</label>
+            <div class="days-grid">
+              <button
+                *ngFor="let day of allDays"
+                class="day-btn"
+                [class.active]="isDayActive(day)"
+                (click)="onToggleDay(day)"
+              >
+                {{ day }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Footer -->
+    <div class="action-footer">
+      <button
+        class="btn btn-cancel"
+        (click)="onCancel()"
+        [disabled]="isSaving"
+      >
+        Cancel
+      </button>
+      <button
+        class="btn btn-save"
+        (click)="onSave()"
+        [disabled]="isSaving"
+      >
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>

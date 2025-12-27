@@ -1,0 +1,109 @@
+<div class="edit-user-wrapper">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading user data...</p>
+  </div>
+
+  <!-- Form -->
+  <div *ngIf="!isLoading" class="form-container">
+    <div class="form-card">
+      <!-- Card Header -->
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">User Information</h2>
+          <p class="card-description">Update the user's profile and account details.</p>
+        </div>
+      </div>
+
+      <!-- Form Fields -->
+      <form class="form-body" (ngSubmit)="onSave()">
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="full-name" class="form-label">Full Name</label>
+          <input
+            type="text"
+            id="full-name"
+            class="form-input"
+            [(ngModel)]="user.fullName"
+            name="fullName"
+            required
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            [(ngModel)]="user.email"
+            name="email"
+            required
+          />
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+          <label for="phone-number" class="form-label">Phone Number</label>
+          <input
+            type="tel"
+            id="phone-number"
+            class="form-input"
+            [(ngModel)]="user.phone"
+            name="phone"
+          />
+        </div>
+
+        <!-- Role -->
+        <div class="form-group">
+          <label for="role" class="form-label">Role</label>
+          <select
+            id="role"
+            class="form-select"
+            [(ngModel)]="user.role"
+            name="role"
+            required
+          >
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+        </div>
+
+        <!-- Account Status -->
+        <div class="form-group">
+          <label for="account-status" class="form-label">Account Status</label>
+          <select
+            id="account-status"
+            class="form-select"
+            [(ngModel)]="user.status"
+            name="status"
+            required
+          >
+            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+      </form>
+
+      <!-- Form Footer -->
+      <div class="form-footer">
+        <button
+          type="button"
+          class="btn btn-cancel"
+          (click)="onCancel()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-save"
+          (click)="onSave()"
+          [disabled]="isSaving"
+        >
+          {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

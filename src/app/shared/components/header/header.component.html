@@ -1,0 +1,105 @@
+<!-- Sticky header -->
+<header class="profile-header">
+  <button class="brand-btn" (click)="goToHome()" aria-label="Go to home">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <!-- small svg logo -->
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M24 6C14.06 6 6 14.06 6 24s8.06 18 18 18 18-8.06 18-18S33.94 6 24 6z"
+            fill="#2563EB"
+          />
+        </svg>
+      </div>
+      <h1 class="brand-title">FitHub</h1>
+    </div>
+  </button>
+
+  <nav class="header-nav">
+    <a href="#" class="nav-link">Find a Class</a>
+    <a href="#" class="nav-link">My Schedule</a>
+    <a href="#" class="nav-link">Pricing</a>
+  </nav>
+
+  <div class="header-actions">
+    <!-- Notification button -->
+    <button class="icon-btn" aria-label="Notifications">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"
+          fill="currentColor"
+        />
+      </svg>
+    </button>
+
+    <!-- When logged in: Profile Avatar + Dropdown -->
+    <div *ngIf="isLoggedIn" class="profile-dropdown">
+      <button
+        class="profile-trigger"
+        aria-label="Profile Menu"
+        (click)="toggleProfileMenu()"
+        title="Profile Menu"
+      >
+        <div
+          class="avatar-small"
+          style="background-image: url('https://via.placeholder.com/160')"
+        ></div>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div *ngIf="showProfileMenu" class="dropdown-menu" role="menu">
+        <button class="dropdown-item" (click)="navigateToProfile()" role="menuitem">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+
+        <div class="dropdown-divider"></div>
+
+        <button class="dropdown-item logout" (click)="logout()" role="menuitem">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+              fill="currentColor"
+            />
+          </svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- When NOT logged in: Login & Sign Up buttons -->
+    <div *ngIf="!isLoggedIn" class="auth-buttons">
+      <button class="btn-login" (click)="navigateToLogin()">Login</button>
+      <button class="btn-signup" (click)="navigateToSignup()">Sign Up</button>
+    </div>
+  </div>
+</header>

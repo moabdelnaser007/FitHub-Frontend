@@ -1,0 +1,260 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f9;
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 256px;
+  background-color: #fff;
+  border-right: 1px solid #E5E7EB;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 30;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  height: 64px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.logo-icon {
+  color: #4A90E2;
+  font-size: 32px;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  padding: 16px;
+}
+
+/* Navigation */
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #6B7280;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+  background-color: #F3F4F6;
+}
+
+.nav-item.active {
+  background-color: rgba(74, 144, 226, 0.1);
+  color: #4A90E2;
+  font-weight: 600;
+}
+
+.nav-item p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.admin-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqmvXwjP0TbdFCno1OhPwyj5JfbmJ_Vx9hWSgMrymxP52rnxN49GPUamxi40cbeONLB5cYNE_wyOSaBe-hxjJGKab_tdf2iA2I0ZzafVs-MtK95AZdyKacA6K5hz-Tj6jumT_bwsvysX5s_-yux9TeCNMYWIuHBKzx6XDDYS5Gr_UaN7T5QtsLvmD2Rpx_zcwVOZNkuXTftP9AGIF291iI6a8rI4vBi52CuVsA5Y-uuu7pEHWRfPT_4znDFr4snPWJey_zKeOJems');
+  background-size: cover;
+  background-position: center;
+}
+
+.admin-details h3 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1F2937;
+  margin: 0;
+}
+
+.admin-details p {
+  font-size: 12px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #6B7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #F3F4F6;
+}
+
+.logout-btn p {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
+
+/* Content */
+.content {
+flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 256px;
+  height: 100vh;
+  overflow: hidden;
+  max-width: calc(100vw - 256px); /* أضيفي ده */
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 0 24px;
+  height: 64px;
+  width: 100%;
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 448px;
+  color: #6B7280;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  background-color: #F9FAFB;
+  font-size: 14px;
+  color: #1F2937;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #4A90E2;
+}
+
+.search-input::placeholder {
+  color: #6B7280;
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: #6B7280;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: #F3F4F6;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDDceg_ufeb8j03NKg7R53FU8kf2R2hIwHkdF4kjLxVwNIbYPH5uEIJ0go0CB3etKm6DxfUTUufG5exF_doRkuRJjUQ2llECy50Aj_STDRi6-K9E6vGB1251a2GSPpCwVpgaJMboUgu6gB1d5ja66Kug-hCNAMH5bXH6fkQCtdU9j-RPqm1mF4-OEVc-M1pD7ntcGL5pZ2_EX8zFFwXO43bW7eOfnFK-j-X2bRt0Zyb455wimUgRZHzLVHgcT78iexPGZABADzm1nw');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Page */
+.page {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden; /* أضيفي ده */
+  max-width: 100%; /* أضيفي ده */
+  box-sizing: border-box; /* أضيفي ده */
+}

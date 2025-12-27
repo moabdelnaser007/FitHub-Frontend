@@ -1,0 +1,434 @@
+.gym-details-admin-wrapper {
+  padding: 0;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #E5E7EB;
+  border-top-color: #2563EB;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 36px;
+  font-weight: 900;
+  color: #0d1b12;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.page-description {
+  font-size: 16px;
+  color: #2563EB;
+  margin-top: 4px;
+}
+
+/* Content Layout */
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .content-layout {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Card */
+.info-card {
+  background: #f8fcf9;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0d1b12;
+  margin: 0 0 16px 0;
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 24px;
+  }
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item-full {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  color: #6B7280;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  font-weight: 500;
+  color: #0d1b12;
+  margin: 0;
+}
+
+.info-link {
+  font-weight: 500;
+  color: #2563EB;
+  text-decoration: none;
+}
+
+.info-link:hover {
+  text-decoration: underline;
+}
+
+/* Amenities */
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.amenity-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #DBEAFE;
+  color: #2563EB;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+}
+
+/* Staff List */
+.staff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.staff-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.staff-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.staff-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.staff-info {
+  flex: 1;
+}
+
+.staff-name {
+  font-weight: 600;
+  color: #0d1b12;
+  margin: 0 0 4px 0;
+}
+
+.staff-role {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.staff-item .material-symbols-outlined {
+  color: #9CA3AF;
+  font-size: 20px;
+}
+
+.no-staff {
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 14px;
+  padding: 24px;
+}
+
+/* Status Toggle */
+.status-toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.toggle-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #D1D5DB;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  border: 1px solid #D1D5DB;
+  transition: transform 0.2s;
+}
+
+.toggle-input:checked + .toggle-slider {
+  background: #2563EB;
+}
+
+.toggle-input:checked + .toggle-slider::after {
+  transform: translateX(20px);
+  border-color: white;
+}
+
+.status-label {
+  margin-left: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* Document */
+.document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #EFF6FF;
+  border-radius: 8px;
+}
+
+.document-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.document-info .material-symbols-outlined {
+  color: #2563EB;
+  font-size: 20px;
+}
+
+.document-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0d1b12;
+}
+
+.btn-download {
+  padding: 8px 12px;
+  background: #2563EB;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-download:hover {
+  background: #1D4ED8;
+}
+
+/* Operating Hours */
+.hours-info {
+  margin-bottom: 16px;
+}
+
+.hours-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.hours-label {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.hours-value {
+  font-weight: 500;
+  color: #0d1b12;
+  margin: 0;
+}
+
+.days-grid {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.day-badge {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #E5E7EB;
+  color: #6B7280;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.day-badge.active {
+  background: #2563EB;
+  color: white;
+}
+
+/* Action Footer */
+.action-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.btn-back {
+  background: transparent;
+  color: #2563EB;
+  border: 1px solid #2563EB;
+}
+
+.btn-back:hover {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.btn-danger {
+  background: #DC2626;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #B91C1C;
+}
+
+.btn-primary {
+  background: #2563EB;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1D4ED8;
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+  .content-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .action-footer {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .spacer {
+    display: none;
+  }
+}

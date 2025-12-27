@@ -1,0 +1,169 @@
+<div class="gym-owner-details-wrapper">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading gym application details...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading">
+    <div class="details-page-header">
+      <h1 class="details-page-title">Gym Owner Application Details</h1>
+      <p class="gym-id-badge">Application ID: {{ gymId }}</p>
+    </div>
+
+    <div class="details-content-layout">
+      <!-- Main Content -->
+      <div class="details-main-content">
+        <!-- Business Owner Info Card -->
+        <div class="details-card">
+          <div class="details-card-header">
+            <h3 class="details-card-title">Business Owner Info</h3>
+          </div>
+          <div class="details-card-body">
+            <div class="details-info-grid">
+              <div class="details-info-item">
+                <label class="details-info-label">Full Name</label>
+                <p class="details-info-value">{{ ownerInfo.fullName }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">Email Address</label>
+                <p class="details-info-value">{{ ownerInfo.email }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">Phone Number</label>
+                <p class="details-info-value">{{ ownerInfo.phone }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">Account Creation Date</label>
+                <p class="details-info-value">{{ ownerInfo.creationDate }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">Status</label>
+                <p class="details-info-value">
+                  <span [class]="'details-status-badge ' + getStatusClass(ownerInfo.status)">
+                    {{ ownerInfo.status }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Business Information Card -->
+        <div class="details-card">
+          <div class="details-card-header">
+            <h3 class="details-card-title">Business Information</h3>
+          </div>
+          <div class="details-card-body">
+            <div class="details-info-grid">
+              <div class="details-info-item">
+                <label class="details-info-label">Gym Name</label>
+                <p class="details-info-value">{{ businessInfo.gymName }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">Gym Type</label>
+                <p class="details-info-value">{{ businessInfo.gymType }}</p>
+              </div>
+              <div class="details-info-item details-info-item-full">
+                <label class="details-info-label">Gym Address</label>
+                <p class="details-info-value">{{ businessInfo.address }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">City</label>
+                <p class="details-info-value">{{ businessInfo.city }}</p>
+              </div>
+              <div class="details-info-item">
+                <label class="details-info-label">Country</label>
+                <p class="details-info-value">{{ businessInfo.country }}</p>
+              </div>
+              <div class="details-info-item details-info-item-full" *ngIf="businessInfo.website">
+                <label class="details-info-label">Website (optional)</label>
+                <p class="details-info-value">
+                  <a [href]="'https://' + businessInfo.website" target="_blank" class="details-link">
+                    {{ businessInfo.website }}
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <hr class="details-divider">
+
+            <div class="details-documents-section">
+              <h4 class="details-section-title">Uploaded Documents</h4>
+              <ul class="details-documents-list" *ngIf="businessInfo.documents.length > 0">
+                <li class="details-document-item" *ngFor="let doc of businessInfo.documents">
+                  <div class="details-document-info">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="details-document-name">{{ doc.name }}</span>
+                  </div>
+                  <a (click)="onViewDocument(doc)" class="details-document-link">View Document</a>
+                </li>
+              </ul>
+              <p *ngIf="businessInfo.documents.length === 0" class="no-documents">No documents uploaded</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="details-sidebar">
+        <div class="details-card details-sticky-card">
+          <div class="details-card-header">
+            <h3 class="details-card-title">Actions</h3>
+          </div>
+          <div class="details-card-body">
+            <!-- Application Summary -->
+            <div class="details-summary-section">
+              <h4 class="details-section-title">Application Summary</h4>
+              <div class="details-summary-list">
+                <div class="details-summary-item">
+                  <span class="details-summary-label">Submission Date:</span>
+                  <span class="details-summary-value">{{ submissionDate }}</span>
+                </div>
+                <div class="details-summary-item">
+                  <span class="details-summary-label">Current Status:</span>
+                  <span [class]="'details-status-badge ' + getStatusClass(ownerInfo.status)">
+                    {{ ownerInfo.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <hr class="details-divider">
+
+            <!-- Action Buttons -->
+            <div class="details-actions-section">
+              <button class="details-btn details-btn-primary" (click)="onApprove()" [disabled]="ownerInfo.status !== 'Pending'">
+                Approve Application
+              </button>
+              <button class="details-btn details-btn-danger" (click)="onDeny()" [disabled]="ownerInfo.status !== 'Pending'">
+                Deny Application
+              </button>
+              <button class="details-btn details-btn-secondary" (click)="onBackToDashboard()">
+                Back to Dashboard
+              </button>
+            </div>
+
+            <hr class="details-divider">
+
+            <!-- Admin Notes -->
+            <div class="details-notes-section">
+              <label for="admin-notes" class="details-notes-label">Admin Notes (optional)</label>
+              <textarea
+                id="admin-notes"
+                [(ngModel)]="adminNotes"
+                class="details-notes-textarea"
+                placeholder="Add notes about this application…"
+                rows="4"
+              ></textarea>
+              <button class="details-btn details-btn-primary" (click)="onSendEmail()">
+                Send Email
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

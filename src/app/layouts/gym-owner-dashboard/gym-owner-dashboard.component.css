@@ -1,0 +1,407 @@
+/* ============================================
+   Gym Owner Layout - Isolated Styles
+   ============================================ */
+
+/* Main Layout Container */
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #f8fafc;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Sidebar Styles */
+.admin-layout > .gym-owner-sidebar {
+  width: 16rem;
+  height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  flex-shrink: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.admin-layout > .gym-owner-sidebar > .sidebar-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Logo Section */
+.admin-layout .gym-owner-sidebar .logo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-layout .gym-owner-sidebar .logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.admin-layout .gym-owner-sidebar .logo-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #2563eb;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+}
+
+.admin-layout .gym-owner-sidebar .logo-text {
+  color: #0f172a;
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Navigation Menu */
+.admin-layout .gym-owner-sidebar .nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-layout .gym-owner-sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.admin-layout .gym-owner-sidebar .nav-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.admin-layout .gym-owner-sidebar .nav-item.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.admin-layout .gym-owner-sidebar .nav-item > .material-symbols-outlined {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.admin-layout .gym-owner-sidebar .nav-item > p {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.admin-layout .gym-owner-sidebar .nav-item.active > p {
+  font-weight: 600;
+}
+
+/* Bottom Section */
+.admin-layout .gym-owner-sidebar .bottom-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Scrollbar */
+.admin-layout > .gym-owner-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-layout > .gym-owner-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-layout > .gym-owner-sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.admin-layout > .gym-owner-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Content Area */
+.admin-layout > .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin-left: 16rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Header */
+.admin-layout > .content > .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 16rem;
+  z-index: 50;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-height: 4rem;
+  box-sizing: border-box;
+}
+
+.admin-layout .header > .header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-layout .header > .header-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.admin-layout .header > .header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  min-width: 0;
+}
+
+/* Search Container */
+.admin-layout .header-center > .search-container {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.admin-layout .search-container > .search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 1.25rem;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.admin-layout .search-container > .search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: all 0.2s ease;
+  background-color: #f9fafb;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.admin-layout .search-container > .search-input:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.admin-layout .search-container > .search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Icon Button */
+.admin-layout .header-right > .icon-btn {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: none;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.admin-layout .header-right > .icon-btn:hover {
+  background-color: #e5e7eb;
+  transform: scale(1.05);
+}
+
+.admin-layout .icon-btn > .material-symbols-outlined {
+  color: #374151;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+/* User Avatar */
+.admin-layout .header-right > .user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.admin-layout .header-right > .user-avatar:hover {
+  border-color: #2563eb;
+  transform: scale(1.05);
+}
+
+/* Page Content - هنا الجزء المهم */
+.admin-layout > .content > .page {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  height: calc(100vh - 4rem);
+  /* Reset any inherited styles */
+  background: transparent;
+}
+
+/* Important: Don't style child elements of .page */
+.admin-layout .page > * {
+  /* Let child components handle their own styling */
+  all: revert;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .admin-layout > .content > .header {
+    padding: 1rem 1.5rem;
+    left: 16rem;
+  }
+
+  .admin-layout > .content > .page {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-layout > .gym-owner-sidebar {
+    width: 14rem;
+  }
+
+  .admin-layout > .content {
+    margin-left: 14rem;
+  }
+
+  .admin-layout > .content > .header {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    left: 14rem;
+  }
+
+  .admin-layout .header > .header-left,
+  .admin-layout .header > .header-right {
+    flex: 0 0 auto;
+  }
+
+  .admin-layout .header > .header-center {
+    flex: 1 1 100%;
+    order: 3;
+  }
+
+  .admin-layout .header-center > .search-container {
+    max-width: 100%;
+  }
+
+  .admin-layout > .content > .page {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-layout > .gym-owner-sidebar {
+    width: 12rem;
+  }
+
+  .admin-layout > .content {
+    margin-left: 12rem;
+  }
+
+  .admin-layout > .content > .header {
+    padding: 0.75rem;
+    left: 12rem;
+  }
+
+  .admin-layout .header-right > .icon-btn,
+  .admin-layout .header-right > .user-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .admin-layout .search-container > .search-input {
+    padding: 0.625rem 0.875rem 0.625rem 2.75rem;
+    font-size: 0.875rem;
+  }
+
+  .admin-layout > .content > .page {
+    padding: 0.75rem;
+  }
+}
+
+/* Prevent Layout Overflow */
+.admin-layout {
+  overflow: hidden;
+}
+
+/* Smooth Scrolling */
+.admin-layout > .content > .page {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar for Page Content */
+.admin-layout > .content > .page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.admin-layout > .content > .page::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.admin-layout > .content > .page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.admin-layout > .content > .page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

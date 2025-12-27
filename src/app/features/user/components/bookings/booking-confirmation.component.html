@@ -1,0 +1,75 @@
+<div class="page">
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-mark">F</div>
+      <span class="brand-name">FitHub</span>
+    </div>
+
+    <nav class="nav-links">
+      <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/find-gym">Find a Gym</a>
+      <a routerLink="/my-schedule">My Bookings</a>
+      <a routerLink="/account">My Profile</a>
+    </nav>
+
+    <div class="actions">
+      <button class="credits">Buy Credits</button>
+      <div class="avatar">U</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="status-icon">✓</div>
+    <h1>Booking Confirmed!</h1>
+    <p class="lead">Get ready for your workout at {{ gymName }}.</p>
+
+    <section class="card code-card">
+      <h2>Your Booking Code</h2>
+      <p class="muted">Show this code at the front desk to check in.</p>
+      <div class="code-box">{{ bookingCode }}</div>
+    </section>
+
+    <section class="card details-card">
+      <div class="gym-row">
+        <div class="gym-icon">🏋️</div>
+        <div class="gym-info">
+          <p class="gym-name">{{ gymName }}</p>
+          <p class="muted">{{ address }}</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <p class="label">Date</p>
+          <p class="value">{{ date }}</p>
+        </div>
+        <div class="col">
+          <p class="label">Time</p>
+          <p class="value">{{ time }}</p>
+        </div>
+        <div class="col credits-col">
+          <p class="label">Credits Used</p>
+          <p class="value">{{ creditsUsed }} Credits</p>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button class="primary" routerLink="/my-schedule">View My Bookings</button>
+        <button class="ghost">Cancel Booking</button>
+      </div>
+    </section>
+
+    <p class="footnote">
+      A confirmation email with all the details has been sent to your registered email address.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <span>© 2024 FitHub. All Rights Reserved.</span>
+    <div class="footer-links">
+      <a href="#">Support</a>
+      <a href="#">FAQs</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </footer>
+</div>

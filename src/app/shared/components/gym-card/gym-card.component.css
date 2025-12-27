@@ -1,0 +1,124 @@
+:host {
+  display: block;
+}
+
+.gym-card {
+  display: block;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.gym-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.gym-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.gym-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gym-details {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gym-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.gym-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.stars {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.star-icon {
+  width: clamp(14px, 2.2vw, 18px);
+  height: auto;
+  display: block;
+  color: #e6eaf0; /* empty star color */
+  transition: transform 0.12s ease, color 0.12s ease;
+  flex: 0 0 auto;
+}
+
+.star-icon.filled {
+  color: #f59e0b; /* amber */
+}
+
+.star-icon path { fill: currentColor; }
+
+.rating-meta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.rating-value {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.review-count {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.gym-location {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+.gym-activities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.activity-tag {
+  padding: 6px 12px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .gym-image {
+    height: 180px;
+  }
+
+  .gym-details {
+    padding: 14px;
+  }
+}

@@ -1,0 +1,45 @@
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<div class="admin-layout">
+  
+   <!-- Sidebar -->
+   <aside>
+    <div class="sidebar-top">
+      <div class="profile">
+        <div class="profile-pic" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDqUm439m8XRHmz5qsl-Cj9a8EBZ29zZOFpW6GosGf_3pe6toP9KK2HFN1-q4MeUytY_Ur-mZVZotACJp96IoTg7CYoHuzWXCIBFBppeuOGTU2gDJg0bT69PA9nbBKsNg6BrpJ197lSF6HZL3K1KnpLzW9sJ27z7BhYs0e508EKBYdvd-B8c6DkTrcR6l_2A4yUm-rpEsgsK_LtWRziBmbi95uGXr4UyovU_PaDpTK9jz67bCQGRbktjnwZ0FGmOIblbfMtbJSwhls");'></div>
+        <div class="profile-info">
+          <h1>FitHub Admin</h1>
+          <p>admin@fithub.com</p>
+        </div>
+      </div>
+      <nav>
+        <a routerLink="/admin/dashboard"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+        <a routerLink="/admin/manage-gyms" class="active"><span class="material-symbols-outlined">fitness_center</span> Gym Management</a>
+        <a href="#"><span class="material-symbols-outlined">group</span> Users</a>
+        <a href="#"><span class="material-symbols-outlined">settings</span> Settings</a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <a href="#"><span class="material-symbols-outlined">help</span> Support</a>
+      <button class="btn-primary">Logout</button>
+    </div>
+  </aside>
+  
+
+  <!-- Main content -->
+  <div class="content">
+    
+    <!-- Header 
+    <header class="header">
+      <h3>Admin</h3>
+      <button>Logout</button>
+    </header> -->
+
+    <!-- Pages here -->
+    <main class="page">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+</div>

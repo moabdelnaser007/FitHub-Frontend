@@ -1,0 +1,143 @@
+<div class="payout-container">
+ 
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 class="page-title">Gym Payout Details</h1>
+    <p class="page-subtitle">Review payout information for this gym and confirm payment.</p>
+
+    <!-- Two Column Layout: Left (3 cards stacked) + Right (Actions) -->
+    <div class="two-column-layout">
+      <!-- Left Column: Stacked Cards -->
+      <div class="left-column">
+        <!-- Gym Summary Card -->
+        <div class="card">
+          <h2 class="card-title">Gym Summary</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Gym Name</span>
+              <span class="info-value">{{ gymData.gymName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Owner Name</span>
+              <span class="info-value">{{ gymData.ownerName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Location</span>
+              <span class="info-value">{{ gymData.location }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Period</span>
+              <span class="info-value">{{ gymData.period }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Credits Consumed</span>
+              <span class="info-value">{{ gymData.creditsConsumed }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Payout Amount</span>
+              <span class="info-value highlight">{{ gymData.payoutAmount }} EGP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Information Card -->
+        <div class="card">
+          <h2 class="card-title">Gym Payment Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Preferred Payment Method</span>
+              <span class="info-value">{{ paymentInfo.method }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Bank Account Name</span>
+              <span class="info-value">{{ paymentInfo.accountName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Bank Name</span>
+              <span class="info-value">{{ paymentInfo.bankName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">IBAN / Account Number</span>
+              <span class="info-value">{{ paymentInfo.iban }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Vodafone Cash Number</span>
+              <span class="info-value">{{ paymentInfo.vodafoneCash || 'Not provided' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">InstaPay Email</span>
+              <span class="info-value">{{ paymentInfo.instaPay || 'Not provided' }}</span>
+            </div>
+          </div>
+          
+          <div class="notes-section">
+            <h3 class="notes-title">Notes from the gym owner</h3>
+            <p class="notes-content">{{ paymentInfo.notes }}</p>
+          </div>
+        </div>
+
+        <!-- Payout History Card -->
+        <div class="card">
+          <h2 class="card-title">Payout History</h2>
+          <div class="table-container">
+            <table class="payout-table">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Credits Consumed</th>
+                  <th>Amount Paid (EGP)</th>
+                  <th>Date Paid</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payout of payoutHistory">
+                  <td>{{ payout.period }}</td>
+                  <td>{{ payout.credits }}</td>
+                  <td>{{ payout.amount }}</td>
+                  <td>{{ payout.date }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="'status-' + payout.status.toLowerCase()">
+                      {{ payout.status }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Payout Actions -->
+      <div class="right-column">
+        <div class="card sticky-card">
+          <h2 class="card-title">Payout Actions</h2>
+          <div class="info-grid-single">
+            <div class="info-item">
+              <span class="info-label">Current Period</span>
+              <span class="info-value">{{ currentPayout.period }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Credits Consumed</span>
+              <span class="info-value">{{ currentPayout.credits }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Amount to Transfer (EGP)</span>
+              <span class="info-value highlight">{{ currentPayout.amount }}</span>
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn btn-primary" (click)="confirmPayment()">
+              ✓ Confirm Payment
+            </button>
+            <button class="btn btn-danger" (click)="markAsFailed()">
+              Mark as Failed
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

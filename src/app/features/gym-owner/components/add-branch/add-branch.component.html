@@ -1,0 +1,330 @@
+<div class="add-branch-page">
+  
+  <!-- Page Header -->
+  <header >
+    <h1>Add a New Branch</h1>
+    <p>Fill in the information below to register a new gym branch on the platform.</p>
+    <br>
+  </header>
+
+  <!-- Form Sections -->
+  <div class="form-sections">
+
+    <!-- Branch Details Section -->
+    <section class="form-section">
+      <div class="section-header">
+        <h2>Branch Details</h2>
+      </div>
+      <div class="section-content">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="branch-name">Branch Name <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="branch-name" 
+              class="form-input"
+              placeholder="e.g., Downtown Fitness Center"
+              [(ngModel)]="branchName"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="branch-phone">Branch Phone Number <span class="required">*</span></label>
+            <input 
+              type="tel" 
+              id="branch-phone" 
+              class="form-input"
+              placeholder="(123) 456-7890"
+              [(ngModel)]="branchPhone"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="branch-email">Email <span class="required">*</span></label>
+            <input 
+              type="email" 
+              id="branch-email" 
+              class="form-input"
+              placeholder="contact@downtownfitness.com"
+              [(ngModel)]="branchEmail"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="crn">Commercial Registration Number (CRN) <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="crn" 
+              class="form-input"
+              placeholder="1234567890"
+              [(ngModel)]="crn"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="branch-license">Branch License <span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select 
+                id="branch-license" 
+                class="form-select"
+                [(ngModel)]="branchLicense"
+                required
+              >
+                <option value="">Select license type</option>
+                <option value="type-a">Type A - Full Service</option>
+                <option value="type-b">Type B - Boutique Studio</option>
+              </select>
+              <span class="material-symbols-outlined select-icon">expand_more</span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="lease-contract">Lease / Ownership Contract</label>
+            <div class="file-upload">
+              <input 
+                type="file" 
+                id="lease-contract" 
+                class="file-input"
+                accept=".pdf,.docx,.jpg,.jpeg,.png"
+                (change)="onFileSelected($event)"
+              />
+              <label for="lease-contract" class="file-label">
+                <span class="material-symbols-outlined file-icon">upload_file</span>
+                <p class="file-text">
+                  <span class="file-link">Click to upload</span> or drag and drop
+                </p>
+                <p class="file-hint">PDF, DOCX, JPG (MAX. 5MB)</p>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location Information Section -->
+    <section class="form-section">
+      <div class="section-header">
+        <h2>Location Information</h2>
+      </div>
+      <div class="section-content">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="country">Country <span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select id="country" class="form-select" [(ngModel)]="country" required>
+                <option value="United States">United States</option>
+                <option value="Egypt">Egypt</option>
+                <option value="UAE">UAE</option>
+              </select>
+              <span class="material-symbols-outlined select-icon">expand_more</span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="region">Region / State <span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select id="region" class="form-select" [(ngModel)]="region" required>
+                <option value="California">California</option>
+                <option value="New York">New York</option>
+              </select>
+              <span class="material-symbols-outlined select-icon">expand_more</span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="city">City <span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select id="city" class="form-select" [(ngModel)]="city" required>
+                <option value="Los Angeles">Los Angeles</option>
+                <option value="San Francisco">San Francisco</option>
+              </select>
+              <span class="material-symbols-outlined select-icon">expand_more</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid address-grid">
+          <div class="form-field">
+            <label for="district">District</label>
+            <input type="text" id="district" class="form-input" [(ngModel)]="district" />
+          </div>
+
+          <div class="form-field col-span-2">
+            <label for="street">Street</label>
+            <input type="text" id="street" class="form-input" [(ngModel)]="street" />
+          </div>
+
+          <div class="form-field">
+            <label for="building-no">Building No.</label>
+            <input type="text" id="building-no" class="form-input" [(ngModel)]="buildingNo" />
+          </div>
+
+          <div class="form-field">
+            <label for="postal-code">Postal Code</label>
+            <input type="text" id="postal-code" class="form-input" [(ngModel)]="postalCode" />
+          </div>
+        </div>
+
+        <div class="form-field full-width">
+          <label for="full-address">Full Address</label>
+          <div class="textarea-wrapper">
+            <span class="material-symbols-outlined textarea-icon">location_on</span>
+            <textarea 
+              id="full-address" 
+              class="form-textarea"
+              placeholder="123 Fitness Ave, Wellness District, Los Angeles, CA 90012, USA"
+              rows="3"
+              [(ngModel)]="fullAddress"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Operating Information Section -->
+    <section class="form-section">
+      <div class="section-header">
+        <h2>Operating Information</h2>
+      </div>
+      <div class="section-content">
+        <div class="form-grid grid-3">
+          <div class="form-field">
+            <label for="opening-date">Opening Date</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">calendar_today</span>
+              <input 
+                type="date" 
+                id="opening-date" 
+                class="form-input with-icon"
+                [(ngModel)]="openingDate"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="opening-time">Opening Time</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">schedule</span>
+              <input 
+                type="time" 
+                id="opening-time" 
+                class="form-input with-icon"
+                [(ngModel)]="openingTime"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="closing-time">Closing Time</label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">schedule</span>
+              <input 
+                type="time" 
+                id="closing-time" 
+                class="form-input with-icon"
+                [(ngModel)]="closingTime"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-field full-width">
+          <label>Working Days</label>
+          <div class="working-days">
+            <button 
+              *ngFor="let day of dayNames; let i = index"
+              type="button"
+              class="day-btn"
+              [class.selected]="workingDays[i]"
+              (click)="toggleWorkingDay(i)"
+            >
+              {{ day }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two Column Sections -->
+    <div class="two-columns">
+      <!-- Amenities Section -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2>Available Amenities</h2>
+        </div>
+        <div class="section-content">
+          <div class="amenities-list">
+            <span 
+              *ngFor="let amenity of amenities" 
+              class="amenity-tag"
+            >
+              {{ amenity.name }}
+              <button 
+                type="button" 
+                class="amenity-remove"
+                (click)="removeAmenity(amenity.id)"
+              >
+                ×
+              </button>
+            </span>
+            <input 
+              type="text" 
+              class="amenity-input"
+              placeholder="Add amenity..."
+              [(ngModel)]="newAmenity"
+              (keyup.enter)="addAmenity()"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Plans Section -->
+      <section class="form-section">
+        <div class="section-header">
+          <h2>Available Plans for This Branch</h2>
+        </div>
+        <div class="section-content">
+          <div class="select-wrapper">
+            <select class="form-select" [(ngModel)]="selectedPlanType">
+              <option value="">Select plan type</option>
+              <option value="monthly">Monthly</option>
+              <option value="annual">Annual</option>
+              <option value="credit">Credit-Based Plans</option>
+            </select>
+            <span class="material-symbols-outlined select-icon">expand_more</span>
+          </div>
+
+          <div class="plans-list">
+            <label 
+              *ngFor="let plan of availablePlans" 
+              class="plan-checkbox"
+            >
+              <input 
+                type="checkbox" 
+                [checked]="plan.selected"
+                (change)="togglePlan(plan)"
+              />
+              <span>{{ plan.name }} - ${{ plan.price }}</span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  <!-- Form Actions -->
+  <div class="form-actions">
+    <button type="button" class="btn-cancel" (click)="onCancel()">
+      Cancel
+    </button>
+    <button type="button" class="btn-submit" (click)="onSubmit()">
+      Save Branch
+    </button>
+  </div>
+
+</div>

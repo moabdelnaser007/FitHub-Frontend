@@ -1,0 +1,51 @@
+<div class="filter-panel">
+  <div class="filter-header">
+    <div class="filter-chip">
+      <span class="chip-dot"></span>
+      <span>Filters</span>
+    </div>
+    <p class="filter-subtitle">Refine your search to match the gyms you want.</p>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <div class="filter-section">
+    <label class="filter-label">Location</label>
+    <select class="filter-select" name="location" [(ngModel)]="selectedLocation">
+      <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+    </select>
+  </div>
+
+  <div class="filter-section">
+    <label class="filter-label">Rating</label>
+    <div class="rating-options">
+      <button
+        *ngFor="let rating of ratings"
+        type="button"
+        class="rating-btn"
+        [class.selected]="isRatingSelected(rating)"
+        (click)="selectRating(rating)"
+        aria-pressed="{{ isRatingSelected(rating) }}"
+        [attr.title]="rating + ' stars & up'"
+      >
+        <div class="stars" aria-hidden="true">
+          <svg
+            *ngFor="let i of [1, 2, 3, 4, 5]"
+            class="star-svg"
+            [class.filled]="i <= rating"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 .587l3.668 7.431L23.5 9.75l-5.75 5.6L19.5 23 12 19.25 4.5 23l1.75-7.65L.5 9.75l7.832-1.732L12 .587z"
+            />
+          </svg>
+        </div>
+        <span class="rating-label">{{ rating }}+</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-actions">
+    <button class="apply-btn" (click)="applyFilters()">Apply Filters</button>
+  </div>
+</div>

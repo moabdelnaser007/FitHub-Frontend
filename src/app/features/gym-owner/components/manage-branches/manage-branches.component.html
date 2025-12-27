@@ -1,0 +1,157 @@
+<div class="branches-page">
+  
+  <!-- Page Header -->
+  <div class="hhh" >
+    <div >
+      <h1>Manage Your Branches</h1>
+      <p>View, add, or edit your gym locations.</p>
+    </div>
+    <br>
+    <button class="btn-add" (click)="addNewBranch()">
+      <span class="material-symbols-outlined">add</span>
+      <span>Add New Branch</span>
+    </button>
+  </div>
+  <br>
+
+  <!-- Search and Filters -->
+  <div class="filters-section">
+    <div class="search-container">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Search by branch name..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+      />
+    </div>
+
+    <div class="filter-buttons">
+      <button 
+        class="filter-btn"
+        [class.active]="currentFilter === 'all'"
+        (click)="setFilter('all')"
+      >
+        All
+      </button>
+      <button 
+        class="filter-btn"
+        [class.active]="currentFilter === 'active'"
+        (click)="setFilter('active')"
+      >
+        Active
+      </button>
+      <button 
+        class="filter-btn"
+        [class.active]="currentFilter === 'inactive'"
+        (click)="setFilter('inactive')"
+      >
+        Inactive
+      </button>
+      <button 
+        class="filter-btn"
+        [class.active]="currentFilter === 'pending'"
+        (click)="setFilter('pending')"
+      >
+        Pending
+      </button>
+    </div>
+  </div>
+
+  <!-- Branches List -->
+  <div class="branches-list">
+    <div 
+      class="branch-card" 
+      *ngFor="let branch of filteredBranches"
+    >
+      <div class="branch-info">
+        <h3 class="branch-name">{{ branch.name }}</h3>
+        <p class="branch-address">{{ branch.address }}</p>
+      </div>
+
+      <div class="branch-status">
+        <span 
+          class="status-badge" 
+          [ngClass]="getStatusClass(branch.status)"
+        >
+          <span class="status-dot"></span>
+          {{ getStatusText(branch.status) }}
+        </span>
+      </div>
+
+      <div class="branch-actions">
+        <button 
+          class="action-btn view-btn" 
+          (click)="viewBranch(branch)"
+          title="View"
+        >
+          <span class="material-symbols-outlined">visibility</span>
+        </button>
+        <button 
+          class="action-btn edit-btn" 
+          (click)="editBranch(branch)"
+          title="Edit"
+        >
+          <span class="material-symbols-outlined">edit</span>
+        </button>
+        <button 
+          class="action-btn delete-btn" 
+          (click)="deleteBranch(branch)"
+          title="Delete"
+        >
+          <span class="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredBranches.length === 0">
+      <span class="material-symbols-outlined empty-icon">store</span>
+      <h3>No branches found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button 
+      class="pagination-btn" 
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+
+    <button 
+      class="pagination-btn page-number"
+      [class.active]="currentPage === 1"
+      (click)="goToPage(1)"
+    >
+      1
+    </button>
+    <button 
+      class="pagination-btn page-number"
+      [class.active]="currentPage === 2"
+      (click)="goToPage(2)"
+    >
+      2
+    </button>
+    <button 
+      class="pagination-btn page-number"
+      [class.active]="currentPage === 3"
+      (click)="goToPage(3)"
+    >
+      3
+    </button>
+
+    <button 
+      class="pagination-btn" 
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,37 @@
+<div class="payment-page success">
+  <app-header></app-header>
+
+  <main class="payment-container">
+    <section class="content-card">
+      <div class="status-icon success">
+        <span>✔</span>
+      </div>
+      <h1 class="title">Payment Successful!</h1>
+      <p class="subtitle">Your payment has been processed successfully.</p>
+
+      <div class="summary-card">
+        <div class="summary-row">
+          <span>Amount Paid:</span>
+          <span class="value">{{ amount }} EGP</span>
+        </div>
+        <div class="summary-row">
+          <span>Credits Added:</span>
+          <span class="value">{{ credits }} Credits</span>
+        </div>
+        <div class="summary-row">
+          <span>Transaction ID:</span>
+          <span class="value">{{ txnId }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Date & Time:</span>
+          <span class="value">{{ dateTime }}</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" (click)="goToDashboard()">Go to Dashboard</button>
+        <button class="btn ghost" (click)="viewTransactions()">View Transactions</button>
+      </div>
+    </section>
+  </main>
+</div>

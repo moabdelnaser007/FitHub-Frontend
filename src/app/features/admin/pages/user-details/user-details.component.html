@@ -1,0 +1,114 @@
+<div class="user-details-wrapper">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading user details...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading" class="details-layout">
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Personal Information Card -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2 class="card-title">Personal Information</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <label class="info-label">Full Name</label>
+              <p class="info-value">{{ user.fullName }}</p>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Email</label>
+              <p class="info-value">{{ user.email }}</p>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Phone Number</label>
+              <p class="info-value">{{ user.phone }}</p>
+            </div>
+            <div class="info-item">
+              <label class="info-label">City / Country</label>
+              <p class="info-value">{{ user.location }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Overview Card -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2 class="card-title">Activity Overview</h2>
+        </div>
+        <div class="card-body">
+          <div class="activity-grid">
+            <div class="activity-item">
+              <label class="info-label">Number of bookings</label>
+              <p class="activity-value">{{ user.numberOfBookings }}</p>
+            </div>
+            <div class="activity-item">
+              <label class="info-label">Last login</label>
+              <p class="info-value">{{ user.lastLogin }}</p>
+            </div>
+            <div class="activity-item">
+              <label class="info-label">Membership/Plan</label>
+              <p class="info-value">{{ user.membership }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Account Information Card -->
+      <div class="info-card">
+        <div class="card-header">
+          <h2 class="card-title">Account Information</h2>
+        </div>
+        <div class="card-body">
+          <div class="account-info">
+            <div class="info-item">
+              <label class="info-label">Role</label>
+              <p class="info-value">{{ user.role }}</p>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Account Status</label>
+              <p class="info-value">
+                <span [class]="'status-badge ' + getStatusClass(user.status)">
+                  {{ user.status }}
+                </span>
+              </p>
+            </div>
+            <div class="info-item">
+              <label class="info-label">Join Date</label>
+              <p class="info-value">{{ user.joinDate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Card -->
+      <div class="info-card">
+        <div class="card-body">
+          <h2 class="card-title actions-title">Actions</h2>
+          <div class="actions-buttons">
+            <button class="btn btn-primary" (click)="onEditUser()">
+              <span class="material-icons">edit</span>
+              Edit User
+            </button>
+            <button class="btn btn-delete" (click)="onDeleteUser()">
+              <span class="material-icons">delete</span>
+              Delete User
+            </button>
+            <button class="btn btn-secondary" (click)="onBackToList()">
+              <span class="material-icons">arrow_back</span>
+              Back to List
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

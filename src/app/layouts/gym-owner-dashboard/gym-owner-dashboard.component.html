@@ -1,0 +1,67 @@
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<div class="admin-layout">
+  
+
+   
+<aside class="gym-owner-sidebar">
+  <div class="sidebar-content">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo-wrapper">
+        <div class="logo-icon"></div>
+        <h1 class="logo-text">FitHub</h1>
+      </div>
+
+      <!-- Main Navigation -->
+      <nav class="nav-menu">
+        <a
+          *ngFor="let item of menuItems"
+          [routerLink]="item.route"
+          class="nav-item"
+          [class.active]="item.active"
+          (click)="setActiveMenuItem(item)"
+        >
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
+          <p>{{ item.label }}</p>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="bottom-section">
+      <a class="nav-item" (click)="onProfile()">
+        <span class="material-symbols-outlined">account_circle</span>
+        <p>Profile</p>
+      </a>
+      <a class="nav-item" (click)="onLogout()">
+        <span class="material-symbols-outlined">logout</span>
+        <p>Logout</p>
+      </a>
+    </div>
+  </div>
+</aside>
+
+  <!-- Main content -->
+  <div class="content">
+      
+
+    <!-- Header 
+    <header class="header">
+      <h3>Admin</h3>
+      <button>Logout</button>
+    </header> -->
+
+    <!-- Pages here -->
+    <main class="page">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+</div>
+
+
+
+
+

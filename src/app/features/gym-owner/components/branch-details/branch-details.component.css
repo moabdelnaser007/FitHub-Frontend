@@ -1,0 +1,396 @@
+/* Branch Details Page Styles */
+.branch-details-page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.header-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0d141b;
+  margin: 0 0 0.5rem 0;
+}
+
+.header-content p {
+  font-size: 1rem;
+  color: #4c739a;
+  margin: 0;
+}
+
+/* Content Grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Info Card */
+.info-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.info-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0d141b;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-item label {
+  font-size: 0.875rem;
+  color: #4c739a;
+  margin-bottom: 0.25rem;
+}
+
+.info-item p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0d141b;
+  margin: 0;
+}
+
+/* Website Link */
+.website-link {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.website-link:hover {
+  text-decoration: underline;
+}
+
+/* Document Link */
+.document-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2563eb;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.document-link:hover {
+  text-decoration: underline;
+}
+
+.document-link .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+
+/* Amenities */
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.amenity-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+}
+
+.status-badge.active {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.active .status-dot {
+  background-color: #2563eb;
+}
+
+.status-badge.inactive {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+.status-badge.inactive .status-dot {
+  background-color: #64748b;
+}
+
+.status-badge.pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.pending .status-dot {
+  background-color: #f59e0b;
+}
+
+/* Operating Hours */
+.hours-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.hours-item label {
+  font-size: 0.875rem;
+  color: #4c739a;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.hours-item p {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #0d141b;
+  margin: 0;
+}
+
+/* Working Days */
+.working-days-section {
+  margin-top: 1rem;
+}
+
+.working-days-section > label {
+  font-size: 0.875rem;
+  color: #4c739a;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.working-days-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.day-badge {
+  padding: 0.375rem 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  background-color: #f1f5f9;
+  color: #4c739a;
+}
+
+.day-badge.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+/* Staff */
+.staff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.staff-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.staff-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.staff-info {
+  flex: 1;
+}
+
+.staff-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0d141b;
+  margin: 0 0 0.125rem 0;
+}
+
+.staff-role {
+  font-size: 0.875rem;
+  color: #4c739a;
+  margin: 0;
+}
+
+/* Buttons */
+.btn-primary {
+  padding: 0.75rem 1.25rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary.full-width {
+  width: 100%;
+}
+
+/* Back Button */
+.back-button-container {
+  margin-top: 2rem;
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: rgba(37, 99, 235, 0.2);
+}
+
+.btn-back .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item.full-width {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .info-card {
+    padding: 1.25rem;
+  }
+
+  .info-card h2 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+  }
+
+  .hours-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .working-days-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .info-card {
+    padding: 1rem;
+  }
+
+  .amenities-list {
+    gap: 0.5rem;
+  }
+
+  .amenity-tag {
+    font-size: 0.8125rem;
+    padding: 0.25rem 0.625rem;
+  }
+
+  .staff-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .staff-name {
+    font-size: 0.9375rem;
+  }
+
+  .working-days-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn-back {
+    width: 100%;
+    justify-content: center;
+  }
+}

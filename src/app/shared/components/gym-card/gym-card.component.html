@@ -1,0 +1,40 @@
+<a [routerLink]="['/gym', gym.id]" class="gym-card">
+  <div class="gym-image">
+    <img [src]="gym.image" [alt]="gym.name" />
+  </div>
+
+  <div class="gym-details">
+    <h3 class="gym-name">{{ gym.name }}</h3>
+
+    <div class="gym-rating" aria-label="Rating: {{ gym.rating }} out of 5">
+      <div
+        class="stars"
+        aria-hidden="true"
+        (click)="$event.preventDefault(); $event.stopPropagation(); rate.emit(gym)"
+      >
+        <svg
+          *ngFor="let i of [1, 2, 3, 4, 5]"
+          class="star-icon"
+          [class.filled]="gym.rating >= i"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 .587l3.668 7.431L23.5 9.75l-5.75 5.6L19.5 23 12 19.25 4.5 23l1.75-7.65L.5 9.75l7.832-1.732L12 .587z"
+          />
+        </svg>
+      </div>
+      <div class="rating-meta">
+        <span class="rating-value">{{ gym.rating | number : '1.1-1' }}</span>
+        <span class="review-count">({{ gym.reviewCount }})</span>
+      </div>
+    </div>
+
+    <p class="gym-location">{{ gym.location }}</p>
+
+    <div class="gym-activities">
+      <span class="activity-tag" *ngFor="let activity of gym.activities">
+        {{ activity }}
+      </span>
+    </div>
+  </div>
+</a>

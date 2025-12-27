@@ -1,0 +1,35 @@
+<div class="payment-page failed">
+  <app-header></app-header>
+
+  <main class="payment-container">
+    <section class="content-card">
+      <div class="status-icon failed">
+        <span>!</span>
+      </div>
+      <h1 class="title">Payment Failed</h1>
+      <p class="subtitle">
+        We couldn't process your payment. Please try again or use another payment method.
+      </p>
+
+      <div class="summary-card">
+        <div class="summary-row">
+          <span>Reason</span>
+          <span class="value error">{{ reason }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Amount Attempted</span>
+          <span class="value">{{ amount }} EGP</span>
+        </div>
+        <div class="summary-row">
+          <span>Payment Method</span>
+          <span class="value">{{ method }}</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" (click)="changeMethod()">Change Payment Method</button>
+        <button class="btn primary" (click)="tryAgain()">Try Again</button>
+      </div>
+    </section>
+  </main>
+</div>

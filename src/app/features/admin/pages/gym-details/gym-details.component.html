@@ -1,0 +1,165 @@
+<div class="gym-details-admin-wrapper">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading gym details...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading">
+    <!-- Page Header -->
+    <div>
+      <div >
+        <h1 class="page-title">Gym Details</h1>
+        <p class="page-description">View full information about this gym.</p>
+        <br>
+      </div>
+    </div>
+
+    <!-- Content Layout -->
+    <div class="content-layout">
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Gym Information Card -->
+        <div class="info-card">
+          <h3 class="card-title">Gym Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <p class="info-label">Gym Name</p>
+              <p class="info-value">{{ gym.name }}</p>
+            </div>
+            <div class="info-item">
+              <p class="info-label">Owner Name</p>
+              <p class="info-value">{{ gym.owner }}</p>
+            </div>
+            <div class="info-item">
+              <p class="info-label">Email</p>
+              <p class="info-value">{{ gym.email }}</p>
+            </div>
+            <div class="info-item">
+              <p class="info-label">Phone Number</p>
+              <p class="info-value">{{ gym.phone }}</p>
+            </div>
+            <div class="info-item info-item-full">
+              <p class="info-label">Full Address</p>
+              <p class="info-value">{{ gym.address }}</p>
+            </div>
+            <div class="info-item">
+              <p class="info-label">City</p>
+              <p class="info-value">{{ gym.city }}</p>
+            </div>
+            <div class="info-item">
+              <p class="info-label">Country</p>
+              <p class="info-value">{{ gym.country }}</p>
+            </div>
+            <div class="info-item info-item-full">
+              <p class="info-label">Website</p>
+              <a [href]="gym.website" target="_blank" class="info-link">{{ gym.website }}</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Amenities Card -->
+        <div class="info-card">
+          <h3 class="card-title">Amenities</h3>
+          <div class="amenities-list">
+            <span *ngFor="let amenity of gym.amenities" class="amenity-badge">
+              {{ amenity }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Staff Card -->
+        <div class="info-card">
+          <h3 class="card-title">Branch Staff Overview</h3>
+          <div class="staff-list">
+            <a
+              *ngFor="let staff of gym.staff"
+              class="staff-item"
+              (click)="onViewStaff(staff)"
+            >
+              <img [src]="staff.avatar" [alt]="staff.name" class="staff-avatar" />
+              <div class="staff-info">
+                <p class="staff-name">{{ staff.name }}</p>
+                <p class="staff-role">{{ staff.role }}</p>
+              </div>
+              <span class="material-symbols-outlined">chevron_right</span>
+            </a>
+            <p *ngIf="gym.staff.length === 0" class="no-staff">No staff members added</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Status Card -->
+        <div class="info-card">
+          <h3 class="card-title">Status</h3>
+          <label class="status-toggle">
+            <input
+              type="checkbox"
+              class="toggle-input"
+              [checked]="gym.isActive"
+              (change)="onToggleStatus()"
+            />
+            <div class="toggle-slider"></div>
+            <span class="status-label">{{ gym.status }}</span>
+          </label>
+        </div>
+
+        <!-- Documents Card -->
+        <div class="info-card">
+          <h3 class="card-title">Business Documents</h3>
+          <div class="document-item">
+            <div class="document-info">
+              <span class="material-symbols-outlined">description</span>
+              <span class="document-name">{{ gym.document }}</span>
+            </div>
+            <button class="btn-download" (click)="onDownloadDocument()">
+              Download
+            </button>
+          </div>
+        </div>
+
+        <!-- Operating Hours Card -->
+        <div class="info-card">
+          <h3 class="card-title">Operating Hours</h3>
+          <div class="hours-info">
+            <div class="hours-row">
+              <p class="hours-label">Opening Time</p>
+              <p class="hours-value">{{ gym.openingTime }}</p>
+            </div>
+            <div class="hours-row">
+              <p class="hours-label">Closing Time</p>
+              <p class="hours-value">{{ gym.closingTime }}</p>
+            </div>
+          </div>
+          <div class="days-grid">
+            <span
+              *ngFor="let day of allDays"
+              class="day-badge"
+              [class.active]="isDayActive(day)"
+            >
+              {{ day }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-footer">
+      <button class="btn btn-back" (click)="onBackToGyms()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back to Gyms
+      </button>
+      <div class="spacer"></div>
+      <button class="btn btn-danger" (click)="onSuspendGym()">
+        Suspend Gym
+      </button>
+      <button class="btn btn-primary" (click)="onApproveGym()">
+        Approve / Activate
+      </button>
+    </div>
+  </div>
+</div>

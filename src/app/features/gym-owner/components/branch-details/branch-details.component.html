@@ -1,0 +1,152 @@
+<div class="branch-details-page">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Branch Details</h1>
+      <p>View all information for this gym branch.</p>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    
+    <!-- Left Column (2/3 width) -->
+    <div class="left-column">
+      
+      <!-- Branch Information Section -->
+      <section class="info-card">
+        <h2>Branch Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Branch Name</label>
+            <p>{{ branchInfo.name }}</p>
+          </div>
+
+          <div class="info-item">
+            <label>Phone Number</label>
+            <p>{{ branchInfo.phone }}</p>
+          </div>
+
+          <div class="info-item full-width">
+            <label>Full Address</label>
+            <p>{{ branchInfo.address }}</p>
+          </div>
+
+          <div class="info-item">
+            <label>City</label>
+            <p>{{ branchInfo.city }}</p>
+          </div>
+
+          <div class="info-item">
+            <label>Country</label>
+            <p>{{ branchInfo.country }}</p>
+          </div>
+
+          <div class="info-item">
+            <label>Email</label>
+            <p>{{ branchInfo.email }}</p>
+          </div>
+
+          <div class="info-item">
+            <label>Website</label>
+            <p class="website-link">{{ branchInfo.website }}</p>
+          </div>
+
+          <div class="info-item full-width">
+            <label>Business License / CRN Document</label>
+            <a class="document-link" (click)="onDownloadDocument()">
+              <span class="material-symbols-outlined">download</span>
+              <span>{{ branchInfo.licenseDocument }}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Amenities Section -->
+      <section class="info-card">
+        <h2>Amenities</h2>
+        <div class="amenities-list">
+          <span *ngFor="let amenity of amenities" class="amenity-tag">
+            {{ amenity }}
+          </span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-primary" (click)="onManagePlans()">
+            Manage Plans
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Right Column (1/3 width) -->
+    <div class="right-column">
+      
+      <!-- Branch Status -->
+      <section class="info-card">
+        <h2>Branch Status</h2>
+        <span class="status-badge" [ngClass]="getStatusClass()">
+          <span class="status-dot"></span>
+          {{ getStatusText() }}
+        </span>
+      </section>
+
+      <!-- Operating Hours -->
+      <section class="info-card">
+        <h2>Operating Hours</h2>
+        <div class="hours-container">
+          <div class="hours-item">
+            <label>Opening Time</label>
+            <p>{{ operatingHours.openingTime }}</p>
+          </div>
+          <div class="hours-item">
+            <label>Closing Time</label>
+            <p>{{ operatingHours.closingTime }}</p>
+          </div>
+        </div>
+        
+        <div class="working-days-section">
+          <label>Working Days</label>
+          <div class="working-days-grid">
+            <span 
+              *ngFor="let day of workingDays" 
+              class="day-badge"
+              [class.active]="day.active"
+            >
+              {{ day.name }}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Staff Overview -->
+      <section class="info-card">
+        <h2>Staff Overview</h2>
+        <div class="staff-list">
+          <div *ngFor="let member of staff" class="staff-item">
+            <img [src]="member.avatar" [alt]="member.name" class="staff-avatar" />
+            <div class="staff-info">
+              <p class="staff-name">{{ member.name }}</p>
+              <p class="staff-role">{{ member.role }}</p>
+            </div>
+          </div>
+        </div>
+        <button class="btn-primary full-width" (click)="onManageStaff()">
+          Manage Staff
+        </button>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- Back Button -->
+  <div class="back-button-container">
+    <button class="btn-back" (click)="onBackToBranches()">
+      <span class="material-symbols-outlined">arrow_back</span>
+      <span>Back to Branches</span>
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,134 @@
+<!-- Profile Page with Fixed Header & Sidebar -->
+<div class="profile-page">
+  <!-- Fixed Header -->
+  <app-header></app-header>
+
+  <!-- Fixed Sidebar + Main Content -->
+  <div class="profile-layout">
+    <!-- Fixed Sidebar -->
+    <aside class="profile-sidebar" aria-label="Profile navigation">
+      <div class="sidebar-inner">
+        <div class="user-mini">
+          <div
+            class="avatar-lg"
+            style="background-image: url('https://via.placeholder.com/200')"
+          ></div>
+          <div class="user-meta">
+            <div class="user-name">{{ currentUser?.fullName || 'User' }}</div>
+            <div class="user-email">{{ currentUser?.email || 'email@example.com' }}</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a
+            routerLink="/profile"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Profile</a
+          >
+          <a
+            routerLink="/billing"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Billing</a
+          >
+          <a
+            routerLink="/subscriptions"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Subscriptions</a
+          >
+          <a
+            routerLink="/booking-history"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link"
+            >Booking History</a
+          >
+          <button
+            type="button"
+            class="sidebar-link sidebar-logout"
+            (click)="logout()"
+            aria-label="Logout"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="sidebar-icon"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Logout
+          </button>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Scrollable Main Content -->
+    <main class="profile-container">
+      <!-- Loading state -->
+      <div *ngIf="isLoading" class="loading-state">
+        <p>Loading your profile...</p>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="errorMessage && !isLoading" class="error-state">
+        <p class="error-message">{{ errorMessage }}</p>
+        <button class="btn btn-primary" (click)="loadUserProfile()">Try Again</button>
+      </div>
+
+      <!-- Content -->
+      <ng-container *ngIf="!isLoading && !errorMessage">
+        <div class="page-header">
+          <div></div>
+        </div>
+
+        <div class="balance-card">
+          <div class="balance-info">
+            <div class="balance-label">Current Balance</div>
+            <div class="balance-amount">450 Credits</div>
+            <div class="balance-valid">Valid until Dec 30, 2024</div>
+          </div>
+          <button class="btn btn-outline" (click)="goToRecharge()">Recharge (+)</button>
+        </div>
+
+        <div class="card form-card">
+          <form [formGroup]="profileForm" (ngSubmit)="onSave()">
+            <h3 class="card-title">Personal Details</h3>
+
+            <div class="form-grid">
+              <div class="form-row">
+                <label for="fullName">Full Name</label>
+                <input id="fullName" type="text" formControlName="fullName" />
+              </div>
+              <div class="form-row">
+                <label for="email">Email</label>
+                <input id="email" type="email" formControlName="email" readonly />
+              </div>
+              <div class="form-row">
+                <label for="phone">Phone Number</label>
+                <input id="phone" type="tel" formControlName="phone" />
+              </div>
+              <div class="form-row full">
+                <label for="city">City</label>
+                <input id="city" type="text" formControlName="city" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-ghost" (click)="onCancel()">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+    </main>
+  </div>
+</div>
