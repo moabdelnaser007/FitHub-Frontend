@@ -1,21 +1,28 @@
+// dashboard.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { GymOwnersService, PendingOwner } from '../../../../services/gym-owners.service'; // عدّلي المسار
+import { GymOwnersService, PendingOwner } from '../../../../services/gym-owners.service';
+import { forkJoin } from 'rxjs';
 
 interface StatCard {
   title: string;
   value: string;
   change: string;
   changeType: 'positive' | 'warning';
+  isLoading?: boolean;
 }
 
 interface PendingGym {
   id: string;
   name: string;
   owner: string;
+  email: string;
+  phone: string;
   location: string;
+  commercialRegNumber: string;
   status: string;
+  appliedDate: string;
 }
 
 @Component({
@@ -35,25 +42,29 @@ export class AdminDashboardComponent implements OnInit {
       title: 'Total Users',
       value: '0',
       change: '+0%',
-      changeType: 'positive'
+      changeType: 'positive',
+      isLoading: true
     },
     {
       title: 'Active Gyms',
       value: '0',
       change: '+0%',
-      changeType: 'positive'
+      changeType: 'positive',
+      isLoading: true
     },
     {
       title: 'Monthly Revenue',
       value: '$0',
       change: '+0%',
-      changeType: 'positive'
+      changeType: 'positive',
+      isLoading: false
     },
     {
-      title: 'Pending Gyms',
+      title: 'Pending Gym Owners',
       value: '0',
       change: 'Action Required',
-      changeType: 'warning'
+      changeType: 'warning',
+      isLoading: true
     }
   ];
 
@@ -65,36 +76,94 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadPendingGyms();
+    this.loadAllDashboardData();
   }
 
-  // ✅ تحميل الـ Pending Gyms من الـ API
-  loadPendingGyms(): void {
+  // ✅ تحميل كل بيانات الـ Dashboard دفعة واحدة
+  loadAllDashboardData(): void {
     this.isLoading = true;
     this.loadError = '';
 
-    this.gymOwnersService.getPendingOwners().subscribe({
-      next: (owners) => {
-        // تحويل البيانات من PendingOwner إلى PendingGym
-        this.pendingGyms = owners.map(owner => ({
+    // تحميل كل البيانات بالتوازي
+    forkJoin({
+      users: this.gymOwnersService.getTotalUsers(),
+      gyms: this.gymOwnersService.getActiveGymsCount(),
+      pendingOwners: this.gymOwnersService.getPendingOwners()
+    }).subscribe({
+      next: (results) => {
+        // ✅ تحديث Total Users
+        this.stats[0].value = results.users.toString();
+        this.stats[0].isLoading = false;
+        console.log('✅ Total Users:', results.users);
+
+        // ✅ تحديث Active Gyms
+        this.stats[1].value = results.gyms.toString();
+        this.stats[1].isLoading = false;
+        console.log('✅ Active Gyms:', results.gyms);
+
+        // ✅ تحديث Pending Gym Owners
+        this.pendingGyms = results.pendingOwners.map(owner => ({
           id: owner.id.toString(),
-          name: owner.gymName || 'N/A',
+          name: owner.fullName,
           owner: owner.fullName,
-          location: owner.gymLocation || 'N/A',
-          status: owner.status || 'Pending'
+          email: owner.email,
+          phone: owner.phone,
+          location: owner.city,
+          commercialRegNumber: owner.commercialRegistrationNumber,
+          status: 'Pending',
+          appliedDate: this.formatDate(owner.createdAt)
         }));
 
-        // تحديث عدد Pending Gyms في الـ Stats
         this.stats[3].value = this.pendingGyms.length.toString();
-        
-        console.log('✅ Pending gyms loaded:', this.pendingGyms);
+        this.stats[3].isLoading = false;
+        console.log('✅ Pending Gym Owners:', this.pendingGyms.length);
+
         this.isLoading = false;
       },
       error: (error) => {
-        this.loadError = 'Failed to load pending gym Owners. Please try again.';
-        console.error('❌ Error loading pending gym Owners:', error);
+        this.loadError = error.message || 'Failed to load dashboard data. Please try again.';
+        console.error('❌ Error loading dashboard data:', error);
         this.isLoading = false;
+        
+        // إيقاف loading للـ stats
+        this.stats.forEach(stat => stat.isLoading = false);
       }
+    });
+  }
+
+  // ✅ تحميل الـ Pending Gyms فقط (للاستخدام بعد Approve/Reject)
+  loadPendingGyms(): void {
+    this.gymOwnersService.getPendingOwners().subscribe({
+      next: (owners: PendingOwner[]) => {
+        this.pendingGyms = owners.map(owner => ({
+          id: owner.id.toString(),
+          name: owner.fullName,
+          owner: owner.fullName,
+          email: owner.email,
+          phone: owner.phone,
+          location: owner.city,
+          commercialRegNumber: owner.commercialRegistrationNumber,
+          status: 'Pending',
+          appliedDate: this.formatDate(owner.createdAt)
+        }));
+
+        this.stats[3].value = this.pendingGyms.length.toString();
+        console.log('✅ Pending gym owners reloaded:', this.pendingGyms);
+      },
+      error: (error) => {
+        console.error('❌ Error reloading pending gym owners:', error);
+      }
+    });
+  }
+
+  // ✅ تنسيق التاريخ
+  formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
     });
   }
 
@@ -102,87 +171,117 @@ export class AdminDashboardComponent implements OnInit {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
+ /* // ✅ عرض تفاصيل Gym Owner
   viewGym(gym: PendingGym): void {
-    console.log('👁️ View gym:', gym);
-    // لو عندك صفحة لعرض التفاصيل
-    // this.router.navigate(['/admin/gym-owner-application', gym.id]);
-    alert(`View details for: ${gym.name}\nOwner: ${gym.owner}\nLocation: ${gym.location}`);
-  }
+    console.log('👁️ View gym owner:', gym);
+    
+    // عرض التفاصيل في Alert
+    alert(`📋 Gym Owner Details:
 
-  // ✅ قبول Gym
+Name: ${gym.owner}
+Email: ${gym.email}
+Phone: ${gym.phone}
+City: ${gym.location}
+Commercial Reg: ${gym.commercialRegNumber}
+Applied: ${gym.appliedDate}`);
+    
+    // أو يمكنك التوجيه لصفحة التفاصيل
+    // this.router.navigate(['/admin/gym-owner-details', gym.id]);
+  }*/
+
+  // ✅ قبول Gym Owner
   approveGym(gym: PendingGym): void {
-    if (!confirm(`Are you sure you want to approve ${gym.name}?`)) {
+    if (!confirm(`Are you sure you want to approve ${gym.owner}?`)) {
       return;
     }
 
-    console.log('✅ Approving gym:', gym);
+    console.log('✅ Approving gym owner:', gym);
 
     this.gymOwnersService.approveOwner(Number(gym.id)).subscribe({
       next: (response) => {
         if (response.isSuccess) {
-          alert(`${gym.name} has been approved successfully!`);
+          alert(`✅ ${gym.owner} has been approved successfully!`);
           
-          // إزالة الـ Gym من القائمة
+          // ✅ إزالة الـ Owner من القائمة
           this.pendingGyms = this.pendingGyms.filter(g => g.id !== gym.id);
           
-          // تحديث العدد في الـ Stats
+          // ✅ تحديث العدد في الـ Stats
           this.stats[3].value = this.pendingGyms.length.toString();
           
-          console.log('✅ gym Owner approved successfully');
+          // ✅ تحديث عدد Active Gyms (لأن في gym جديد اتضاف)
+          this.updateActiveGymsCount();
+          
+          console.log('✅ Gym owner approved successfully');
         } else {
-          alert(response.message || 'Failed to approve gym Owner');
+          alert(`❌ ${response.message || 'Failed to approve gym owner'}`);
         }
       },
       error: (error) => {
-        console.error('❌ Error approving gym Owner:', error);
-        alert('Failed to approve gym Owner. Please try again.');
+        console.error('❌ Error approving gym owner:', error);
+        alert(`❌ ${error.message || 'Failed to approve gym owner. Please try again.'}`);
       }
     });
   }
 
-  // ✅ رفض Gym
+  // ✅ رفض Gym Owner
   denyGym(gym: PendingGym): void {
-    if (!confirm(`Are you sure you want to reject ${gym.name}?`)) {
+    if (!confirm(`Are you sure you want to reject ${gym.owner}?`)) {
       return;
     }
 
-    console.log('❌ Rejecting gym Owners:', gym);
+    console.log('❌ Rejecting gym owner:', gym);
 
     this.gymOwnersService.rejectOwner(Number(gym.id)).subscribe({
       next: (response) => {
         if (response.isSuccess) {
-          alert(`${gym.name} has been rejected.`);
+          alert(`✅ ${gym.owner} has been rejected.`);
           
-          // إزالة الـ Gym من القائمة
+          // ✅ إزالة الـ Owner من القائمة
           this.pendingGyms = this.pendingGyms.filter(g => g.id !== gym.id);
           
-          // تحديث العدد في الـ Stats
+          // ✅ تحديث العدد في الـ Stats
           this.stats[3].value = this.pendingGyms.length.toString();
           
-          console.log('✅ gym Owner rejected successfully');
+          console.log('✅ Gym owner rejected successfully');
         } else {
-          alert(response.message || 'Failed to reject gym Owner');
+          alert(`❌ ${response.message || 'Failed to reject gym owner'}`);
         }
       },
       error: (error) => {
-        console.error('❌ Error rejecting gym Owner:', error);
-        alert('Failed to reject gym Owners. Please try again.');
+        console.error('❌ Error rejecting gym owner:', error);
+        alert(`❌ ${error.message || 'Failed to reject gym owner. Please try again.'}`);
       }
     });
   }
 
-  // ✅ إعادة تحميل البيانات
+  // ✅ تحديث عدد Active Gyms بعد الـ Approve
+  updateActiveGymsCount(): void {
+    this.gymOwnersService.getActiveGymsCount().subscribe({
+      next: (count) => {
+        this.stats[1].value = count.toString();
+        console.log('✅ Active gyms count updated:', count);
+      },
+      error: (error) => {
+        console.error('❌ Error updating active gyms count:', error);
+      }
+    });
+  }
+
+  // ✅ إعادة تحميل كل البيانات
   retryLoad(): void {
-    this.loadPendingGyms();
+    this.loadAllDashboardData();
   }
 
   generateReport(): void {
-    console.log('Generate report');
-    // Add report generation logic
+    console.log('📊 Generate report');
+    alert('Report generation feature coming soon!');
   }
 
   logout(): void {
-    console.log('Logout');
-    // Add logout logic
+    console.log('🚪 Logout');
+    if (confirm('Are you sure you want to logout?')) {
+      localStorage.removeItem('fitHubToken');
+      this.router.navigate(['/login']);
+    }
   }
 }

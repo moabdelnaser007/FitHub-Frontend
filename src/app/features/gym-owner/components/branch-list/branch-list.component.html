@@ -1,0 +1,34 @@
+<div class="branches-page">
+  <h1>All Branches</h1>
+  <p>Select a branch to view its subscription plans</p>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading branches...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="loadError && !isLoading" class="error-state">
+    <span class="material-icons">error</span>
+    <p>{{ loadError }}</p>
+  </div>
+
+  <!-- Branch List -->
+  <div *ngIf="!isLoading && !loadError" class="branches-grid">
+    <div 
+      class="branch-card" 
+      *ngFor="let branch of branches" 
+      (click)="goToPlans(branch.id)"
+    >
+      <h3>{{ branch.branchName }}</h3>
+      <p>{{ branch.city }}</p>
+      <span class="view-plans">View Plans →</span>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="branches.length === 0" class="empty-state">
+      <p>No branches found</p>
+    </div>
+  </div>
+</div>

@@ -23,7 +23,7 @@ export class DashboardLayoutComponent {
     { icon: 'dashboard', label: 'Dashboard', route: '/admin/dashboard', active: true },
     { icon: 'store', label: 'Gyms', route: '/admin/manage-gyms' },
     { icon: 'group', label: 'Users', route: '/admin/manage-users' },
-    { icon: 'credit_card', label: 'Plans', route: '/plans' },
+   
     { icon: 'calendar_today', label: 'Bookings', route: '/bookings' },
     { icon: 'assessment', label: 'Reports', route: '/admin/reports' },
     { icon: 'settings', label: 'Settings', route: '/settings' }

@@ -1,3 +1,5 @@
+/* Complete CSS for edit-gym-details.component.css */
+
 :host {
   display: block;
   width: 100%;
@@ -51,6 +53,46 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Error Container */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  text-align: center;
+}
+
+.error-container .material-symbols-outlined {
+  font-size: 64px;
+  color: #EF4444;
+  margin-bottom: 8px;
+}
+
+.error-container p {
+  font-size: 16px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.retry-btn {
+  margin-top: 16px;
+  padding: 10px 24px;
+  background: #2563EB;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.retry-btn:hover {
+  background: #1D4ED8;
 }
 
 /* Page Header */
@@ -150,6 +192,7 @@
   background-position: right 8px center;
   background-size: 20px;
   padding-right: 36px;
+  cursor: pointer;
 }
 
 /* Two Column Layout */
@@ -332,7 +375,7 @@
   margin: 0;
 }
 
-/* Amenities */
+/* Amenities List (Old Style - for tags) */
 .amenities-list {
   display: flex;
   flex-wrap: wrap;
@@ -401,6 +444,66 @@
   background: #1D4ED8;
 }
 
+/* Amenities Grid (New Style - for checkboxes) */
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.amenity-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.amenity-checkbox:hover {
+  border-color: #2563EB;
+  background-color: #EFF6FF;
+}
+
+.amenity-checkbox.selected {
+  border-color: #2563EB;
+  background-color: #EFF6FF;
+}
+
+.amenity-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.amenity-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.amenity-icon .material-symbols-outlined {
+  font-size: 20px;
+  color: #2563EB;
+  transition: color 0.2s;
+}
+
+.amenity-checkbox:not(.selected) .amenity-icon .material-symbols-outlined {
+  color: #9CA3AF;
+}
+
+.amenity-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Operating Hours */
 .hours-layout {
   display: grid;
@@ -426,35 +529,39 @@
   min-width: 120px;
 }
 
+/* Working Days */
 .working-days-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .days-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   gap: 8px;
 }
 
 .day-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 9999px;
+  padding: 10px 12px;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  color: #6B7280;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  background: #E5E7EB;
-  color: #374151;
+  text-align: center;
 }
 
 .day-btn:hover {
-  background: #D1D5DB;
+  border-color: #2563EB;
+  background: #EFF6FF;
 }
 
 .day-btn.active {
+  border-color: #2563EB;
   background: #2563EB;
   color: white;
 }
@@ -532,5 +639,13 @@
 
   .hours-inputs .form-group {
     width: 100%;
+  }
+
+  .days-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .amenities-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }

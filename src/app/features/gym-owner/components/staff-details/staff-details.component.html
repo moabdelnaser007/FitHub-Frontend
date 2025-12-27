@@ -1,0 +1,97 @@
+<div class="staff-details-page">
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading staff details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="loadError && !isLoading" class="error-state">
+    <span class="material-icons">error</span>
+    <p>{{ loadError }}</p>
+    <button class="btn-retry" (click)="goBack()">Back to Staff List</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !loadError && staff">
+    
+    <!-- Page Header -->
+    <div >
+      <div >
+        <h1>Staff Member Details</h1>
+        <p>View the information for {{ staff.fullName }}.</p>
+      </div>
+     
+    </div>
+
+    <!-- Details Card -->
+    <div class="details-card">
+      
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <div class="avatar-wrapper">
+          <div class="avatar">
+            <span class="material-symbols-outlined">person</span>
+          </div>
+        </div>
+        <h2 class="staff-name">{{ staff.fullName }}</h2>
+        <p class="staff-email">{{ staff.email }}</p>
+      </div>
+
+      <!-- Information Grid -->
+      <div class="info-grid">
+        <div class="info-item">
+          <dt class="info-label">Branch</dt>
+          <dd class="info-value">{{ getBranchName() }}</dd>
+        </div>
+
+        <div class="info-item">
+          <dt class="info-label">Role</dt>
+          <dd class="info-value">
+            <span class="role-badge">{{ staff.role || 'Staff' }}</span>
+          </dd>
+        </div>
+
+        <div class="info-item">
+          <dt class="info-label">Phone Number</dt>
+          <dd class="info-value">{{ staff.phone }}</dd>
+        </div>
+
+        <div class="info-item">
+          <dt class="info-label">City</dt>
+          <dd class="info-value">{{ staff.city }}</dd>
+        </div>
+
+        <div class="info-item">
+          <dt class="info-label">User ID</dt>
+          <dd class="info-value">{{ staff.userId }}</dd>
+        </div>
+
+        <div class="info-item full-width">
+          <dt class="info-label">Status</dt>
+          <dd class="info-value">
+            <span class="status-badge" [ngClass]="getStatusClass()">
+              <span class="status-dot"></span>
+              {{ getStatusText() }}
+            </span>
+          </dd>
+        </div>
+      </div>
+
+    </div>
+ <button class="btn-edit" (click)="editStaff()">
+        <span class="material-symbols-outlined">edit</span>
+        <span>Edit Staff Member</span>
+      </button>
+    <!-- Back Button -->
+    <div class="back-button-container">
+      <button class="btn-back" (click)="goBack()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        <span>Back to Staff List</span>
+      </button>
+    </div>
+
+  </div>
+
+</div>

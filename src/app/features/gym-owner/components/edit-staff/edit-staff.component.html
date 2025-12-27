@@ -1,0 +1,157 @@
+<div class="edit-staff-page">
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading staff data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="loadError && !isLoading" class="error-state">
+    <span class="material-icons">error</span>
+    <p>{{ loadError }}</p>
+    <button class="btn-retry" (click)="goBack()">Back to Staff List</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !loadError">
+    
+  
+    <!-- Page Header -->
+    <div >
+      <h1>Edit Staff Member</h1>
+      <p>Update the information for {{ fullName }}.</p>
+      <br>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <form (ngSubmit)="onSubmit()">
+        
+        <!-- Profile Photo Section -->
+        <div class="form-section photo-section">
+          <h3 class="section-title">Profile Photo</h3>
+          <div class="photo-upload">
+            <div class="avatar-preview">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <label class="btn-upload" for="photo-upload">
+              <span>Upload new photo</span>
+              <input type="file" id="photo-upload" class="hidden" accept="image/*" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullName">Full Name <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="fullName"
+                class="form-input"
+                [(ngModel)]="fullName"
+                name="fullName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address <span class="required">*</span></label>
+              <input 
+                type="email" 
+                id="email"
+                class="form-input"
+                [(ngModel)]="email"
+                name="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone Number <span class="required">*</span></label>
+              <input 
+                type="tel" 
+                id="phone"
+                class="form-input"
+                [(ngModel)]="phone"
+                name="phone"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="city">City</label>
+              <input 
+                type="text" 
+                id="city"
+                class="form-input"
+                [(ngModel)]="city"
+                name="city"
+                disabled
+              />
+              <p class="field-hint">City cannot be changed</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role & Status -->
+        <div class="form-section">
+          <div class="form-row">
+            
+
+            <div class="form-group">
+              <label for="status">Status</label>
+              <div class="status-toggle">
+                <label class="toggle-switch">
+                  <input 
+                    type="checkbox" 
+                    [checked]="status === 'ACTIVE'"
+                    (change)="status = status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'"
+                  />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="status-label">{{ status === 'ACTIVE' ? 'Active' : 'Inactive' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Footer -->
+        <div class="form-footer">
+          <button 
+            type="button" 
+            class="btn-cancel" 
+            (click)="onCancel()"
+            [disabled]="isSaving"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="btn-submit"
+            [disabled]="isSaving"
+          >
+            <span *ngIf="!isSaving">Save Changes</span>
+            <span *ngIf="isSaving">Saving...</span>
+          </button>
+  
+        </div>
+   
+
+      </form>
+    </div>
+               <!-- Back Link -->
+    <div class="back-link">
+      <button (click)="goBack()" class="btn-back-link">
+        <span class="material-symbols-outlined">arrow_back</span>
+        <span>Back to Staff List</span>
+      </button>
+    </div>
+
+  </div>
+
+</div>

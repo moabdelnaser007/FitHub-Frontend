@@ -5,7 +5,7 @@
     <div class="content">
       <div class="content-inner">
         <!-- Page Header -->
-        <div class="page-header">
+        <div class="hhh">
           <div class="page-title">
             <h1>Dashboard Overview</h1>
             <p>Welcome back, Admin! Here's a look at the platform's performance.</p>
@@ -20,7 +20,10 @@
           <div class="stat-card" *ngFor="let stat of stats">
             <p class="stat-title">{{ stat.title }}</p>
             <div class="stat-values">
-              <p class="stat-value">{{ stat.value }}</p>
+              <div *ngIf="stat.isLoading" class="stat-loading">
+                <div class="mini-spinner"></div>
+              </div>
+              <p *ngIf="!stat.isLoading" class="stat-value">{{ stat.value }}</p>
               <p class="stat-change" [ngClass]="stat.changeType">{{ stat.change }}</p>
             </div>
           </div>
@@ -35,12 +38,12 @@
           <!-- Loading State -->
           <div *ngIf="isLoading" class="loading-state">
             <div class="spinner"></div>
-            <p>Loading pending gyms...</p>
+            <p>Loading pending gym owners...</p>
           </div>
 
           <!-- Error State -->
           <div *ngIf="loadError && !isLoading" class="error-state">
-            <span class="material-icons">error</span>
+            <span class="material-symbols-outlined">error</span>
             <p>{{ loadError }}</p>
             <button class="btn-retry" (click)="retryLoad()">Retry</button>
           </div>
@@ -50,31 +53,44 @@
             <table class="gyms-table">
               <thead>
                 <tr>
-                  
-                  <th>Owner</th>
+                  <th>Owner Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
                   <th>City</th>
+                  <th>Commercial Reg</th>
+                  <th>Applied Date</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let gym of pendingGyms">
-                  
-                  <td>{{ gym.owner }}</td>
-                  <td>{{ gym.location }}</td>
+                  <td class="owner-name">{{ gym.owner }}</td>
+                  <td class="email-cell">{{ gym.email }}</td>
+                  <td>{{ gym.phone }}</td>
                   <td>
-                    <span class="status-badge">{{ gym.status }}</span>
+                    <span class="location-badge">
+                      <span class="material-symbols-outlined">location_on</span>
+                      {{ gym.location }}
+                    </span>
+                  </td>
+                  <td class="reg-number">{{ gym.commercialRegNumber }}</td>
+                  <td class="date-cell">{{ gym.appliedDate }}</td>
+                  <td>
+                    <span class="status-badge pending">{{ gym.status }}</span>
                   </td>
                   <td>
-                    <div class="action-buttons">
-                      <button (click)="viewGym(gym)" class="btn-icon" title="View Details">
+                   <div class="action-buttons">
+                     <!--  <button (click)="viewGym(gym)" class="btn-icon" title="View Details">
                         <span class="material-symbols-outlined">visibility</span>
-                      </button>
-                      <button (click)="approveGym(gym)" class="btn-approve">
+                      </button>-->
+                      <button (click)="approveGym(gym)" class="btn-approve" title="Approve">
+                        <span class="material-symbols-outlined">check_circle</span>
                         Approve
                       </button>
-                      <button (click)="denyGym(gym)" class="btn-deny">
-                        Deny
+                      <button (click)="denyGym(gym)" class="btn-deny" title="Reject">
+                        <span class="material-symbols-outlined">cancel</span>
+                        Reject
                       </button>
                     </div>
                   </td>
@@ -82,9 +98,10 @@
 
                 <!-- Empty State -->
                 <tr *ngIf="pendingGyms.length === 0">
-                  <td colspan="5" class="empty-state">
-                    <span class="material-icons">check_circle</span>
-                    <p>No pending gym applications</p>
+                  <td colspan="8" class="empty-state">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <p>No pending gym owner applications</p>
+                    <span class="empty-subtitle">All applications have been processed</span>
                   </td>
                 </tr>
               </tbody>

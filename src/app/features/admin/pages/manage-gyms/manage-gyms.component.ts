@@ -1,14 +1,20 @@
-// gym-management.component.ts
+// manage-gyms.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BranchService, Branch } from '../../../../services/admin-branches.service';
 
 interface Gym {
   id: string;
   name: string;
   owner: string;
   location: string;
+  phone: string;
+  address: string;
+  openTime: string;
+  closeTime: string;
+  genderType: string;
   status: 'Active' | 'Inactive';
   isActive: boolean;
   isSelected: boolean;
@@ -22,45 +28,7 @@ interface Gym {
   styleUrls: ['./manage-gyms.component.css']
 })
 export class ManageGymsComponent implements OnInit {
-  gyms: Gym[] = [
-    {
-      id: '1',
-      name: 'Flex Fitness Center',
-      owner: 'John Doe',
-      location: 'New York',
-      status: 'Active',
-      isActive: true,
-      isSelected: false
-    },
-    {
-      id: '2',
-      name: 'Iron Paradise',
-      owner: 'Jane Smith',
-      location: 'Los Angeles',
-      status: 'Inactive',
-      isActive: false,
-      isSelected: false
-    },
-    {
-      id: '3',
-      name: 'Powerhouse Gym',
-      owner: 'Mike Johnson',
-      location: 'Chicago',
-      status: 'Inactive',
-      isActive: false,
-      isSelected: false
-    },
-    {
-      id: '4',
-      name: 'Yoga Flow Studio',
-      owner: 'Emily White',
-      location: 'San Francisco',
-      status: 'Active',
-      isActive: true,
-      isSelected: false
-    }
-  ];
-
+  gyms: Gym[] = [];
   filteredGyms: Gym[] = [];
   searchQuery: string = '';
   statusFilter: string = 'all';
@@ -68,33 +36,86 @@ export class ManageGymsComponent implements OnInit {
   
   selectAll: boolean = false;
   
+  // Loading & Error States
+  isLoading: boolean = false;
+  errorMessage: string = '';
+  
   // Pagination
-  currentPage: number = 2;
-  itemsPerPage: number = 4;
-  totalItems: number = 100;
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
   
   // Delete Modal
   showDeleteModal: boolean = false;
   gymToDelete: Gym | null = null;
   isDeleting: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private branchService: BranchService
+  ) {}
 
   ngOnInit(): void {
-    this.filteredGyms = [...this.gyms];
+    this.loadGyms();
+  }
+
+  // Load Gyms from API
+  loadGyms(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.branchService.getAllBranches().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.gyms = response.data.map(branch => this.mapBranchToGym(branch));
+          this.totalItems = this.gyms.length;
+          this.applyFilters();
+          this.isLoading = false;
+        } else {
+          this.errorMessage = response.message || 'Failed to load gyms';
+          this.isLoading = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading gyms:', error);
+        this.errorMessage = 'Failed to connect to server. Please try again.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // Map Branch data to Gym interface
+  private mapBranchToGym(branch: Branch): Gym {
+    return {
+      id: branch.id.toString(),
+      name: branch.branchName,
+      owner: `Owner #${branch.ownerId}`,
+      location: branch.city,
+      phone: branch.phone,
+      address: branch.address,
+      openTime: branch.openTime,
+      closeTime: branch.closeTime,
+      genderType: branch.genderType,
+      status: branch.status === 'ACTIVE' ? 'Active' : 'Inactive',
+      isActive: branch.status === 'ACTIVE',
+      isSelected: false
+    };
   }
 
   onSearch(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
   onStatusFilterChange(status: string): void {
     this.statusFilter = status;
+    this.currentPage = 1;
     this.applyFilters();
   }
 
   onCityFilterChange(city: string): void {
     this.cityFilter = city;
+    this.currentPage = 1;
     this.applyFilters();
   }
 
@@ -122,20 +143,40 @@ export class ManageGymsComponent implements OnInit {
       
       return matchesSearch && matchesStatus && matchesCity;
     });
+
+    this.totalItems = this.filteredGyms.length;
   }
 
   onToggleSelectAll(): void {
-    this.filteredGyms.forEach(gym => gym.isSelected = this.selectAll);
+    this.paginatedGyms.forEach(gym => gym.isSelected = this.selectAll);
   }
 
   onToggleGymSelect(gym: Gym): void {
-    this.selectAll = this.filteredGyms.every(g => g.isSelected);
+    this.selectAll = this.paginatedGyms.every(g => g.isSelected);
   }
 
   onToggleStatus(gym: Gym): void {
-    gym.isActive = !gym.isActive;
-    gym.status = gym.isActive ? 'Active' : 'Inactive';
-    console.log('Gym status toggled:', gym);
+    const branchId = parseInt(gym.id);
+    const apiCall = gym.isActive 
+      ? this.branchService.suspendBranch(branchId)
+      : this.branchService.resumeBranch(branchId);
+
+    apiCall.subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          gym.isActive = !gym.isActive;
+          gym.status = gym.isActive ? 'Active' : 'Inactive';
+          console.log(`Branch ${gym.name} status updated successfully`);
+        } else {
+          console.error('Failed to update status:', response.message);
+          alert(`Failed to update status: ${response.message}`);
+        }
+      },
+      error: (error) => {
+        console.error('Error updating status:', error);
+        alert('Failed to update status. Please try again.');
+      }
+    });
   }
 
   onViewGym(gym: Gym): void {
@@ -157,17 +198,29 @@ export class ManageGymsComponent implements OnInit {
     if (!this.gymToDelete) return;
     
     this.isDeleting = true;
-    console.log('Deleting gym:', this.gymToDelete);
+    const branchId = parseInt(this.gymToDelete.id);
     
-    setTimeout(() => {
-      if (this.gymToDelete) {
-        this.gyms = this.gyms.filter(g => g.id !== this.gymToDelete!.id);
-        this.applyFilters();
+    // استخدام Suspend بدلاً من Delete (لأن مفيش Delete API)
+    this.branchService.suspendBranch(branchId).subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          // إزالة من القائمة المحلية
+          this.gyms = this.gyms.filter(g => g.id !== this.gymToDelete!.id);
+          this.applyFilters();
+          console.log('Branch suspended successfully');
+        } else {
+          alert(`Failed to suspend branch: ${response.message}`);
+        }
+        this.isDeleting = false;
+        this.closeDeleteModal();
+      },
+      error: (error) => {
+        console.error('Error suspending branch:', error);
+        alert('Failed to suspend branch. Please try again.');
+        this.isDeleting = false;
+        this.closeDeleteModal();
       }
-      
-      this.isDeleting = false;
-      this.closeDeleteModal();
-    }, 1000);
+    });
   }
 
   closeDeleteModal(): void {
@@ -176,8 +229,10 @@ export class ManageGymsComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page;
-    console.log('Page changed to:', page);
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   get totalPages(): number {
@@ -185,6 +240,84 @@ export class ManageGymsComponent implements OnInit {
   }
 
   get pages(): number[] {
-    return Array.from({ length: Math.min(3, this.totalPages) }, (_, i) => i + 1);
+    const maxPages = 5;
+    const half = Math.floor(maxPages / 2);
+    let start = Math.max(1, this.currentPage - half);
+    let end = Math.min(this.totalPages, start + maxPages - 1);
+    
+    if (end - start < maxPages - 1) {
+      start = Math.max(1, end - maxPages + 1);
+    }
+    
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }
+
+  // Get paginated gyms for current page
+  get paginatedGyms(): Gym[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredGyms.slice(startIndex, endIndex);
+  }
+
+  // Math object for template
+  Math = Math;
+
+  // Retry loading gyms
+  retryLoad(): void {
+    this.loadGyms();
+  }
+
+  // Get selected gyms count
+  get selectedCount(): number {
+    return this.gyms.filter(g => g.isSelected).length;
+  }
+
+  // Bulk actions (optional)
+  bulkSuspend(): void {
+    const selectedGyms = this.gyms.filter(g => g.isSelected);
+    if (selectedGyms.length === 0) {
+      alert('Please select at least one gym');
+      return;
+    }
+
+    if (confirm(`Are you sure you want to suspend ${selectedGyms.length} gym(s)?`)) {
+      selectedGyms.forEach(gym => {
+        const branchId = parseInt(gym.id);
+        this.branchService.suspendBranch(branchId).subscribe({
+          next: (response) => {
+            if (response.isSuccess) {
+              gym.isActive = false;
+              gym.status = 'Inactive';
+              gym.isSelected = false;
+            }
+          },
+          error: (error) => console.error('Error suspending gym:', error)
+        });
+      });
+    }
+  }
+
+  bulkResume(): void {
+    const selectedGyms = this.gyms.filter(g => g.isSelected);
+    if (selectedGyms.length === 0) {
+      alert('Please select at least one gym');
+      return;
+    }
+
+    if (confirm(`Are you sure you want to resume ${selectedGyms.length} gym(s)?`)) {
+      selectedGyms.forEach(gym => {
+        const branchId = parseInt(gym.id);
+        this.branchService.resumeBranch(branchId).subscribe({
+          next: (response) => {
+            if (response.isSuccess) {
+              gym.isActive = true;
+              gym.status = 'Active';
+              gym.isSelected = false;
+            }
+          },
+          error: (error) => console.error('Error resuming gym:', error)
+        });
+      });
+    }
   }
 }

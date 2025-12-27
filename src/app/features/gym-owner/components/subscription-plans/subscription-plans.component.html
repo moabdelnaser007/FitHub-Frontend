@@ -1,83 +1,116 @@
-<div class="branches-container">
-  <!-- Header -->
-  <div class="page-header">
+<div class="plans-page">
+
+  <!-- Page Header -->
+  <div>
     <div>
-      <h1>Branches & Plans</h1>
-      <p class="subtitle">Manage your gym locations and their subscription offerings.</p>
+      <h1>Branch Plans</h1>
+      <p>View and manage subscription plans for this branch.</p>
+      <br>
     </div>
   </div>
 
-  <!-- Branches List -->
-  <div class="branches-list">
-    <div *ngFor="let branch of branches" class="branch-card">
-      <!-- Branch Header -->
-      <div class="branch-header">
-        <div class="branch-info">
-          <span class="branch-icon">🏪</span>
-          <div>
-            <h2>{{ branch.name }}</h2>
-            <p class="branch-address">{{ branch.address }}</p>
-          </div>
-        </div>
-        <div class="branch-actions">
-          <button class="btn-icon" (click)="onEditBranch(branch)" title="Edit Branch">
-            <span class="icon">✏️</span>
-          </button>
-          <button class="btn-primary-small" (click)="onAddPlan(branch)">
-            <span class="icon">➕</span>
-            <span>New Plan</span>
-          </button>
-        </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading plans...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="loadError && !isLoading" class="error-state">
+    <span class="material-icons">error</span>
+    <p>{{ loadError }}</p>
+    <button class="btn-retry" (click)="goBack()">Back to Branch</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !loadError">
+
+    <!-- Search and Actions -->
+    <div class="toolbar">
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by name or description..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+        />
       </div>
 
-      <!-- Plans Table -->
-      <div class="table-container">
-        <table class="plans-table">
-          <thead>
-            <tr>
-              <th>Plan Name</th>
-              <th>Credits</th>
-              <th>Price</th>
-              <th>Duration</th>
-              <th class="text-center">Status</th>
-              <th class="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let plan of branch.plans">
-              <td class="font-medium">{{ plan.name }}</td>
-              <td>{{ plan.credits }}</td>
-              <td>{{ formatPrice(plan.price) }}</td>
-              <td>{{ plan.duration }}</td>
-              <td class="text-center">
-                <span class="status-badge" [ngClass]="'status-' + plan.status.toLowerCase()">
-                  {{ plan.status }}
-                </span>
-              </td>
-              <td class="text-right">
-                <button class="action-btn" (click)="onEditPlan(branch, plan)" title="Edit Plan">
-                  <span class="icon">✏️</span>
-                </button>
-                <button class="action-btn delete" (click)="onDeletePlan(branch, plan)" title="Delete Plan">
-                  <span class="icon">🗑️</span>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="branch.plans.length === 0">
-              <td colspan="6" class="empty-state">
-                No plans available. Click "New Plan" to add one.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <button class="btn-add" (click)="addNewPlan()">
+        <span class="material-symbols-outlined">add</span>
+        <span>Add New Plan</span>
+      </button>
+    </div>
+
+    <!-- Plans Table -->
+    <div class="table-container">
+      <table class="plans-table">
+        <thead>
+          <tr>
+            <th>Plan Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Credits</th>
+            <th>Visits</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let plan of filteredPlans">
+            <td>{{ plan.name }}</td>
+            <td>{{ plan.description || 'N/A' }}</td>
+            <td>${{ plan.price.toFixed(2) }}</td>
+            <td>{{ plan.creditsCost }}</td>
+            <td>{{ plan.visitsLimit }}</td>
+            <td>{{ getDurationText(plan.durationDays) }}</td>
+
+            <td>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  [checked]="plan.status === 'ACTIVE'"
+                  (change)="toggleStatus(plan)"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+
+              <span class="status-text" [ngClass]="getStatusClass(plan.status)">
+                {{ getStatusText(plan.status) }}
+              </span>
+            </td>
+
+            <td>
+              <button class="action-btn edit-btn" (click)="editPlan(plan)">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+              <button class="action-btn delete-btn" (click)="deletePlan(plan)">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredPlans.length === 0">
+            <td colspan="8" class="empty-state">
+              No plans found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Back Button -->
+    <div class="back-button-container">
+      <button class="btn-back" (click)="goBack()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back to Branch Details
+      </button>
     </div>
   </div>
 
-  <!-- Empty State -->
-  <div *ngIf="branches.length === 0" class="empty-branches">
-    <span class="empty-icon">🏪</span>
-    <h3>No Branches Yet</h3>
-    <p>Add your first branch to start managing subscription plans.</p>
-  </div>
+  <!-- Delete Modal (زي ما هو) -->
 </div>

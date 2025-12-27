@@ -48,6 +48,12 @@ import { EditBranchComponent } from './features/gym-owner/components/edit-branch
 import{ SubscriptionPlansComponent } from './features/gym-owner/components/subscription-plans/subscription-plans.component';
 import { AddSubscriptionPlansComponent } from './features/gym-owner/components/add-subscription-plans/add-subscription-plans.component';
 
+import { ManageStaffComponent } from './features/gym-owner/components/manage-staff/manage-staff.component';
+import { AddStaffComponent } from './features/gym-owner/components/add-staff/add-staff.component';
+import { StaffDetailsComponent } from './features/gym-owner/components/staff-details/staff-details.component';
+import { EditStaffComponent } from './features/gym-owner/components/edit-staff/edit-staff.component';
+
+import { BranchesListComponent } from './features/gym-owner/components/branch-list/branch-list.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -98,8 +104,15 @@ export const routes: Routes = [
   {path: 'add-branch', component: AddBranchComponent},
   {path: 'branch-details/:id', component: BranchDetailsComponent},
   {path: 'edit-branch/:id', component: EditBranchComponent},
-  {path: 'subscription-plans', component: SubscriptionPlansComponent},
-  {path: 'add-subscription-plan', component: AddSubscriptionPlansComponent}
+  {path: 'subscription-plans/:id', component: SubscriptionPlansComponent},
+  {path: 'add-subscription-plan', component: AddSubscriptionPlansComponent},
+  {path: 'manage-staff/:id', component: ManageStaffComponent},
+  {path: 'add-staff/:id', component: AddStaffComponent},
+   {path: 'manage-staff', component: ManageStaffComponent},
+   {path: 'add-staff', component: AddStaffComponent},
+   {path: 'staff-details/:id', component: StaffDetailsComponent},
+   {path: 'edit-staff/:id', component: EditStaffComponent},
+   {path: 'branches-list', component: BranchesListComponent}
   ]},
 
   { path: '**', redirectTo: '' },

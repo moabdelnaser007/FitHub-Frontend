@@ -1,161 +1,194 @@
 <div class="gym-management-wrapper">
   <!-- Header -->
-  <div>
-    <div >
+  <div >
+    
       <h1 class="page-title">Gym Management</h1>
       <p class="page-description">Oversee, moderate, and manage all gym profiles on the platform.</p>
-      <br>
-    </div>
+      
+  
   </div>
 
-  <!-- Filters Section -->
-  <div class="filters-section">
-    <div class="filters-grid">
-      <!-- Search -->
-      <div class="search-wrapper">
-        <div class="search-input-group">
-          <div class="search-icon-wrapper">
-            <span class="material-symbols-outlined">search</span>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading gyms...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <span class="material-symbols-outlined">error</span>
+    <p>{{ errorMessage }}</p>
+    <button class="retry-btn" (click)="retryLoad()">Retry</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !errorMessage">
+    <!-- Bulk Actions Bar (when items are selected) -->
+    <div *ngIf="selectedCount > 0" class="bulk-actions-bar">
+      <span class="selected-count">{{ selectedCount }} selected</span>
+      <div class="bulk-buttons">
+        <button class="bulk-btn bulk-suspend" (click)="bulkSuspend()">
+          <span class="material-symbols-outlined">block</span>
+          Suspend Selected
+        </button>
+        <button class="bulk-btn bulk-resume" (click)="bulkResume()">
+          <span class="material-symbols-outlined">check_circle</span>
+          Resume Selected
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+      <div class="filters-grid">
+        <!-- Search -->
+        <div class="search-wrapper">
+          <div class="search-input-group">
+            <div class="search-icon-wrapper">
+              <span class="material-symbols-outlined">search</span>
+            </div>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search by gym name, owner, or city..."
+              [(ngModel)]="searchQuery"
+              (input)="onSearch()"
+            />
           </div>
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search by gym name, owner, or city..."
-            [(ngModel)]="searchQuery"
-            (input)="onSearch()"
-          />
-        </div>
-      </div>
-
-      <!-- Filter Buttons -->
-      <div class="filter-buttons">
-        <!-- Status Filter -->
-        <div class="filter-dropdown">
-          <select 
-            class="filter-select"
-            [(ngModel)]="statusFilter"
-            (change)="applyFilters()"
-          >
-            <option value="all">Status: All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
         </div>
 
-        <!-- City Filter -->
-        <div class="filter-dropdown">
-          <select 
-            class="filter-select"
-            [(ngModel)]="cityFilter"
-            (change)="applyFilters()"
-          >
-            <option value="all">City: All</option>
-            <option *ngFor="let city of uniqueCities" [value]="city.toLowerCase()">{{ city }}</option>
-          </select>
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+          <!-- Status Filter -->
+          <div class="filter-dropdown">
+            <select 
+              class="filter-select"
+              [(ngModel)]="statusFilter"
+              (change)="applyFilters()"
+            >
+              <option value="all">Status: All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+          <!-- City Filter -->
+          <div class="filter-dropdown">
+            <select 
+              class="filter-select"
+              [(ngModel)]="cityFilter"
+              (change)="applyFilters()"
+            >
+              <option value="all">City: All</option>
+              <option *ngFor="let city of uniqueCities" [value]="city.toLowerCase()">{{ city }}</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Table Section -->
-  <div class="table-card">
-    <div class="table-wrapper">
-      <table class="gyms-table">
-        <thead>
-          <tr>
-            <th class="checkbox-col">
-              <input
-                type="checkbox"
-                class="table-checkbox"
-                [(ngModel)]="selectAll"
-                (change)="onToggleSelectAll()"
-              />
-            </th>
-            <th>Gym</th>
-            <th>Owner</th>
-            <th>Location</th>
-            <th>Status</th>
-            <th class="actions-col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let gym of filteredGyms" class="table-row">
-            <td class="checkbox-col">
-              <input
-                type="checkbox"
-                class="table-checkbox"
-                [(ngModel)]="gym.isSelected"
-                (change)="onToggleGymSelect(gym)"
-              />
-            </td>
-            <td class="gym-name">{{ gym.name }}</td>
-            <td>{{ gym.owner }}</td>
-            <td>{{ gym.location }}</td>
-            <td>
-              <label class="status-toggle">
+    <!-- Table Section -->
+    <div class="table-card">
+      <div class="table-wrapper">
+        <table class="gyms-table">
+          <thead>
+            <tr>
+              <th class="checkbox-col">
                 <input
                   type="checkbox"
-                  class="toggle-input"
-                  [checked]="gym.isActive"
-                  (change)="onToggleStatus(gym)"
+                  class="table-checkbox"
+                  [(ngModel)]="selectAll"
+                  (change)="onToggleSelectAll()"
                 />
-                <div class="toggle-slider"></div>
-                <span class="status-label">{{ gym.status }}</span>
-              </label>
-            </td>
-            <td class="actions-col">
-              <div class="action-buttons">
-                <button class="action-btn action-view" (click)="onViewGym(gym)" title="View">
-                  <span class="material-symbols-outlined">visibility</span>
-                </button>
-                <button class="action-btn action-edit" (click)="onEditGym(gym)" title="Edit">
-                  <span class="material-symbols-outlined">edit</span>
-                </button>
-                <button class="action-btn action-delete" (click)="onDeleteGym(gym)" title="Delete">
-                  <span class="material-symbols-outlined">delete</span>
-                </button>
-              </div>
-            </td>
-          </tr>
+              </th>
+              <th>Gym</th>
+              <th>Owner</th>
+              <th>Location</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let gym of paginatedGyms" class="table-row">
+              <td class="checkbox-col">
+                <input
+                  type="checkbox"
+                  class="table-checkbox"
+                  [(ngModel)]="gym.isSelected"
+                  (change)="onToggleGymSelect(gym)"
+                />
+              </td>
+              <td class="gym-name">{{ gym.name }}</td>
+              <td>{{ gym.owner }}</td>
+              <td>{{ gym.location }}</td>
+              <td>{{ gym.phone }}</td>
+              <td>
+                <label class="status-toggle">
+                  <input
+                    type="checkbox"
+                    class="toggle-input"
+                    [checked]="gym.isActive"
+                    (change)="onToggleStatus(gym)"
+                  />
+                  <div class="toggle-slider"></div>
+                  <span class="status-label">{{ gym.status }}</span>
+                </label>
+              </td>
+              <td class="actions-col">
+                <div class="action-buttons">
+                  <button class="action-btn action-view" (click)="onViewGym(gym)" title="View">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </button>
+                  <button class="action-btn action-edit" (click)="onEditGym(gym)" title="Edit">
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button class="action-btn action-delete" (click)="onDeleteGym(gym)" title="Delete">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
 
-          <tr *ngIf="filteredGyms.length === 0">
-            <td colspan="6" class="empty-state">
-              <p>No gyms found</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+            <tr *ngIf="filteredGyms.length === 0">
+              <td colspan="7" class="empty-state">
+                <p>No gyms found</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Pagination -->
-    <div class="pagination-wrapper">
-      <span class="pagination-info">
-        Showing <span class="font-bold">1-{{ itemsPerPage }}</span> of 
-        <span class="font-bold">{{ totalItems }}</span>
-      </span>
-      <div class="pagination-controls">
-        <button 
-          class="pagination-btn pagination-prev"
-          (click)="onPageChange(currentPage - 1)"
-          [disabled]="currentPage === 1"
-        >
-          Previous
-        </button>
-        <button
-          *ngFor="let page of pages"
-          class="pagination-btn"
-          [class.active]="page === currentPage"
-          (click)="onPageChange(page)"
-        >
-          {{ page }}
-        </button>
-        <button
-          class="pagination-btn pagination-next"
-          (click)="onPageChange(currentPage + 1)"
-          [disabled]="currentPage === totalPages"
-        >
-          Next
-        </button>
+      <!-- Pagination -->
+      <div class="pagination-wrapper">
+        <span class="pagination-info">
+          Showing <span class="font-bold">{{ (currentPage - 1) * itemsPerPage + 1 }}-{{ Math.min(currentPage * itemsPerPage, totalItems) }}</span> of 
+          <span class="font-bold">{{ totalItems }}</span>
+        </span>
+        <div class="pagination-controls">
+          <button 
+            class="pagination-btn pagination-prev"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            Previous
+          </button>
+          <button
+            *ngFor="let page of pages"
+            class="pagination-btn"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)"
+          >
+            {{ page }}
+          </button>
+          <button
+            class="pagination-btn pagination-next"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   </div>

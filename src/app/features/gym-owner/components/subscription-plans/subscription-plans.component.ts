@@ -1,200 +1,166 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-
-interface Plan {
-  id: string;
-  name: string;
-  credits: number;
-  price: number;
-  duration: string;
-  status: 'Active' | 'Inactive' | 'Pending';
-}
-
-interface Branch {
-  id: string;
-  name: string;
-  address: string;
-  plans: Plan[];
-}
+import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { PlansService, Plan } from '../../../../services/plans.service';
 
 @Component({
-  selector: 'app-branches-plans',
+  selector: 'app-subscription-plans',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './subscription-plans.component.html',
   styleUrls: ['./subscription-plans.component.css']
 })
 export class SubscriptionPlansComponent implements OnInit {
-  
-  branches: Branch[] = [
-    {
-      id: '1',
-      name: 'MetroFlex Downtown',
-      address: '123 Fitness Ave, Metro City, ST 12345',
-      plans: [
-        {
-          id: '1',
-          name: 'Gold Tier',
-          credits: 15,
-          price: 79.99,
-          duration: 'Monthly',
-          status: 'Active'
-        },
-        {
-          id: '2',
-          name: 'Silver Tier',
-          credits: 8,
-          price: 49.99,
-          duration: 'Monthly',
-          status: 'Active'
-        },
-        {
-          id: '3',
-          name: 'Annual Pass',
-          credits: 200,
-          price: 849.00,
-          duration: 'Yearly',
-          status: 'Inactive'
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: 'MetroFlex Uptown',
-      address: '456 Wellness Blvd, Metro City, ST 12346',
-      plans: [
-        {
-          id: '4',
-          name: 'Premium Plus',
-          credits: 20,
-          price: 99.99,
-          duration: 'Monthly',
-          status: 'Active'
-        },
-        {
-          id: '5',
-          name: 'Basic Plan',
-          credits: 5,
-          price: 29.99,
-          duration: 'Monthly',
-          status: 'Active'
-        }
-      ]
-    }
-  ];
 
-  constructor(private router: Router) {}
+  branchId!: number;
+
+  plans: Plan[] = [];
+  filteredPlans: Plan[] = [];
+
+  searchQuery = '';
+  isLoading = true;
+  loadError: string | null = null;
+
+  // Delete Modal
+  showDeleteModal = false;
+  planToDelete: Plan | null = null;
+  isDeleting = false;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private plansService: PlansService
+  ) {}
 
   ngOnInit(): void {
-    // يمكنك هنا جلب البيانات من الـ API
-    // this.loadBranches();
-  }
+    const branchIdParam = this.route.snapshot.paramMap.get('id');
 
-  loadBranches(): void {
-    // استدعاء الـ API لجلب الفروع والخطط
-    // this.branchService.getBranches().subscribe(data => {
-    //   this.branches = data;
-    // });
-  }
-
-  onEditBranch(branch: Branch): void {
-    console.log('Edit branch:', branch);
-    // الانتقال لصفحة تعديل الفرع
-    this.router.navigate(['/branch-details', branch.id]);
-  }
-
-  onAddPlan(branch: Branch): void {
-    console.log('Add plan to branch:', branch);
-    // فتح modal أو الانتقال لصفحة إضافة خطة جديدة
-    this.router.navigate(['/add-plan', branch.id]);
-  }
-
-  onEditPlan(branch: Branch, plan: Plan): void {
-    console.log('Edit plan:', plan, 'in branch:', branch);
-    // فتح modal أو الانتقال لصفحة تعديل الخطة
-    this.router.navigate(['/edit-plan', branch.id, plan.id]);
-  }
-
-  onDeletePlan(branch: Branch, plan: Plan): void {
-    const confirmDelete = confirm(`Are you sure you want to delete the plan "${plan.name}"?`);
-    
-    if (confirmDelete) {
-      console.log('Delete plan:', plan, 'from branch:', branch);
-      
-      // حذف الخطة من الـ array محلياً
-      const planIndex = branch.plans.findIndex(p => p.id === plan.id);
-      if (planIndex > -1) {
-        branch.plans.splice(planIndex, 1);
-      }
-
-      // هنا ترسل طلب الحذف للـ API
-      // this.planService.deletePlan(branch.id, plan.id).subscribe(
-      //   response => {
-      //     console.log('Plan deleted successfully');
-      //     // يمكنك إعادة تحميل البيانات أو تحديث الـ UI
-      //   },
-      //   error => {
-      //     console.error('Error deleting plan:', error);
-      //     alert('Failed to delete plan. Please try again.');
-      //     // في حالة الخطأ، أعد الخطة للـ array
-      //     branch.plans.splice(planIndex, 0, plan);
-      //   }
-      // );
+    if (!branchIdParam) {
+      this.loadError = 'Branch ID is missing';
+      this.isLoading = false;
+      return;
     }
+
+    this.branchId = +branchIdParam;
+    this.loadBranchPlans(this.branchId);
   }
 
-  formatPrice(price: number): string {
-    return `$${price.toFixed(2)}`;
-  }
+  /* =========================
+     Load Plans By Branch
+  ========================= */
+  loadBranchPlans(branchId: number): void {
+    this.isLoading = true;
+    this.loadError = null;
 
-  // دوال إضافية مفيدة
-
-  getBranchById(branchId: string): Branch | undefined {
-    return this.branches.find(b => b.id === branchId);
-  }
-
-  getPlanById(branchId: string, planId: string): Plan | undefined {
-    const branch = this.getBranchById(branchId);
-    return branch?.plans.find(p => p.id === planId);
-  }
-
-  getActivePlansCount(branch: Branch): number {
-    return branch.plans.filter(p => p.status === 'Active').length;
-  }
-
-  getTotalRevenue(branch: Branch): number {
-    return branch.plans
-      .filter(p => p.status === 'Active')
-      .reduce((total, plan) => total + plan.price, 0);
-  }
-
-  togglePlanStatus(branch: Branch, plan: Plan): void {
-    // تبديل حالة الخطة بين Active و Inactive
-    plan.status = plan.status === 'Active' ? 'Inactive' : 'Active';
-    
-    console.log(`Plan ${plan.name} status changed to ${plan.status}`);
-    
-    // هنا ترسل التحديث للـ API
-    // this.planService.updatePlanStatus(branch.id, plan.id, plan.status).subscribe(
-    //   response => {
-    //     console.log('Plan status updated successfully');
-    //   },
-    //   error => {
-    //     console.error('Error updating plan status:', error);
-    //     // في حالة الخطأ، أرجع الحالة السابقة
-    //     plan.status = plan.status === 'Active' ? 'Inactive' : 'Active';
-    //   }
-    // );
-  }
-
-  sortPlansByPrice(branch: Branch, ascending: boolean = true): void {
-    branch.plans.sort((a, b) => {
-      return ascending ? a.price - b.price : b.price - a.price;
+    this.plansService.getPlansByBranch(branchId).subscribe({
+      next: plans => {
+        this.plans = plans;
+        this.filteredPlans = plans;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.loadError = 'Failed to load plans';
+        this.isLoading = false;
+      }
     });
   }
 
-  filterActivePlans(branch: Branch): Plan[] {
-    return branch.plans.filter(p => p.status === 'Active');
+  getDurationText(days: number): string {
+    if (days >= 365) return `${Math.round(days / 365)} Year(s)`;
+    if (days >= 30) return `${Math.round(days / 30)} Month(s)`;
+    return `${days} Day(s)`;
+  }
+
+  /* =========================
+     Search
+  ========================= */
+  onSearch(): void {
+    const q = this.searchQuery.toLowerCase();
+
+    this.filteredPlans = this.plans.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      (p.description && p.description.toLowerCase().includes(q))
+    );
+  }
+
+  /* =========================
+     Toggle Status (API)
+  ========================= */
+  toggleStatus(plan: Plan): void {
+    if (plan.status === 'ACTIVE') {
+      this.plansService.deactivatePlan(plan.id).subscribe(success => {
+        if (success) plan.status = 'INACTIVE';
+      });
+    } else {
+      this.plansService.activatePlan(plan.id).subscribe(success => {
+        if (success) plan.status = 'ACTIVE';
+      });
+    }
+  }
+
+  /* =========================
+     Navigation
+  ========================= */
+  viewPlan(plan: Plan): void {
+    this.router.navigate(['/gym-owner/plan-details', plan.id]);
+  }
+
+  editPlan(plan: Plan): void {
+    this.router.navigate(['/gym-owner/edit-plan', plan.id]);
+  }
+
+ addNewPlan(): void {
+  this.router.navigate(['/gym-owner/add-subscription-plan'], { 
+    queryParams: { branchId: this.branchId } 
+  });
+}
+
+  goBack(): void {
+    // تم تعديل العودة لقائمة الفروع
+    this.router.navigate(['/gym-owner/branches-list']);
+  }
+
+  /* =========================
+     Delete
+  ========================= */
+  deletePlan(plan: Plan): void {
+    this.planToDelete = plan;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    if (!this.isDeleting) {
+      this.showDeleteModal = false;
+      this.planToDelete = null;
+    }
+  }
+
+  confirmDelete(): void {
+    if (!this.planToDelete) return;
+
+    this.isDeleting = true;
+
+    this.plansService.deletePlan(this.planToDelete.id).subscribe(success => {
+      if (success) {
+        this.plans = this.plans.filter(p => p.id !== this.planToDelete!.id);
+        this.filteredPlans = this.filteredPlans.filter(p => p.id !== this.planToDelete!.id);
+      }
+
+      this.showDeleteModal = false;
+      this.planToDelete = null;
+      this.isDeleting = false;
+    });
+  }
+
+  /* =========================
+     Helpers
+  ========================= */
+  getStatusClass(status: string): string {
+    return status.toLowerCase();
+  }
+
+  getStatusText(status: string): string {
+    return status === 'ACTIVE' ? 'Active' : 'Inactive';
   }
 }

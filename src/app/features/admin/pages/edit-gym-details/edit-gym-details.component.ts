@@ -2,32 +2,31 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BranchService, UpdateBranchRequest, Branch } from '../../../../services/admin-branches.service';
 
-interface GymForm {
-  id: string;
+interface BranchFormData {
   name: string;
-  owner: string;
-  email: string;
   phone: string;
   address: string;
   city: string;
-  country: string;
-  website: string;
-  amenities: string[];
-  staff: StaffMember[];
-  status: 'Active' | 'Inactive';
-  isActive: boolean;
-  document: string;
-  openingTime: string;
-  closingTime: string;
-  workingDays: string[];
+  description: string;
+  visitCreditsCost: number;
 }
 
-interface StaffMember {
-  id: string;
+interface OperatingHours {
+  opening: string;
+  closing: string;
+}
+
+interface WeekDay {
+  label: string;
+  value: string;
+  selected: boolean;
+}
+
+interface Amenity {
   name: string;
-  role: string;
-  avatar: string;
+  selected: boolean;
 }
 
 @Component({
@@ -38,153 +37,313 @@ interface StaffMember {
   styleUrls: ['./edit-gym-details.component.css']
 })
 export class EditGymComponent implements OnInit {
-  gymId: string = '';
+  
+  branchId: number = 0;
   isLoading: boolean = true;
   isSaving: boolean = false;
-  newAmenity: string = '';
+  loadError: string | null = null;
   
-  gym: GymForm = {
-    id: '',
+  branchData: BranchFormData = {
     name: '',
-    owner: '',
-    email: '',
     phone: '',
     address: '',
     city: '',
-    country: '',
-    website: '',
-    amenities: [],
-    staff: [],
-    status: 'Active',
-    isActive: true,
-    document: '',
-    openingTime: '',
-    closingTime: '',
-    workingDays: []
+    description: '',
+    visitCreditsCost: 0
   };
 
-  countries = ['United States', 'Canada', 'United Kingdom'];
-  allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  operatingHours: OperatingHours = {
+    opening: '06:00',
+    closing: '22:00'
+  };
 
-  // Mock data
-  private mockGyms: GymForm[] = [
-    {
-      id: '1',
-      name: 'Flex Fitness Center',
-      owner: 'John Doe',
-      email: 'contact@flexfitness.com',
-      phone: '+1 (212) 555-1234',
-      address: '123 Fitness Ave, Manhattan',
-      city: 'New York',
-      country: 'United States',
-      website: 'https://www.flexfitness.com',
-      amenities: ['Free Weights', 'Swimming Pool', 'Group Classes', 'Yoga Studio', 'Showers & Lockers', 'Parking'],
-      staff: [
-        {
-          id: '1',
-          name: 'Alex Ray',
-          role: 'Head Trainer',
-          avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAkumd0t6byLi8VJPZxeF-wrx-xtmvoFCOW3H8eICD-CvB-lKpqrVOkXqAXjsVYzbTxvmIMhfaHX6ibpPal10Uw7MSVCLV3X5vQW05YXzB5Z9VCk7-rjL9mVmu8xks1xTDqiv6J3dCXJm7E4W7ZxGVc8Qu50y9mpcbgp80dYHtFukNSPLQlS68kylt0mc0A2Nw6bj2Mptx5taMsbYu4zhPynCJNHJ0yWSz91fRiJRv7Ahuacx1b7d4X6LPMPOtlHEJBYc-QlysyLw'
-        },
-        {
-          id: '2',
-          name: 'Sarah Chen',
-          role: 'Yoga Instructor',
-          avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA08J7e2t8FSvjhAAoCDIdN-kUprYwRlM3FQCdyC8o7h86QYqfPEm-I1N25tmrYfS-QvLHdnz_nd13SSz-ELsmIb3gunccp4q9mx_8y78ZeaFDUh2gWTgK108Vj2sWnnkxO8fVWMLrIjwQh940dwKf1rWOWJcSF39CkHXd9LFzIrtBAAvmiyDdHuQoxqjdh2VMhGpikEbTJLXkBbW_UH2n-0ZoMHoUjp9CadiSF64l-YKiiI9DC6NqjhLy7efKtZYid1kLSoca-tA'
-        },
-        {
-          id: '3',
-          name: 'Mike Roberts',
-          role: 'Receptionist',
-          avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_dhFpZEoV1zfSZ1wsZebtlMTlRPi1en1QT20XnZlKaa5mU3tpbyPBxRD8X8Y8IKYfeELRRC42VwueMWATqSdTg6stDv7502Nt06WMD9E2x7SQ9NtBnLOEDXxf4UAD8DmJodF6EYyLd1nEzzRk7bKUhu_F0Th50MTdsnMftrOEI7SjHRIkp7KmAFo-Of1XoBluypwfESt7RbPrNhgKrr7gaB1N69wCqPIPM-bH9qTtlAHUX_x47DKxMxpby2CT1rRNZ71qvfwa1w'
-        }
-      ],
-      status: 'Active',
-      isActive: true,
-      document: 'business_license_2024.pdf',
-      openingTime: '06:00',
-      closingTime: '22:00',
-      workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-    }
+  weekDays: WeekDay[] = [
+    { label: 'Sun', value: 'Sunday', selected: true },
+    { label: 'Mon', value: 'Monday', selected: true },
+    { label: 'Tue', value: 'Tuesday', selected: true },
+    { label: 'Wed', value: 'Wednesday', selected: true },
+    { label: 'Thu', value: 'Thursday', selected: true },
+    { label: 'Fri', value: 'Friday', selected: true },
+    { label: 'Sat', value: 'Saturday', selected: true }
   ];
+
+  amenities: Amenity[] = [
+    { name: 'Wifi', selected: false },
+    { name: 'Parking', selected: false },
+    { name: 'Locker', selected: false },
+    { name: 'Shower', selected: false },
+    { name: 'Sauna', selected: false },
+    { name: 'SwimmingPool', selected: false },
+    { name: 'AirConditioning', selected: false },
+    { name: 'PersonalTrainer', selected: false }
+  ];
+
+  branchStatus: string = 'ACTIVE';
+  genderType: string = 'Mixed';
+  genderTypes: string[] = ['Mixed', 'MaleOnly', 'FemaleOnly'];
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private branchService: BranchService
   ) {}
 
   ngOnInit(): void {
-    this.gymId = this.route.snapshot.params['id'];
-    console.log('Editing gym with ID:', this.gymId);
-    this.loadGymData(this.gymId);
+    const id = this.route.snapshot.params['id'];
+    this.branchId = parseInt(id);
+    console.log('Editing branch with ID:', this.branchId);
+    this.loadGymData();
   }
 
-  loadGymData(id: string): void {
-    this.isLoading = true;
+  // Helper method to normalize gender type values from API
+  normalizeGenderType(apiGenderType: string): string {
+    const mapping: { [key: string]: string } = {
+      'Mixed': 'Mixed',
+      'Male': 'MaleOnly',
+      'Males': 'MaleOnly',
+      'MaleOnly': 'MaleOnly',
+      'Female': 'FemaleOnly',
+      'Females': 'FemaleOnly',
+      'FemaleOnly': 'FemaleOnly'
+    };
     
-    setTimeout(() => {
-      const gymData = this.mockGyms.find(gym => gym.id === id);
-      
-      if (gymData) {
-        this.gym = { ...gymData };
-        console.log('Loaded gym data for editing:', gymData);
-      } else {
-        console.error('Gym not found with ID:', id);
-        alert('Gym not found!');
-        this.router.navigate(['/admin/gym-management']);
+    return mapping[apiGenderType] || 'Mixed';
+  }
+
+  loadGymData(): void {
+    console.log('🔵 Loading branch data for ID:', this.branchId);
+    this.isLoading = true;
+    this.loadError = null;
+    
+    this.branchService.getBranchById(this.branchId).subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          const branch = response.data;
+          console.log('✅ Branch data loaded:', branch);
+          
+          this.branchData = {
+            name: branch.branchName,
+            phone: branch.phone,
+            address: branch.address,
+            city: branch.city,
+            description: branch.description || '',
+            visitCreditsCost: branch.visitCreditsCost || 0
+          };
+
+          this.operatingHours = {
+            opening: this.parseTimeFromAPI(branch.openTime),
+            closing: this.parseTimeFromAPI(branch.closeTime)
+          };
+
+          this.branchStatus = branch.status;
+          this.genderType = this.normalizeGenderType(branch.genderType);
+          
+          console.log('📊 Normalized Gender Type:', this.genderType);
+          
+          if (branch.workingDays) {
+            this.parseWorkingDays(branch.workingDays);
+          }
+
+          if (branch.amenitiesAvailable) {
+            this.parseAmenities(branch.amenitiesAvailable);
+          }
+          
+          this.isLoading = false;
+        } else {
+          console.error('Failed to load gym:', response.message);
+          this.loadError = response.message || 'Failed to load branch data';
+          this.isLoading = false;
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading branch:', error);
+        this.loadError = error.message || 'Failed to load branch data';
+        this.isLoading = false;
       }
+    });
+  }
+
+  parseTimeFromAPI(time: string): string {
+    if (!time) return '00:00';
+    
+    try {
+      const parts = time.split('.');
+      if (parts.length >= 2) {
+        const hour = parseInt(parts[0]);
+        const timePart = parts[1];
+        const [minutes] = timePart.split(':');
+        
+        return `${hour.toString().padStart(2, '0')}:${minutes}`;
+      }
+    } catch (e) {
+      console.error('Error parsing time:', e);
+    }
+    
+    return '00:00';
+  }
+
+  formatTimeForAPI(time: string): string {
+    if (!time) return '0.00:00:00';
+    
+    try {
+      const [hours, minutes] = time.split(':');
+      return `${parseInt(hours)}.${minutes}:00:00`;
+    } catch (e) {
+      console.error('Error formatting time:', e);
+      return '0.00:00:00';
+    }
+  }
+
+  parseWorkingDays(workingDaysStr: string): void {
+    if (!workingDaysStr) return;
+    
+    this.weekDays.forEach(day => day.selected = false);
+    
+    const activeDays = workingDaysStr.split(',').map(d => d.trim());
+    
+    activeDays.forEach(dayName => {
+      const day = this.weekDays.find(d => d.value.toLowerCase() === dayName.toLowerCase());
+      if (day) day.selected = true;
+    });
+  }
+
+  parseAmenities(amenitiesStr: string): void {
+    if (!amenitiesStr) return;
+    
+    const normalizeAmenity = (amenity: string): string => {
+      const normalized = amenity.trim().replace(/\s+/g, '');
+      const mapping: { [key: string]: string } = {
+        'swimmingpool': 'SwimmingPool',
+        'airconditioning': 'AirConditioning',
+        'personaltrainer': 'PersonalTrainer',
+        'lockers': 'Locker',
+        'locker': 'Locker',
+        'showers': 'Shower',
+        'shower': 'Shower',
+        'wifi': 'Wifi',
+        'parking': 'Parking',
+        'sauna': 'Sauna'
+      };
       
-      this.isLoading = false;
-    }, 500);
+      return mapping[normalized.toLowerCase()] || amenity.trim();
+    };
+    
+    const apiAmenities = amenitiesStr.split(',').map(a => normalizeAmenity(a));
+    
+    this.amenities.forEach(amenity => {
+      amenity.selected = apiAmenities.some(api => 
+        api.toLowerCase() === amenity.name.toLowerCase()
+      );
+    });
+  }
+
+  getWorkingDaysString(): string {
+    const activeDays = this.weekDays.filter(day => day.selected);
+    return activeDays.map(day => day.value).join(',');
+  }
+
+  getAmenitiesString(): string {
+    const selectedAmenities = this.amenities.filter(a => a.selected);
+    return selectedAmenities.map(a => a.name).join(',');
+  }
+
+  toggleDay(day: WeekDay): void {
+    day.selected = !day.selected;
+  }
+
+  toggleAmenity(amenity: Amenity): void {
+    amenity.selected = !amenity.selected;
+  }
+
+  get isActive(): boolean {
+    return this.branchStatus === 'ACTIVE';
   }
 
   onToggleStatus(): void {
-    this.gym.isActive = !this.gym.isActive;
-    this.gym.status = this.gym.isActive ? 'Active' : 'Inactive';
+    this.branchStatus = this.branchStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
   }
 
-  isDayActive(day: string): boolean {
-    return this.gym.workingDays.includes(day);
-  }
-
-  onToggleDay(day: string): void {
-    if (this.isDayActive(day)) {
-      this.gym.workingDays = this.gym.workingDays.filter(d => d !== day);
-    } else {
-      this.gym.workingDays.push(day);
-    }
-  }
-
-  onAddAmenity(): void {
-    if (this.newAmenity.trim()) {
-      this.gym.amenities.push(this.newAmenity.trim());
-      this.newAmenity = '';
-    }
-  }
-
-  onRemoveAmenity(amenity: string): void {
-    this.gym.amenities = this.gym.amenities.filter(a => a !== amenity);
-  }
-
-  onReplaceFile(): void {
-    console.log('Replace file clicked');
-    // Open file picker
+  getStatusLabel(status: string): string {
+    return status === 'ACTIVE' ? 'Active' : 'Inactive';
   }
 
   onCancel(): void {
-    if (confirm('Discard changes?')) {
-      this.router.navigate(['/admin/gym-details', this.gymId]);
+    if (confirm('Are you sure you want to discard changes?')) {
+      this.router.navigate(['/admin/gym-management']);
     }
   }
 
   onSave(): void {
+    if (!this.validateForm()) {
+      return;
+    }
+
     this.isSaving = true;
-    console.log('Saving gym:', this.gym);
+
+    const updateData: UpdateBranchRequest = {
+      branchName: this.branchData.name,
+      phone: this.branchData.phone,
+      address: this.branchData.address,
+      city: this.branchData.city,
+      visitCreditsCost: this.branchData.visitCreditsCost || 0,
+      description: this.branchData.description || 'No description provided',
+      openTime: this.formatTimeForAPI(this.operatingHours.opening),
+      closeTime: this.formatTimeForAPI(this.operatingHours.closing),
+      genderType: this.genderType,
+      status: this.branchStatus,
+      workingDays: this.getWorkingDaysString(),
+      amenitiesAvailable: this.getAmenitiesString()
+    };
+
+    console.log('✅ Saving branch data:', updateData);
+    console.log('📤 Full Request JSON:', JSON.stringify(updateData, null, 2));
+    console.log('🔑 Gender Type:', this.genderType);
+    console.log('📅 Working Days:', this.getWorkingDaysString());
+    console.log('🏋️ Amenities:', this.getAmenitiesString());
+
+    this.branchService.updateBranch(this.branchId, updateData).subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          console.log('✅ Branch updated successfully:', response.data);
+          alert('Gym updated successfully!');
+          this.router.navigate(['/admin/gym-management']);
+        } else {
+          console.error('Failed to update gym:', response.message);
+          alert(`Failed to update gym: ${response.message}`);
+        }
+        this.isSaving = false;
+      },
+      error: (error) => {
+        console.error('❌ Error updating branch:', error);
+        console.error('❌ Error details:', error.error);
+        alert('Failed to update branch. Please try again.\n' + (error.error?.message || error.message));
+        this.isSaving = false;
+      }
+    });
+  }
+
+  validateForm(): boolean {
+    if (!this.branchData.name || !this.branchData.phone) {
+      alert('Please fill in Branch Name and Phone');
+      return false;
+    }
     
-    setTimeout(() => {
-      alert('Gym updated successfully!');
-      this.isSaving = false;
-      this.router.navigate(['/admin/gym-details', this.gymId]);
-    }, 1000);
+    if (!this.branchData.address || !this.branchData.city) {
+      alert('Please fill in Address and City');
+      return false;
+    }
+
+    if (!this.genderType) {
+      alert('Please select Gender Type');
+      return false;
+    }
+
+    const selectedDays = this.weekDays.filter(d => d.selected);
+    if (selectedDays.length === 0) {
+      alert('Please select at least one working day');
+      return false;
+    }
+
+    return true;
   }
 }

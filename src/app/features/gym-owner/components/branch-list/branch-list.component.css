@@ -1,0 +1,137 @@
+/* ===== Page Wrapper ===== */
+.branches-page {
+  padding: 24px;
+  background: #f7f8fa;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+}
+
+/* ===== Header ===== */
+.branches-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.branches-page > p {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+/* ===== Loading ===== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== Error ===== */
+.error-state {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 16px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 500px;
+}
+
+/* ===== Grid ===== */
+.branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ===== Branch Card ===== */
+.branch-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+/* Hover Effect */
+.branch-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Accent Line */
+.branch-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(79, 70, 229, 0.12),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.branch-card:hover::before {
+  opacity: 1;
+}
+
+/* Branch Name */
+.branch-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* City */
+.branch-card p {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* View Plans */
+.view-plans {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4f46e5;
+  transition: transform 0.2s;
+}
+
+.branch-card:hover .view-plans {
+  transform: translateX(4px);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  grid-column: 1 / -1;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}

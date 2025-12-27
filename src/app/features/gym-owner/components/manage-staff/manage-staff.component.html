@@ -1,0 +1,170 @@
+<div class="staff-page">
+  
+  <!-- Page Header -->
+  <!-- Page Header -->
+<div >
+  <div>
+    <h1>
+      {{ isViewingBranchStaff ? 'Branch Staff' : 'All Staff Members' }}
+    </h1>
+    <p>
+      {{ isViewingBranchStaff 
+         ? 'View and manage staff members for this branch.' 
+         : 'View and manage all staff members across all branches.' }}
+    </p>
+    <br>
+  </div>
+</div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading staff members...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="loadError && !isLoading" class="error-state">
+    <span class="material-icons">error</span>
+    <p>{{ loadError }}</p>
+    <button class="btn-retry" (click)="goBack()">Back to Branch</button>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && !loadError">
+    
+    <!-- Search and Actions -->
+    <div class="toolbar">
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Search by name, role, email, or phone..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+        />
+      </div>
+      
+      <button class="btn-add" (click)="addNewStaff()">
+        <span class="material-symbols-outlined">add</span>
+        <span>Add New Staff</span>
+      </button>
+    </div>
+
+    <!-- Staff Table -->
+    <div class="table-container">
+      <table class="staff-table">
+        <thead>
+          <tr>
+            <th>Staff Name</th>
+          
+            <th>Email</th>
+            <th>Phone Number</th>
+           
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let staff of filteredStaff">
+            <td>
+              <div class="staff-info">
+                <div class="staff-avatar">
+                  <span class="material-symbols-outlined">person</span>
+                </div>
+                <span class="staff-name">{{ staff.fullName }}</span>
+              </div>
+            </td>
+     
+            <td>{{ staff.email }}</td>
+            <td>{{ staff.phone }}</td>
+            
+            <td>
+              <label class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  [checked]="staff.status === 'ACTIVE'"
+                  (change)="toggleStatus(staff)"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="status-text" [ngClass]="getStatusClass(staff.status)">
+                {{ getStatusText(staff.status) }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  class="action-btn view-btn" 
+                  (click)="viewStaff(staff)"
+                  title="View Details"
+                >
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+                <button 
+                  class="action-btn edit-btn" 
+                  (click)="editStaff(staff)"
+                  title="Edit"
+                >
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button 
+                  class="action-btn delete-btn" 
+                  (click)="deleteStaff(staff)"
+                  title="Delete"
+                >
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="filteredStaff.length === 0">
+            <td colspan="7" class="empty-state">
+              <span class="material-symbols-outlined empty-icon">group_off</span>
+              <p>No staff members found</p>
+              <p class="empty-hint">Try adjusting your search or add new staff members</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Back Button -->
+    <div class="back-button-container">
+      <button class="btn-back" (click)="goBack()">
+        <span class="material-symbols-outlined">arrow_back</span>
+        <span>Back to Branch Details</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-icon-wrapper">
+          <span class="material-symbols-outlined modal-icon-danger">warning</span>
+        </div>
+        <h2>Remove Staff Member</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p>Are you sure you want to remove <strong>{{ staffToDelete?.fullName }}</strong>?</p>
+        <p class="modal-warning">This will remove them from this branch. This action cannot be undone.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-cancel-modal" (click)="closeDeleteModal()" [disabled]="isDeleting">
+          Cancel
+        </button>
+        <button class="btn-delete-modal" (click)="confirmDelete()" [disabled]="isDeleting">
+          <span *ngIf="!isDeleting">Remove Staff</span>
+          <span *ngIf="isDeleting">Removing...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

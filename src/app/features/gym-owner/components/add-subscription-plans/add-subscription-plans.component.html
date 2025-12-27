@@ -1,129 +1,157 @@
-<div class="create-plan-container">
-  <!-- Page Header -->
-  <div class="page-header">
-    <h1>Create New Subscription Plan</h1>
-  </div>
+<div class="app-container">
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <div class="page-header">
+        <h1 class="page-title">Create New Subscription Plan</h1>
+      </div>
 
-  <!-- Form Card -->
-  <div class="form-card">
-    <form [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
-      
-      <!-- Plan Name -->
-      <label class="form-group">
-        <p class="form-label">Plan Name</p>
-        <input 
-          type="text"
-          formControlName="name"
-          class="form-input"
-          placeholder="e.g., Gold Tier Monthly"
-        />
-        <span class="error-message" *ngIf="planForm.get('name')?.invalid && planForm.get('name')?.touched">
-          Plan name is required
-        </span>
-      </label>
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="alert alert-success">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span>{{ successMessage }}</span>
+      </div>
 
-      <!-- Plan Description -->
-      <label class="form-group">
-        <p class="form-label">Plan Description</p>
-        <textarea 
-          formControlName="description"
-          class="form-textarea"
-          placeholder="Briefly describe what this plan offers users."
-        ></textarea>
-      </label>
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ errorMessage }}</span>
+      </div>
 
-      <!-- Credits and Price Grid -->
-      <div class="grid-two-cols">
-        
-        <!-- Credits per Cycle -->
-        <label class="form-group">
-          <div class="label-with-tooltip">
-            <p class="form-label">Credits per Cycle</p>
-            <div class="tooltip-wrapper">
-              <span class="material-symbols-outlined help-icon">help</span>
-              <div class="tooltip">
-                Credits are used for booking classes or open gym access.
-                <div class="tooltip-arrow"></div>
+      <div class="card">
+        <form [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
+          
+          <!-- Plan Name -->
+          <div class="form-group">
+            <label class="form-label">
+              Plan Name <span class="required">*</span>
+            </label>
+            <input 
+              formControlName="name"
+              type="text"
+              class="form-input"
+              [class.error]="isFieldInvalid('name')"
+              placeholder="e.g., Gold Tier Monthly"/>
+            <p *ngIf="isFieldInvalid('name')" class="error-message">{{ getFieldError('name') }}</p>
+          </div>
+
+          <!-- Plan Description -->
+          <div class="form-group">
+            <label class="form-label">
+              Plan Description <span class="required">*</span>
+            </label>
+            <textarea 
+              formControlName="description"
+              class="form-textarea"
+              [class.error]="isFieldInvalid('description')"
+              placeholder="Briefly describe what this plan offers users."
+              rows="6"></textarea>
+            <p *ngIf="isFieldInvalid('description')" class="error-message">{{ getFieldError('description') }}</p>
+          </div>
+
+          <!-- Credits & Price Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">
+                <span>Credits per Cycle <span class="required">*</span></span>
+                <div class="tooltip-wrapper">
+                  <span class="material-symbols-outlined help-icon">help</span>
+                  <div class="tooltip">
+                    Credits are used for booking classes or open gym access.
+                  </div>
+                </div>
+              </label>
+              <input 
+                formControlName="creditsCost"
+                type="number"
+                class="form-input"
+                [class.error]="isFieldInvalid('creditsCost')"
+                placeholder="e.g., 10"
+                min="0"/>
+              <p *ngIf="isFieldInvalid('creditsCost')" class="error-message">{{ getFieldError('creditsCost') }}</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price <span class="required">*</span></label>
+              <input 
+                formControlName="price"
+                type="number"
+                class="form-input"
+                [class.error]="isFieldInvalid('price')"
+                placeholder="e.g., 49.99"
+                step="0.01"
+                min="0"/>
+              <p *ngIf="isFieldInvalid('price')" class="error-message">{{ getFieldError('price') }}</p>
+            </div>
+          </div>
+
+          <!-- Duration & Visits Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Plan Duration <span class="required">*</span></label>
+              <select formControlName="durationDays" class="form-select">
+                <option *ngFor="let option of durationOptions" [value]="option.value">{{ option.label }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span>Visits Limit <span class="required">*</span></span>
+                <div class="tooltip-wrapper">
+                  <span class="material-symbols-outlined help-icon">help</span>
+                  <div class="tooltip">
+                    Maximum number of visits allowed with this plan.
+                  </div>
+                </div>
+              </label>
+              <input 
+                formControlName="visitsLimit"
+                type="number"
+                class="form-input"
+                [class.error]="isFieldInvalid('visitsLimit')"
+                placeholder="e.g., 8"
+                min="0"/>
+              <p *ngIf="isFieldInvalid('visitsLimit')" class="error-message">{{ getFieldError('visitsLimit') }}</p>
+            </div>
+          </div>
+
+          <!-- Active Status Toggle -->
+          <div class="form-group toggle-group">
+            <div class="toggle-label">
+              <span>Set as Active</span>
+              <div class="tooltip-wrapper">
+                <span class="material-symbols-outlined help-icon">help</span>
+                <div class="tooltip">
+                  Active plans are visible to customers. Inactive plans are saved as drafts.
+                </div>
               </div>
             </div>
+            <label class="toggle-switch">
+              <input formControlName="status" type="checkbox"/>
+              <span class="slider"></span>
+            </label>
           </div>
-          <input 
-            type="number"
-            formControlName="credits"
-            class="form-input"
-            placeholder="e.g., 10"
-          />
-          <span class="error-message" *ngIf="planForm.get('credits')?.invalid && planForm.get('credits')?.touched">
-            Credits must be a positive number
-          </span>
-        </label>
 
-        <!-- Price -->
-        <label class="form-group">
-          <p class="form-label">Price</p>
-          <input 
-            type="text"
-            formControlName="price"
-            class="form-input"
-            placeholder="e.g., $49.99"
-          />
-          <span class="error-message" *ngIf="planForm.get('price')?.invalid && planForm.get('price')?.touched">
-            Price is required
-          </span>
-        </label>
-      </div>
-
-      <!-- Plan Duration -->
-      <label class="form-group">
-        <p class="form-label">Plan Duration</p>
-        <select formControlName="duration" class="form-select">
-          <option value="30">30 Days (Monthly)</option>
-          <option value="90">90 Days (Quarterly)</option>
-          <option value="365">365 Days (Yearly)</option>
-          <option value="custom">Custom</option>
-        </select>
-      </label>
-
-      <!-- Active Toggle -->
-      <div class="toggle-group">
-        <div class="label-with-tooltip">
-          <p class="form-label">Set as Active</p>
-          <div class="tooltip-wrapper">
-            <span class="material-symbols-outlined help-icon">help</span>
-            <div class="tooltip">
-              Active plans are visible to customers. Inactive plans are saved as drafts.
-              <div class="tooltip-arrow"></div>
-            </div>
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button 
+              type="button"
+              (click)="onCancel()"
+              [disabled]="loading"
+              class="btn-secondary">
+              Cancel
+            </button>
+            <button 
+              type="submit"
+              [disabled]="loading || planForm.invalid"
+              class="btn-primary">
+              <span *ngIf="!loading">Create Plan</span>
+              <span *ngIf="loading">Creating...</span>
+            </button>
           </div>
-        </div>
-        <label class="toggle-switch">
-          <input 
-            type="checkbox"
-            formControlName="isActive"
-            class="toggle-input"
-          />
-          <div class="toggle-slider"></div>
-        </label>
+        </form>
       </div>
-
-      <!-- Form Actions -->
-      <div class="form-actions">
-        <button 
-          type="button" 
-          class="btn-secondary"
-          (click)="onCancel()"
-        >
-          Cancel
-        </button>
-        <button 
-          type="submit" 
-          class="btn-primary"
-          [disabled]="planForm.invalid"
-        >
-          Create Plan
-        </button>
-      </div>
-
-    </form>
-  </div>
+    </div>
+  </main>
 </div>

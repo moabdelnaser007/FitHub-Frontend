@@ -1,0 +1,220 @@
+<div class="add-staff-page">
+  
+  <!-- Back Button -->
+  <div class="back-link">
+    <button (click)="onCancel()" class="btn-back-link">
+      <span class="material-symbols-outlined">arrow_back</span>
+      <span>Back to Staff List</span>
+    </button>
+  </div>
+
+  <!-- Page Header -->
+  <div >
+    <h1>Add New Staff Member</h1>
+    <p>Enter the details below to add a new staff member to your team.</p>
+    <br>
+  </div>
+
+  <!-- Form Card -->
+  <div class="form-card">
+    <form (ngSubmit)="onSubmit()">
+      
+      <div class="form-content">
+        
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h3 class="section-title">Personal Information</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullName">Full Name <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="fullName"
+                class="form-input"
+                placeholder="e.g. Jane Doe"
+                [(ngModel)]="fullName"
+                name="fullName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address <span class="required">*</span></label>
+              <input 
+                type="email" 
+                id="email"
+                class="form-input"
+                placeholder="e.g. jane.doe@example.com"
+                [(ngModel)]="email"
+                name="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Phone Number <span class="required">*</span></label>
+              <input 
+                type="tel" 
+                id="phone"
+                class="form-input"
+                placeholder="e.g. (123) 456-7890"
+                [(ngModel)]="phone"
+                name="phone"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="city">City <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="city"
+                class="form-input"
+                placeholder="e.g. Cairo"
+                [(ngModel)]="city"
+                name="city"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Information -->
+        <div class="form-section">
+          <h3 class="section-title">Role Information</h3>
+          
+          <div class="form-row">
+            
+
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select 
+                id="status"
+                class="form-input"
+                [(ngModel)]="status"
+                name="status"
+              >
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+<!-- ✅ Branch Assignment Section - جديد -->
+<div class="form-section">
+  <h3 class="section-title">Branch Assignment</h3>
+  
+  <div class="form-row">
+    <div class="form-group full-width">
+      <label for="branch">Assign to Branch <span class="required">*</span></label>
+      <select 
+        id="branch"
+        class="form-input"
+        [(ngModel)]="selectedBranchId"
+        name="branch"
+        required
+        [disabled]="isLoadingBranches"
+      >
+        <option value="0">
+          {{ isLoadingBranches ? 'Loading branches...' : 'Select a branch' }}
+        </option>
+        <option *ngFor="let branch of branches" [value]="branch.id">
+          {{ branch.name }} - {{ branch.city }}
+        </option>
+      </select>
+      <p class="field-hint" *ngIf="!isLoadingBranches && branches.length === 0">
+        ⚠️ No branches available. Please add a branch first.
+      </p>
+    </div>
+  </div>
+</div>
+        <!-- Account Security -->
+        <div class="form-section">
+          <h3 class="section-title">Account Security</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Password <span class="required">*</span></label>
+              <div class="password-input-wrapper">
+                <input 
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="password"
+                  class="form-input"
+                  placeholder="Minimum 6 characters"
+                  [(ngModel)]="password"
+                  name="password"
+                  required
+                />
+                <button 
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <span class="material-symbols-outlined">
+                    {{ showPassword ? 'visibility_off' : 'visibility' }}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+              <div class="password-input-wrapper">
+                <input 
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  id="confirmPassword"
+                  class="form-input"
+                  placeholder="Re-enter password"
+                  [(ngModel)]="confirmPassword"
+                  name="confirmPassword"
+                  required
+                />
+                <button 
+                  type="button"
+                  class="password-toggle"
+                  (click)="toggleConfirmPasswordVisibility()"
+                >
+                  <span class="material-symbols-outlined">
+                    {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="password-hint">
+            <span class="material-symbols-outlined">info</span>
+            <span>Password must be at least 6 characters long</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Form Footer -->
+      <div class="form-footer">
+        <button 
+          type="button" 
+          class="btn-cancel" 
+          (click)="onCancel()"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="isSubmitting"
+        >
+          <span class="material-symbols-outlined" *ngIf="!isSubmitting">add</span>
+          <span>{{ isSubmitting ? 'Adding...' : 'Add Staff Member' }}</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

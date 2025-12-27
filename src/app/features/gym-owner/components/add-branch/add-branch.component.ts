@@ -2,16 +2,16 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BranchService, CreateBranchRequest } from '../../../../services/branch.service';
 
 interface Amenity {
-  id: number;
   name: string;
+  selected: boolean;
 }
 
-interface Plan {
-  id: number;
-  name: string;
-  price: number;
+interface WeekDay {
+  label: string;
+  value: string;
   selected: boolean;
 }
 
@@ -24,94 +24,138 @@ interface Plan {
 })
 export class AddBranchComponent {
   
-  // Branch Details
+  isSubmitting: boolean = false;
+
+  // Branch Information
   branchName: string = '';
-  branchPhone: string = '';
-  branchEmail: string = '';
-  crn: string = '';
-  branchLicense: string = '';
-  leaseContract: File | null = null;
+  phone: string = '';
+  address: string = '';
+  city: string = '';
+  description: string = '';
+  visitCreditsCost: number = 0;
 
-  // Location Information
-  country: string = 'United States';
-  region: string = 'California';
-  city: string = 'Los Angeles';
-  district: string = '';
-  street: string = '';
-  buildingNo: string = '';
-  postalCode: string = '';
-  fullAddress: string = '';
-
-  // Operating Information
-  openingDate: string = '';
-  openingTime: string = '';
-  closingTime: string = '';
+  // Operating Hours
+  openingTime: string = '06:00';
+  closingTime: string = '22:00';
   
-  workingDays: boolean[] = [false, true, true, true, true, true, false]; // Sun-Sat
-  dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  // Working Days
+  weekDays: WeekDay[] = [
+    { label: 'Sun', value: 'sunday', selected: true },
+    { label: 'Mon', value: 'monday', selected: true },
+    { label: 'Tue', value: 'tuesday', selected: true },
+    { label: 'Wed', value: 'wednesday', selected: true },
+    { label: 'Thu', value: 'thursday', selected: true },
+    { label: 'Fri', value: 'friday', selected: true },
+    { label: 'Sat', value: 'saturday', selected: true }
+  ];
+
+  // Gender Type (must match API enum values exactly)
+  genderType: string = '';
+
+  // Branch Status
+  branchStatus: string = 'ACTIVE';
+
+  getStatusLabel(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'ACTIVE': 'Active',
+      'INACTIVE': 'Inactive'
+    };
+    return statusMap[status] || status;
+  }
 
   // Amenities
   amenities: Amenity[] = [
-    { id: 1, name: 'Swimming Pool' },
-    { id: 2, name: 'Free Weights' },
-    { id: 3, name: 'Cardio Area' }
-  ];
-  newAmenity: string = '';
+    { name: 'Wifi', selected: false },
+    { name: 'Parking', selected: false },
+     { name: 'Locker', selected: false },
+    { name: 'Shower', selected: false },
+   
+    { name: 'Sauna', selected: false },
+    { name: 'SwimmingPool', selected: false },
+   { name: 'AirConditioning', selected: false },
+    { name: 'PersonalTrainer', selected: false }
 
-  // Plans
-  selectedPlanType: string = '';
-  availablePlans: Plan[] = [
-    { id: 1, name: 'Gold Monthly', price: 99, selected: true },
-    { id: 2, name: 'Silver Monthly', price: 69, selected: false },
-    { id: 3, name: 'Basic Monthly', price: 49, selected: true }
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private branchService: BranchService
+  ) {}
 
-  toggleWorkingDay(index: number): void {
-    this.workingDays[index] = !this.workingDays[index];
+  toggleDay(day: WeekDay): void {
+    day.selected = !day.selected;
   }
 
-  addAmenity(): void {
-    if (this.newAmenity.trim()) {
-      const newId = this.amenities.length > 0 
-        ? Math.max(...this.amenities.map(a => a.id)) + 1 
-        : 1;
-      this.amenities.push({
-        id: newId,
-        name: this.newAmenity.trim()
-      });
-      this.newAmenity = '';
+  formatTimeForAPI(time: string): string {
+    if (!time) return '0.00:00:00';
+    
+    try {
+      const [hours, minutes] = time.split(':');
+      return `${parseInt(hours)}.${minutes}:00:00`;
+    } catch (e) {
+      console.error('Error formatting time:', e);
+      return '0.00:00:00';
     }
   }
 
-  removeAmenity(id: number): void {
-    this.amenities = this.amenities.filter(a => a.id !== id);
+  getWorkingDaysString(): string {
+    const activeDays = this.weekDays.filter(day => day.selected);
+    
+    const dayMap: { [key: string]: string } = {
+      'Sun': 'Sunday',
+      'Mon': 'Monday',
+      'Tue': 'Tuesday',
+      'Wed': 'Wednesday',
+      'Thu': 'Thursday',
+      'Fri': 'Friday',
+      'Sat': 'Saturday'
+    };
+    
+    return activeDays.map(day => dayMap[day.label]).join(',');
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.leaseContract = input.files[0];
-      console.log('File selected:', this.leaseContract.name);
-    }
-  }
-
-  togglePlan(plan: Plan): void {
-    plan.selected = !plan.selected;
+  getAmenitiesString(): string {
+    const selectedAmenities = this.amenities.filter(a => a.selected);
+    return selectedAmenities.map(a => a.name).join(',');
   }
 
   validateForm(): boolean {
-    if (!this.branchName || !this.branchPhone || !this.branchEmail || !this.crn) {
-      alert('Please fill in all required fields');
+    if (!this.branchName.trim()) {
+      alert('Please enter branch name');
       return false;
     }
+
+    if (!this.phone.trim()) {
+      alert('Please enter phone number');
+      return false;
+    }
+
+    if (!this.address.trim()) {
+      alert('Please enter address');
+      return false;
+    }
+
+    if (!this.city.trim()) {
+      alert('Please enter city');
+      return false;
+    }
+
+    if (!this.genderType) {
+      alert('Please select gender type');
+      return false;
+    }
+
+    if (!this.openingTime || !this.closingTime) {
+      alert('Please select opening and closing times');
+      return false;
+    }
+
     return true;
   }
 
   onCancel(): void {
     if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-      this.router.navigate(['/gym-owner/branches']);
+      this.router.navigate(['/gym-owner/manage-branches']);
     }
   }
 
@@ -120,41 +164,37 @@ export class AddBranchComponent {
       return;
     }
 
-    const branchData = {
-      branchDetails: {
-        name: this.branchName,
-        phone: this.branchPhone,
-        email: this.branchEmail,
-        crn: this.crn,
-        license: this.branchLicense,
-        leaseContract: this.leaseContract?.name
-      },
-      location: {
-        country: this.country,
-        region: this.region,
-        city: this.city,
-        district: this.district,
-        street: this.street,
-        buildingNo: this.buildingNo,
-        postalCode: this.postalCode,
-        fullAddress: this.fullAddress
-      },
-      operating: {
-        openingDate: this.openingDate,
-        openingTime: this.openingTime,
-        closingTime: this.closingTime,
-        workingDays: this.workingDays
-      },
-      amenities: this.amenities.map(a => a.name),
-      plans: this.availablePlans.filter(p => p.selected).map(p => p.id)
+    this.isSubmitting = true;
+
+    const branchData: CreateBranchRequest = {
+      branchName: this.branchName.trim(),
+      phone: this.phone.trim(),
+      address: this.address.trim(),
+      city: this.city.trim(),
+      visitCreditsCost: this.visitCreditsCost || 0,
+      description: this.description.trim() || 'No description provided',
+      openTime: this.formatTimeForAPI(this.openingTime),
+      closeTime: this.formatTimeForAPI(this.closingTime),
+      genderType: this.genderType,
+      status: this.branchStatus,
+      workingDays: this.getWorkingDaysString(),
+      amenitiesAvailable: this.getAmenitiesString()
     };
 
-    console.log('Submitting branch data:', branchData);
-    
-    // Here you would call your API service
-    // this.branchService.addBranch(branchData).subscribe(...)
-    
-    alert('Branch added successfully!');
-    this.router.navigate(['/gym-owner/branches']);
+    console.log('✅ Submitting branch data:', branchData);
+    console.log('📤 API Request Body:', JSON.stringify(branchData, null, 2));
+
+    this.branchService.createBranch(branchData).subscribe({
+      next: (response) => {
+        console.log('✅ Branch created successfully:', response);
+        alert('Branch added successfully!');
+        this.router.navigate(['/gym-owner/manage-branches']);
+      },
+      error: (error) => {
+        console.error('❌ Error creating branch:', error);
+        alert('Failed to create branch. Please try again.\n' + error.message);
+        this.isSubmitting = false;
+      }
+    });
   }
 }

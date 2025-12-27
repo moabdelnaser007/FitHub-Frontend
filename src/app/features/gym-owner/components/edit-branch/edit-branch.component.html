@@ -1,11 +1,22 @@
 <div class="container">
- 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading branch data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="loadError && !isLoading" class="error-state">
+    <span class="material-icons">error</span>
+    <p>{{ loadError }}</p>
+    <button class="btn-retry" (click)="onCancel()">Back to Branches</button>
+  </div>
 
   <!-- Main Content -->
-  <main class="main-content">
+  <main class="main-content" *ngIf="!isLoading && !loadError">
     <div class="content-wrapper">
       <!-- Header -->
-      <div >
+      <div>
         <h1>Edit Branch Details</h1>
         <p>Update your branch information below.</p>
         <br>
@@ -19,61 +30,30 @@
             <label for="branchName">Branch Name</label>
             <input type="text" id="branchName" [(ngModel)]="branchData.name" class="form-input">
           </div>
+          
           <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
             <input type="text" id="phoneNumber" [(ngModel)]="branchData.phone" class="form-input">
           </div>
+
+          <div class="form-group">
+            <label for="visitCredits">Visit Credits Cost</label>
+            <input type="number" id="visitCredits" [(ngModel)]="branchData.visitCreditsCost" class="form-input" min="0">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="description">Description</label>
+            <textarea id="description" [(ngModel)]="branchData.description" class="form-input" rows="3"></textarea>
+          </div>
+
           <div class="form-group full-width">
             <label for="address">Full Address</label>
             <input type="text" id="address" [(ngModel)]="branchData.address" class="form-input">
           </div>
+
           <div class="form-group">
             <label for="city">City</label>
             <input type="text" id="city" [(ngModel)]="branchData.city" class="form-input">
-          </div>
-          <div class="form-group">
-            <label for="country">Country</label>
-            <select id="country" [(ngModel)]="branchData.country" class="form-input">
-              <option value="Canada">Canada</option>
-              <option value="USA">USA</option>
-              <option value="Mexico">Mexico</option>
-              <option value="Egypt">Egypt</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="website">Website (Optional)</label>
-            <input type="url" id="website" [(ngModel)]="branchData.website" class="form-input">
-          </div>
-          <div class="form-group">
-            <label for="email">Email (Optional)</label>
-            <input type="email" id="email" [(ngModel)]="branchData.email" class="form-input">
-          </div>
-        </div>
-      </div>
-
-      <!-- Business Documents -->
-      <div class="card">
-        <h2 class="card-title">Business Documents</h2>
-        <div class="documents-section">
-          <div class="form-group">
-            <label>CRN / Business License</label>
-            <div class="document-item">
-              <div class="document-info">
-                <span class="doc-icon">📄</span>
-                <span class="doc-name">{{ businessLicense }}</span>
-              </div>
-              <button class="btn-secondary" (click)="onReplaceDocument()">Replace</button>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="supportingDocs">Supporting Documents (Optional)</label>
-            <div class="upload-area" (click)="fileInput.click()">
-              <span class="upload-icon">☁️</span>
-              <p><strong>Click to upload</strong> or drag and drop</p>
-              <p class="upload-hint">PDF, DOCX, PNG, JPG (MAX. 5MB)</p>
-              <input #fileInput type="file" class="hidden" (change)="onFileSelect($event)" accept=".pdf,.docx,.png,.jpg,.jpeg">
-            </div>
           </div>
         </div>
       </div>
@@ -84,21 +64,11 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="openingTime">Opening Time</label>
-            <select id="openingTime" [(ngModel)]="operatingHours.opening" class="form-input">
-              <option value="5:00 AM">5:00 AM</option>
-              <option value="6:00 AM">6:00 AM</option>
-              <option value="7:00 AM">7:00 AM</option>
-              <option value="8:00 AM">8:00 AM</option>
-            </select>
+            <input type="time" id="openingTime" [(ngModel)]="operatingHours.opening" class="form-input">
           </div>
           <div class="form-group">
             <label for="closingTime">Closing Time</label>
-            <select id="closingTime" [(ngModel)]="operatingHours.closing" class="form-input">
-              <option value="9:00 PM">9:00 PM</option>
-              <option value="10:00 PM">10:00 PM</option>
-              <option value="11:00 PM">11:00 PM</option>
-              <option value="12:00 AM">12:00 AM</option>
-            </select>
+            <input type="time" id="closingTime" [(ngModel)]="operatingHours.closing" class="form-input">
           </div>
         </div>
         
@@ -107,12 +77,26 @@
           <div class="days-selector">
             <button 
               *ngFor="let day of weekDays" 
+              type="button"
               [class.selected]="day.selected"
               (click)="toggleDay(day)"
               class="day-btn">
               {{ day.label }}
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- Gender Type -->
+      <div class="card">
+        <h2 class="card-title">Gender Type</h2>
+        <div class="form-group">
+          <label for="genderType">Gender Type <span class="required">*</span></label>
+          <select id="genderType" [(ngModel)]="genderType" class="form-input" required>
+            <option value="Mixed">Mixed</option>
+            <option value="MaleOnly">Males Only</option>
+            <option value="FemaleOnly">Females Only</option>
+          </select>
         </div>
       </div>
 
@@ -134,13 +118,12 @@
           <div class="form-group flex-1">
             <label for="status">Status</label>
             <select id="status" [(ngModel)]="branchStatus" class="form-input">
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="pending">Pending</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
             </select>
           </div>
           <div class="status-badge-wrapper">
-            <div class="status-badge" [ngClass]="'status-' + branchStatus">
+            <div class="status-badge" [ngClass]="'status-' + branchStatus.toLowerCase()">
               <span class="status-dot"></span>
               {{ getStatusLabel(branchStatus) }}
             </div>
@@ -150,8 +133,10 @@
 
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button class="btn-cancel" (click)="onCancel()">Cancel</button>
-        <button class="btn-primary" (click)="onSaveChanges()">Save Changes</button>
+        <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="isSaving">Cancel</button>
+        <button type="button" class="btn-primary" (click)="onSaveChanges()" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </button>
       </div>
     </div>
   </main>

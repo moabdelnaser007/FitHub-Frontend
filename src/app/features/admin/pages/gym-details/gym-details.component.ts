@@ -1,33 +1,27 @@
+// gym-details.component.ts (Admin - Final)
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BranchService, Branch } from '../../../../services/admin-branches.service';
 
 interface GymDetails {
-  id: string;
-  name: string;
-  owner: string;
-  email: string;
+  id: number;
+  ownerId: number;
+  branchName: string;
   phone: string;
   address: string;
   city: string;
-  country: string;
-  website: string;
-  amenities: string[];
-  staff: StaffMember[];
-  status: 'Active' | 'Inactive';
-  isActive: boolean;
-  document: string;
-  openingTime: string;
-  closingTime: string;
+  visitCreditsCost: number;
+  description: string;
+  openTime: string;           // ✅ Not openingTime
+  closeTime: string;          // ✅ Not closingTime
+  genderType: string;
+  status: string;
   workingDays: string[];
-}
-
-interface StaffMember {
-  id: string;
-  name: string;
-  role: string;
-  avatar: string;
+  amenities: string[];
+  createdAt: string;
+  updatedAt: string | null;
 }
 
 @Component({
@@ -40,138 +34,222 @@ interface StaffMember {
 export class GymDetailsComponent implements OnInit {
   gymId: string = '';
   isLoading: boolean = true;
+  errorMessage: string = '';
   
   gym: GymDetails = {
-    id: '',
-    name: '',
-    owner: '',
-    email: '',
+    id: 0,
+    ownerId: 0,
+    branchName: '',
     phone: '',
     address: '',
     city: '',
-    country: '',
-    website: '',
+    visitCreditsCost: 0,
+    description: '',
+    openTime: '',
+    closeTime: '',
+    genderType: '',
+    status: 'ACTIVE',
+    workingDays: [],
     amenities: [],
-    staff: [],
-    status: 'Active',
-    isActive: true,
-    document: '',
-    openingTime: '',
-    closingTime: '',
-    workingDays: []
+    createdAt: '',
+    updatedAt: null
   };
 
-  allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  // Mock data
-  private mockGyms: GymDetails[] = [
-    {
-      id: '1',
-      name: 'Flex Fitness Center',
-      owner: 'John Doe',
-      email: 'owner@flexfitness.com',
-      phone: '+1 234 567 890',
-      address: '123 Muscle Lane, Workout City, NY 10001',
-      city: 'New York',
-      country: 'United States',
-      website: 'https://www.flexfitness.com',
-      amenities: ['Free Weights', 'Swimming Pool', 'Showers', 'Parking', 'Sauna', 'Yoga Studio'],
-      staff: [
-        {
-          id: '1',
-          name: 'Sarah Connor',
-          role: 'Manager',
-          avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDMwzhVFDy00ex6eyeX3YBnn62X17Pcw0vPxHvBT2AT4LUrT9pwmEGrVBMh_PL9D9qkmUmp63DECKJE1YW0IqXYQOjQFIjJVD_yppp7udBrOguBHGvkggPSgeQucdXeBN7vsLWF2X0OM4cNqBTuCKp4OtaANdAQWxLrMa1cefxBb0W7cgemeDo6--hMYf_SxxpBSq8YR9uflb5g0mv5yF0gr3nMOw-L6Q8k3EjSH6yvbBzg4DuzpXhKq6cxQr5iegzB-ZpHgxR1mA'
-        },
-        {
-          id: '2',
-          name: 'Kyle Reese',
-          role: 'Trainer',
-          avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9bGMjKdQCzVCx6GpgXEMRUxM38bMdpIpef2K_cWI5mo2lIK9O5IyhF7x66txSJx1CmcuHbIAAWx4dBYKJwUSE6ynV1ojJ-ABTmH9cJugLzTn1UolVblenmBojnSzjSq0dlbfKuD3zXK-wdwerK5yuwL4-Uj83PIN2mBZUQVsmGo8dR3HAuQAoocX85PEE3eJYF871cfcnKQCzCtJJ3skQNdlrNvVH2fNqHke1ymsLtbR-2uWdqHqXUsLDy9_3wLyBr8BrtByu9g'
-        },
-        {
-          id: '3',
-          name: 'John Matrix',
-          role: 'Reception',
-          avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBykiIEkhNl2ovIMLVioyR-GaIuWEuvBigf8UJoz5dVgIyI0zorAj9rNZA3OrnpQjgUEURFBd31-Ej2Et1AufgDeHgLdgFZoUudB_SfREnOu0Iu2YCPbuIeJFSII_XTLSOeW0hLBRJ-6Rb_7hSeI0zTys1rdiz6siz9XCTcpJaiEAzK1NFUcRRDCXiLV0q-XO5DoSIsgLoZ4PfG8xcY9Q5BhSRLmEJnr_tBBVf2LJde_F911makwhePVMy4zK18VDHyKfseejNakg'
-        }
-      ],
-      status: 'Active',
-      isActive: true,
-      document: 'CRN_License.pdf',
-      openingTime: '06:00 AM',
-      closingTime: '10:00 PM',
-      workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-    },
-    {
-      id: '2',
-      name: 'Iron Paradise',
-      owner: 'Jane Smith',
-      email: 'jane@ironparadise.com',
-      phone: '+1 555 123 456',
-      address: '456 Steel Street, Los Angeles, CA 90001',
-      city: 'Los Angeles',
-      country: 'United States',
-      website: 'https://www.ironparadise.com',
-      amenities: ['Free Weights', 'Cardio Machines', 'Personal Training'],
-      staff: [],
-      status: 'Inactive',
-      isActive: false,
-      document: 'business_license.pdf',
-      openingTime: '05:00 AM',
-      closingTime: '11:00 PM',
-      workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    }
+  allDays = [
+    { name: 'Sun', active: false },
+    { name: 'Mon', active: false },
+    { name: 'Tue', active: false },
+    { name: 'Wed', active: false },
+    { name: 'Thu', active: false },
+    { name: 'Fri', active: false },
+    { name: 'Sat', active: false }
   ];
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private branchService: BranchService
   ) {}
 
   ngOnInit(): void {
     this.gymId = this.route.snapshot.params['id'];
-    console.log('Loading gym with ID:', this.gymId);
+    console.log('🟢 Loading gym with ID:', this.gymId);
     this.loadGymData(this.gymId);
   }
 
   loadGymData(id: string): void {
     this.isLoading = true;
+    this.errorMessage = '';
     
-    setTimeout(() => {
-      const gymData = this.mockGyms.find(gym => gym.id === id);
-      
-      if (gymData) {
-        this.gym = { ...gymData };
-        console.log('Loaded gym data:', gymData);
-      } else {
-        console.error('Gym not found with ID:', id);
-        alert('Gym not found!');
-        this.router.navigate(['/admin/gym-management']);
+    const branchId = parseInt(id);
+
+    this.branchService.getBranchById(branchId).subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.gym = this.mapBranchToGymDetails(response.data);
+          console.log('✅ Loaded gym data:', this.gym);
+          this.isLoading = false;
+        } else {
+          this.errorMessage = response.message || 'Failed to load gym details';
+          this.isLoading = false;
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading gym details:', error);
+        this.errorMessage = 'Failed to connect to server. Please try again.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private mapBranchToGymDetails(branch: Branch): GymDetails {
+    return {
+      id: branch.id,
+      ownerId: branch.ownerId,
+      branchName: branch.branchName,
+      phone: branch.phone,
+      address: branch.address,
+      city: branch.city,
+      visitCreditsCost: branch.visitCreditsCost || 0,
+      description: branch.description || 'No description available',
+      openTime: this.formatTime(branch.openTime),
+      closeTime: this.formatTime(branch.closeTime),
+      genderType: this.formatGenderType(branch.genderType),
+      status: branch.status,
+      workingDays: this.parseWorkingDays(branch.workingDays),
+      amenities: this.parseAmenities(branch.amenitiesAvailable),
+      createdAt: branch.createdAt,
+      updatedAt: branch.updatedAt
+    };
+  }
+
+  private formatTime(time: string): string {
+    if (!time) return 'N/A';
+    
+    try {
+      // Format: "9.00:00:00" -> "09:00 AM"
+      const parts = time.split('.');
+      if (parts.length >= 2) {
+        const hour = parseInt(parts[0]);
+        const timePart = parts[1];
+        const timeComponents = timePart.split(':');
+        const minutes = timeComponents[0] || '00';
+        
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const displayHours = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+        
+        return `${displayHours.toString().padStart(2, '0')}:${minutes.padStart(2, '0')} ${period}`;
       }
       
-      this.isLoading = false;
-    }, 500);
+      // Fallback
+      const timeParts = time.split(':');
+      if (timeParts.length >= 2) {
+        const hour = parseInt(timeParts[0]);
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const displayHours = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+        return `${displayHours.toString().padStart(2, '0')}:${timeParts[1]} ${period}`;
+      }
+    } catch (e) {
+      console.error('❌ Error formatting time:', e, 'Input:', time);
+    }
+    
+    return time;
+  }
+
+  private formatGenderType(genderType: string): string {
+    const genderMap: { [key: string]: string } = {
+      'Mixed': 'Mixed',
+      'MaleOnly': 'Males Only',
+      'FemaleOnly': 'Females Only'
+    };
+    
+    return genderMap[genderType] || genderType;
+  }
+
+  private parseWorkingDays(workingDaysStr: string): string[] {
+    if (!workingDaysStr) return [];
+    
+    // Reset all days
+    this.allDays.forEach(day => day.active = false);
+    
+    const dayMap: { [key: string]: string } = {
+      'sunday': 'Sun',
+      'monday': 'Mon',
+      'tuesday': 'Tue',
+      'wednesday': 'Wed',
+      'thursday': 'Thu',
+      'friday': 'Fri',
+      'saturday': 'Sat'
+    };
+    
+    const activeDays = workingDaysStr.toLowerCase().split(',').map(d => d.trim());
+    const workingDaysArray: string[] = [];
+    
+    activeDays.forEach(dayName => {
+      const shortDay = dayMap[dayName];
+      if (shortDay) {
+        workingDaysArray.push(shortDay);
+        const day = this.allDays.find(d => d.name === shortDay);
+        if (day) day.active = true;
+      }
+    });
+    
+    return workingDaysArray;
+  }
+
+  private parseAmenities(amenitiesStr: string): string[] {
+    if (!amenitiesStr) return [];
+    
+    // Split by comma and format names
+    const amenityNames = amenitiesStr.split(',').map(a => a.trim());
+    
+    // Format amenity names for display (add spaces before capitals)
+    return amenityNames.map(name => {
+      // Convert "SwimmingPool" to "Swimming Pool"
+      // Convert "AirConditioning" to "Air Conditioning"
+      return name.replace(/([A-Z])/g, ' $1').trim();
+    });
   }
 
   onToggleStatus(): void {
-    this.gym.isActive = !this.gym.isActive;
-    this.gym.status = this.gym.isActive ? 'Active' : 'Inactive';
-    console.log('Gym status toggled:', this.gym.status);
+    const branchId = this.gym.id;
+    const isCurrentlyActive = this.gym.status === 'ACTIVE';
+    
+    const apiCall = isCurrentlyActive
+      ? this.branchService.suspendBranch(branchId)
+      : this.branchService.resumeBranch(branchId);
+
+    apiCall.subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          this.gym.status = isCurrentlyActive ? 'INACTIVE' : 'ACTIVE';
+          console.log('✅ Gym status toggled:', this.gym.status);
+          alert(`Branch ${isCurrentlyActive ? 'suspended' : 'activated'} successfully!`);
+        } else {
+          alert(`Failed to update status: ${response.message}`);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error toggling status:', error);
+        alert('Failed to update status. Please try again.');
+      }
+    });
   }
 
   isDayActive(day: string): boolean {
     return this.gym.workingDays.includes(day);
   }
 
-  onDownloadDocument(): void {
-    console.log('Downloading document:', this.gym.document);
-    // Add download logic
+  isActive(): boolean {
+    return this.gym.status === 'ACTIVE';
   }
 
-  onViewStaff(staff: StaffMember): void {
-    console.log('View staff:', staff);
-    // Navigate to staff details or open modal
+  getStatusText(): string {
+    return this.gym.status === 'ACTIVE' ? 'Active' : 'Inactive';
+  }
+
+  getStatusClass(): string {
+    return this.gym.status === 'ACTIVE' ? 'active' : 'inactive';
   }
 
   onBackToGyms(): void {
@@ -179,18 +257,60 @@ export class GymDetailsComponent implements OnInit {
   }
 
   onSuspendGym(): void {
-    if (confirm(`Are you sure you want to suspend ${this.gym.name}?`)) {
-      console.log('Suspending gym:', this.gym.name);
-      this.gym.status = 'Inactive';
-      this.gym.isActive = false;
-      alert('Gym suspended successfully!');
+    if (confirm(`Are you sure you want to suspend ${this.gym.branchName}?`)) {
+      const branchId = this.gym.id;
+      
+      this.branchService.suspendBranch(branchId).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.gym.status = 'INACTIVE';
+            alert('Branch suspended successfully!');
+          } else {
+            alert(`Failed to suspend branch: ${response.message}`);
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error suspending branch:', error);
+          alert('Failed to suspend branch. Please try again.');
+        }
+      });
     }
   }
 
   onApproveGym(): void {
-    console.log('Approving/Activating gym:', this.gym.name);
-    this.gym.status = 'Active';
-    this.gym.isActive = true;
-    alert('Gym approved and activated successfully!');
+    if (confirm(`Are you sure you want to approve and activate ${this.gym.branchName}?`)) {
+      const branchId = this.gym.id;
+      
+      this.branchService.resumeBranch(branchId).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.gym.status = 'ACTIVE';
+            alert('Branch approved and activated successfully!');
+          } else {
+            alert(`Failed to approve branch: ${response.message}`);
+          }
+        },
+        error: (error) => {
+          console.error('❌ Error approving branch:', error);
+          alert('Failed to approve branch. Please try again.');
+        }
+      });
+    }
+  }
+
+  retryLoad(): void {
+    this.loadGymData(this.gymId);
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }
