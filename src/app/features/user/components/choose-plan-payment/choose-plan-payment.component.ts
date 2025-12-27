@@ -117,6 +117,39 @@ export class ChoosePlanPaymentComponent implements OnInit {
     this.selectedPaymentMethod = method;
   }
 
+  calculateTax(): string {
+    const basePrice = this.selectedPlan?.price || 500;
+    const tax = basePrice * 0.15;
+    return tax.toFixed(2);
+  }
+
+  calculateTotal(): string {
+    const basePrice = this.selectedPlan?.price || 500;
+    const total = basePrice + basePrice * 0.15;
+    return total.toFixed(2);
+  }
+
+  confirmAndPay(): void {
+    if (!this.selectedPlan) {
+      console.warn('Please select a plan');
+      return;
+    }
+
+    const paymentData = {
+      amount: parseFloat(this.calculateTotal()),
+      baseAmount: this.selectedPlan.price,
+      tax: parseFloat(this.calculateTax()),
+      credits: this.selectedPlan.credits,
+      planName: this.selectedPlan.name,
+      method: 'Credit Card',
+      txnId: `TXN-${Math.floor(10000 + Math.random() * 90000)}`,
+      date: new Date().toISOString(),
+    };
+
+    // Navigate to payment success
+    this.router.navigate(['/payment-success'], { state: paymentData });
+  }
+
   get totalDue(): number {
     return this.selectedPlan?.price || 0;
   }

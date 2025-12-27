@@ -1,13 +1,7 @@
 <div class="filter-panel">
   <div class="filter-header">
-    <div class="filter-chip">
-      <span class="chip-dot"></span>
-      <span>Filters</span>
-    </div>
-    <p class="filter-subtitle">Refine your search to match the gyms you want.</p>
+    <h2>Filters</h2>
   </div>
-
-  <div class="filter-divider"></div>
 
   <div class="filter-section">
     <label class="filter-label">Location</label>
@@ -18,29 +12,20 @@
 
   <div class="filter-section">
     <label class="filter-label">Rating</label>
-    <div class="rating-options">
+    <div class="stars-input">
       <button
-        *ngFor="let rating of ratings"
+        *ngFor="let star of [1, 2, 3, 4, 5]"
+        class="star-btn"
+        (click)="selectRating(star)"
+        [class.active]="star <= selectedRating"
         type="button"
-        class="rating-btn"
-        [class.selected]="isRatingSelected(rating)"
-        (click)="selectRating(rating)"
-        aria-pressed="{{ isRatingSelected(rating) }}"
-        [attr.title]="rating + ' stars & up'"
+        aria-label="Rate {{ star }} stars"
       >
-        <div class="stars" aria-hidden="true">
-          <svg
-            *ngFor="let i of [1, 2, 3, 4, 5]"
-            class="star-svg"
-            [class.filled]="i <= rating"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M12 .587l3.668 7.431L23.5 9.75l-5.75 5.6L19.5 23 12 19.25 4.5 23l1.75-7.65L.5 9.75l7.832-1.732L12 .587z"
-            />
-          </svg>
-        </div>
-        <span class="rating-label">{{ rating }}+</span>
+        <svg viewBox="0 0 24 24" class="star-svg">
+          <path
+            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+          />
+        </svg>
       </button>
     </div>
   </div>

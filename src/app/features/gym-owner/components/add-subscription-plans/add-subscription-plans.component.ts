@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../../../../environments/environment';
 
 interface CreatePlanDto {
   branchId: number;
@@ -27,7 +28,7 @@ interface ApiResponse {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-subscription-plans.component.html',
-  styleUrls: ['./add-subscription-plans.component.css']
+  styleUrls: ['./add-subscription-plans.component.css'],
 })
 export class AddSubscriptionPlansComponent implements OnInit {
   planForm!: FormGroup;
@@ -36,13 +37,14 @@ export class AddSubscriptionPlansComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  private apiUrl = 'http://localhost:5024/api/owner/Plans';
-  private token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJyb2NrZ3ltQG93bmVyLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik93bmVyIiwiZXhwIjoxNzY2ODY0ODY3LCJpc3MiOiJGaXRIdWIiLCJhdWQiOiJGaXRIdWJVc2VycyJ9.ZhboWQLNWYenZdFK6fBhsh2RtNtfwApbzwbvw2HD2mE';
+  private apiUrl = `${environment.apiBaseUrl}/owner/Plans`;
+  private token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJyb2NrZ3ltQG93bmVyLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik93bmVyIiwiZXhwIjoxNzY2ODY0ODY3LCJpc3MiOiJGaXRIdWIiLCJhdWQiOiJGaXRIdWJVc2VycyJ9.ZhboWQLNWYenZdFK6fBhsh2RtNtfwApbzwbvw2HD2mE';
 
   durationOptions = [
     { value: 30, label: '30 Days (Monthly)' },
     { value: 90, label: '90 Days (Quarterly)' },
-    { value: 365, label: '365 Days (Yearly)' }
+    { value: 365, label: '365 Days (Yearly)' },
   ];
 
   constructor(
@@ -54,7 +56,7 @@ export class AddSubscriptionPlansComponent implements OnInit {
 
   ngOnInit(): void {
     // احصل على branchId من الـ URL
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.branchId = +params['branchId'] || 1;
       console.log('🔵 Branch ID:', this.branchId);
     });
@@ -70,7 +72,7 @@ export class AddSubscriptionPlansComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(0)]],
       durationDays: [30, [Validators.required, Validators.min(1)]],
       visitsLimit: [0, [Validators.required, Validators.min(0)]],
-      status: [true] // true = ACTIVE, false = INACTIVE
+      status: [true], // true = ACTIVE, false = INACTIVE
     });
   }
 
@@ -94,25 +96,26 @@ export class AddSubscriptionPlansComponent implements OnInit {
       creditsCost: +formValue.creditsCost,
       visitsLimit: +formValue.visitsLimit,
       durationDays: +formValue.durationDays,
-      status: formValue.status ? 'ACTIVE' : 'INACTIVE'
+      status: formValue.status ? 'ACTIVE' : 'INACTIVE',
     };
 
     console.log('🟢 Creating plan:', planData);
 
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.token}`,
+      Authorization: `Bearer ${this.token}`,
       'Content-Type': 'application/json',
-      'accept': 'application/json'
+      accept: 'application/json',
     });
 
-    this.http.post<ApiResponse>(`${this.apiUrl}/${this.branchId}/Create`, planData, { headers })
+    this.http
+      .post<ApiResponse>(`${this.apiUrl}/${this.branchId}/Create`, planData, { headers })
       .subscribe({
         next: (response) => {
           this.loading = false;
           if (response.isSuccess) {
             console.log('✅ Plan created successfully:', response);
             this.successMessage = response.message || 'Plan created successfully!';
-            
+
             // ارجع لصفحة الـ Plans بعد 2 ثانية
             setTimeout(() => {
               this.router.navigate(['/gym-owner/subscription-plans', this.branchId]);
@@ -125,7 +128,7 @@ export class AddSubscriptionPlansComponent implements OnInit {
           this.loading = false;
           console.error('🔴 Error creating plan:', error);
           this.errorMessage = error.error?.message || 'Error creating plan. Please try again.';
-        }
+        },
       });
   }
 
@@ -134,7 +137,7 @@ export class AddSubscriptionPlansComponent implements OnInit {
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
     });
@@ -149,7 +152,8 @@ export class AddSubscriptionPlansComponent implements OnInit {
     const field = this.planForm.get(fieldName);
     if (field?.errors) {
       if (field.errors['required']) return 'This field is required';
-      if (field.errors['minlength']) return `Minimum length is ${field.errors['minlength'].requiredLength}`;
+      if (field.errors['minlength'])
+        return `Minimum length is ${field.errors['minlength'].requiredLength}`;
       if (field.errors['min']) return `Minimum value is ${field.errors['min'].min}`;
     }
     return '';

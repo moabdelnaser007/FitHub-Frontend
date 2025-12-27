@@ -4,180 +4,101 @@
 
 .filter-panel {
   background: #fff;
-  border-radius: 18px;
+  border-radius: 16px;
   border: 1px solid #e2e8f0;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  /* Simpler shadow */
 }
 
 .filter-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-bottom: 24px;
 }
 
-.filter-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.04));
-  color: #0f172a;
+.filter-header h2 {
+  font-size: 20px;
   font-weight: 700;
-  border: 1px solid rgba(37, 99, 235, 0.18);
-}
-
-.chip-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb, #60a5fa);
-  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.08);
-}
-
-.filter-subtitle {
+  color: #0f172a;
   margin: 0;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.filter-divider {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    rgba(226, 232, 240, 0),
-    rgba(226, 232, 240, 0.9),
-    rgba(226, 232, 240, 0)
-  );
 }
 
 .filter-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .filter-label {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: #334155;
 }
 
 .filter-select {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
   font-size: 14px;
   color: #0f172a;
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  transition: all 0.2s;
 }
 
 .filter-select:focus {
   outline: none;
   border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.rating-options {
+.stars-input {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-.rating-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1.5px solid #e6e9ef;
-  background: #fff;
-  border-radius: 12px;
+.star-btn {
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease,
-    border-color 0.12s ease;
-  font-size: 15px;
+  transition: transform 0.1s;
 }
 
-.rating-btn:hover {
-  transform: translateY(-1px);
-  border-color: #cbd5e1;
-  background: #f8fbff;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
-}
-
-.rating-btn.selected {
-  border-color: #2563eb;
-  background: linear-gradient(180deg, #f3f8ff, #eef4ff);
-  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.12);
-}
-
-.stars {
-  display: flex;
-  gap: 6px;
-  align-items: center;
+.star-btn:hover {
+  transform: scale(1.1);
 }
 
 .star-svg {
-  width: clamp(12px, 2.2vw, 18px);
-  height: auto;
-  display: block;
-  color: #e6eaf0; /* empty star */
-  flex: 0 0 auto;
-  transition: transform 0.12s ease, color 0.12s ease;
+  width: 28px;
+  height: 28px;
+  fill: #e2e8f0;
+  /* Default empty color */
+  transition: fill 0.2s;
 }
 
-.star-svg path {
-  fill: currentColor;
+.star-btn.active .star-svg {
+  fill: #f59e0b;
+  /* Active filled color */
 }
 
-.star-svg.filled {
-  color: #f59e0b;
-}
-
-.rating-label {
-  color: #0f172a;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.filter-actions {
-  margin-top: 6px;
-}
+/* Specific logic for "Up to X stars" - usually filters are "4 stars & up" */
+/* Re-implementing visually to look like stars row */
 
 .apply-btn {
   width: 100%;
-  padding: 13px 14px;
+  padding: 14px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: #2563eb;
   color: #fff;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+  transition: background 0.2s;
 }
 
 .apply-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.03);
-}
-
-.apply-btn:active {
-  transform: translateY(0);
-}
-
-@media (max-width: 768px) {
-  .filter-panel {
-    padding: 16px;
-  }
+  background: #1d4ed8;
 }

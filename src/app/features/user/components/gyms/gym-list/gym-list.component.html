@@ -1,52 +1,71 @@
 <div class="gym-list-container">
-  <div class="result-count">
-    <p>Showing 25 results</p>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading">
+    <p>Loading gyms...</p>
   </div>
 
-  <div class="gym-grid">
-    <app-gym-card *ngFor="let gym of gyms" [gym]="gym" (rate)="openReview(gym)"></app-gym-card>
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-message">
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadGyms()" class="retry-btn">Try Again</button>
   </div>
 
-  <div class="pagination">
-    <button
-      class="page-btn"
-      [disabled]="currentPage === 1"
-      (click)="goToPage(currentPage - 1)"
-      aria-label="Previous page"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-      </svg>
-    </button>
+  <!-- Gyms Display -->
+  <div *ngIf="!isLoading && gyms.length > 0">
+    <div class="result-count">
+      <p>Showing {{ gyms.length }} results</p>
+    </div>
 
-    <button
-      *ngFor="let page of pages"
-      class="page-btn"
-      [class.active]="page === currentPage"
-      (click)="goToPage(page)"
-    >
-      {{ page }}
-    </button>
+    <div class="gym-grid">
+      <app-gym-card *ngFor="let gym of gyms" [gym]="gym" (rate)="openReview(gym)"></app-gym-card>
+    </div>
 
-    <button class="page-btn" disabled>...</button>
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button
+        class="page-btn"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)"
+        aria-label="Previous page"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+        </svg>
+      </button>
 
-    <button
-      class="page-btn"
-      [class.active]="currentPage === totalPages"
-      (click)="goToPage(totalPages)"
-    >
-      {{ totalPages }}
-    </button>
+      <button
+        *ngFor="let page of pages"
+        class="page-btn"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)"
+      >
+        {{ page }}
+      </button>
 
-    <button
-      class="page-btn"
-      [disabled]="currentPage === totalPages"
-      (click)="goToPage(currentPage + 1)"
-      aria-label="Next page"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-      </svg>
-    </button>
+      <button class="page-btn" disabled>...</button>
+
+      <button
+        class="page-btn"
+        [class.active]="currentPage === totalPages"
+        (click)="goToPage(totalPages)"
+      >
+        {{ totalPages }}
+      </button>
+
+      <button
+        class="page-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(currentPage + 1)"
+        aria-label="Next page"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="!isLoading && gyms.length === 0 && !errorMessage" class="no-results">
+    <p>No gyms found</p>
   </div>
 </div>

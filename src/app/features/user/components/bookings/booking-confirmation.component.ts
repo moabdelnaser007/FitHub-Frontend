@@ -1,11 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { HeaderComponent } from '../../../../shared/components/header/header.component';
 
 @Component({
   selector: 'app-booking-confirmation',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    HeaderComponent, // enable <app-header>
+  ],
   templateUrl: './booking-confirmation.component.html',
   styleUrl: './booking-confirmation.component.css',
 })

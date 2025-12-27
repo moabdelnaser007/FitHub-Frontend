@@ -1,9 +1,6 @@
 <div class="page" id="top">
   <header class="top-nav">
-    <a class="brand" href="#top">
-      <div class="brand-mark">F</div>
-      <span class="brand-name">FitHub</span>
-    </a>
+    <a class="brand" href="#top"> FitHub </a>
     <nav class="nav-links">
       <a
         *ngFor="let link of navLinks"
@@ -114,7 +111,7 @@
 
     <section class="section plans" id="plans">
       <div class="section-header">
-        <h2>Choose the plan that fits you</h2>
+        <h2>Choose the Plan that Fits You</h2>
       </div>
       <div class="plan-grid">
         <article
@@ -125,15 +122,27 @@
           role="button"
           tabindex="0"
         >
-          <p class="muted">{{ plan.name }}</p>
+          <h3 class="plan-name">{{ plan.name }}</h3>
           <div class="price">
             <span class="amount">{{ plan.price }}</span>
             <span class="per">/month</span>
           </div>
-          <p class="credits">{{ plan.credits }} Credits</p>
+
+          <div class="plan-features">
+            <div class="feature-item">
+              <svg class="check-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  fill="currentColor"
+                />
+              </svg>
+              <span class="credits">{{ plan.credits }} Credits</span>
+            </div>
+          </div>
+
           <button
-            class="primary"
-            [ngClass]="{ ghost: !plan.featured }"
+            class="plan-btn"
+            [ngClass]="{ 'btn-outline': !plan.featured, 'btn-primary': plan.featured }"
             (click)="$event.stopPropagation(); goToPlan()"
           >
             Choose {{ plan.name }}
