@@ -8,6 +8,56 @@
   gap: 24px;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 18px;
+  color: #64748b;
+}
+
+.error-message {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 16px;
+  color: #991b1b;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.error-message p {
+  margin: 0;
+  text-align: center;
+}
+
+.retry-btn {
+  padding: 8px 16px;
+  background: #991b1b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #7f1d1d;
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 18px;
+  color: #64748b;
+}
+
 .result-count p {
   font-size: 16px;
   font-weight: 700;
@@ -17,7 +67,7 @@
 
 .gym-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
@@ -70,7 +120,7 @@
 
 @media (max-width: 768px) {
   .gym-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .pagination {
@@ -81,5 +131,11 @@
     min-width: 36px;
     height: 36px;
     padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gym-grid {
+    grid-template-columns: 1fr;
   }
 }

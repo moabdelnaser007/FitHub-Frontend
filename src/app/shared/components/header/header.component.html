@@ -2,30 +2,14 @@
 <header class="profile-header">
   <button class="brand-btn" (click)="goToHome()" aria-label="Go to home">
     <div class="brand">
-      <div class="logo" aria-hidden="true">
-        <!-- small svg logo -->
-        <svg
-          width="36"
-          height="36"
-          viewBox="0 0 48 48"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            d="M24 6C14.06 6 6 14.06 6 24s8.06 18 18 18 18-8.06 18-18S33.94 6 24 6z"
-            fill="#2563EB"
-          />
-        </svg>
-      </div>
-      <h1 class="brand-title">FitHub</h1>
+      <span class="brand-text">FitHub</span>
     </div>
   </button>
 
   <nav class="header-nav">
-    <a href="#" class="nav-link">Find a Class</a>
-    <a href="#" class="nav-link">My Schedule</a>
-    <a href="#" class="nav-link">Pricing</a>
+    <a href="find-gym" class="nav-link">Find a Class</a>
+    <a href="my-schedule" class="nav-link">My Schedule</a>
+    <a href="subscriptions" class="nav-link">Pricing</a>
   </nav>
 
   <div class="header-actions">
@@ -53,10 +37,23 @@
         (click)="toggleProfileMenu()"
         title="Profile Menu"
       >
-        <div
-          class="avatar-small"
-          style="background-image: url('https://via.placeholder.com/160')"
-        ></div>
+        <div class="user-info">
+          <span class="user-name">{{ userName }}</span>
+        </div>
+        <div class="avatar-small">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              fill="#fff"
+            />
+          </svg>
+        </div>
       </button>
 
       <!-- Dropdown Menu -->
@@ -74,6 +71,7 @@
               fill="currentColor"
             />
           </svg>
+          <span style="margin-left: 8px">Profile</span>
         </button>
 
         <div class="dropdown-divider"></div>
@@ -91,7 +89,7 @@
               fill="currentColor"
             />
           </svg>
-          <span>Logout</span>
+          <span style="margin-left: 8px">Logout</span>
         </button>
       </div>
     </div>

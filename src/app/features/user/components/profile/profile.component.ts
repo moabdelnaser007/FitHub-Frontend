@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
-import { UsersService, User } from '../../../../services/users.service';
+import { UsersService, User, UpdateUserRequest } from '../../../../services/users.service';
 
 @Component({
   selector: 'app-profile',
@@ -94,7 +94,15 @@ export class ProfileComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const payload = this.profileForm.getRawValue();
+    const formValue = this.profileForm.getRawValue();
+    const payload: UpdateUserRequest = {
+      fullName: formValue.fullName,
+      email: formValue.email,
+      phone: formValue.phone,
+      city: formValue.city,
+      role: this.currentUser?.role || 'User',
+      status: this.currentUser?.status || 'Active',
+    };
 
     this.usersService.updateMe(payload).subscribe({
       next: (response) => {

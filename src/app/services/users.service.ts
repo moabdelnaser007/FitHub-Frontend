@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { map, catchError } from 'rxjs/operators';
 
 export interface ApiResponse<T> {
@@ -44,19 +45,19 @@ export interface UpdateUserRequest {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsersService {
-  private apiUrl = 'http://localhost:5024/api/AdminUsers';
+  private apiUrl = `${environment.apiBaseUrl}/AdminUsers`;
 
   constructor(private http: HttpClient) {}
 
   // Helper function للـ Headers مع Token
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('fitHubToken');
-    
+
     let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
 
     if (token) {
@@ -67,62 +68,73 @@ export class UsersService {
   }
 
   getAllUsers(): Observable<UserViewModel[]> {
-    return this.http.get<ApiResponse<User[]>>(`${this.apiUrl}/GetAllUsers`, {
-      headers: this.getHeaders()
-    }).pipe(
-      map(response => {
-        if (response.isSuccess) {
-          return response.data.map(user => this.transformToViewModel(user));
-        }
-        throw new Error(response.message);
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<ApiResponse<User[]>>(`${this.apiUrl}/GetAllUsers`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        map((response) => {
+          if (response.isSuccess) {
+            return response.data.map((user) => this.transformToViewModel(user));
+          }
+          throw new Error(response.message);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   // ✅ الـ Method الجديدة للـ Update User
   getUserById(userId: number): Observable<UserViewModel> {
-    return this.http.get<ApiResponse<User>>(`${this.apiUrl}/GetUser/${userId}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      map(response => {
-        if (response.isSuccess) {
-          return this.transformToViewModel(response.data);
-        }
-        throw new Error(response.message);
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<ApiResponse<User>>(`${this.apiUrl}/GetUser/${userId}`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        map((response) => {
+          if (response.isSuccess) {
+            return this.transformToViewModel(response.data);
+          }
+          throw new Error(response.message);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   // ✅ Update User - الـ Method الأساسية
   updateUser(userId: number, userData: UpdateUserRequest): Observable<ApiResponse<User>> {
-    return this.http.put<ApiResponse<User>>(
-      `${this.apiUrl}/${userId}/UpdateUser`, 
-      userData,
-      { headers: this.getHeaders() }
-    ).pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .put<ApiResponse<User>>(`${this.apiUrl}/${userId}/UpdateUser`, userData, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
   }
-getMe(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/users/me`);
-}
+  getMe(): Observable<ApiResponse<User>> {
+    return this.http
+      .get<ApiResponse<User>>(`${environment.apiBaseUrl}/Users/get-me`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
+  }
 
-updateMe(payload: any): Observable<any> {
-  return this.http.put(`${this.apiUrl}/users/me`, payload);
-}
+  updateMe(payload: UpdateUserRequest): Observable<ApiResponse<User>> {
+    return this.http
+      .put<ApiResponse<User>>(`${environment.apiBaseUrl}/Users/update-me`, payload, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
+  }
   deleteUser(userId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${userId}/DeleteUser`, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http
+      .delete(`${this.apiUrl}/${userId}/DeleteUser`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
   }
 
   updateUserStatus(userId: number, status: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/UpdateUserStatus/${userId}`, 
-      { status },
-      { headers: this.getHeaders() }
-    ).pipe(catchError(this.handleError));
+    return this.http
+      .put(`${this.apiUrl}/UpdateUserStatus/${userId}`, { status }, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
   }
 
   private transformToViewModel(user: User): UserViewModel {
@@ -135,13 +147,13 @@ updateMe(payload: any): Observable<any> {
       role: user.role,
       status: user.status as 'Active' | 'Inactive' | 'Suspended',
       isActive: user.status === 'Active',
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
     };
   }
 
   private handleError(error: any): Observable<never> {
     let errorMessage = 'An error occurred';
-    
+
     if (error.status === 401) {
       errorMessage = 'Unauthorized. Please login first.';
     } else if (error.status === 403) {
@@ -155,7 +167,7 @@ updateMe(payload: any): Observable<any> {
     } else if (error.message) {
       errorMessage = `Error: ${error.message}`;
     }
-    
+
     console.error('API Error:', errorMessage, error);
     return throwError(() => new Error(errorMessage));
   }
