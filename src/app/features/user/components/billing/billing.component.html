@@ -6,111 +6,70 @@
     <!-- Left Sidebar - Profile style -->
     <aside class="profile-sidebar" aria-label="Profile navigation">
       <div class="sidebar-inner">
-        <div class="user-profile">
-          <div
-            class="avatar-circle"
-            style="background-image: url('https://via.placeholder.com/200')"
-          ></div>
-          <div class="user-name">Amir</div>
-          <div class="user-email">amir.mustafa.ibrahem@gmail.com</div>
-        </div>
+        <div class="sidebar-top">
+          <div class="profile">
+            <div class="profile-pic">
+              <svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px; color: #fff;">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+            </div>
+            <div class="profile-info">
+              <h1>{{ currentUser?.fullName || 'User' }}</h1>
+              <p>{{ currentUser?.email || 'email@example.com' }}</p>
+            </div>
+          </div>
 
-        <nav class="sidebar-nav">
-          <a
-            routerLink="/profile"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="sidebar-link"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              class="nav-icon"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span>Profile</span>
-          </a>
-          <a
-            routerLink="/billing"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="sidebar-link"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              class="nav-icon"
-            >
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-              <line x1="1" y1="10" x2="23" y2="10" />
-            </svg>
-            <span>Billing</span>
-          </a>
-          <a
-            routerLink="/subscriptions"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="sidebar-link"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              class="nav-icon"
-            >
-              <polygon points="12 2 2 7 12 12 22 7 12 2" />
-              <polyline points="2 17 12 22 22 17" />
-              <polyline points="2 12 12 17 22 12" />
-            </svg>
-            <span>Subscriptions</span>
-          </a>
-          <a
-            routerLink="/booking-history"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="sidebar-link"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              class="nav-icon"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <span>Booking History</span>
-          </a>
-          <button
-            type="button"
-            class="sidebar-link sidebar-logout"
-            (click)="logout()"
-            aria-label="Logout"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              class="nav-icon"
-            >
+
+          <nav>
+            <a routerLink="/profile" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"
+                style="width: 20px; height: 20px;">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>Profile</span>
+            </a>
+            <a routerLink="/billing" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"
+                style="width: 20px; height: 20px;">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                <line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
+              <span>Billing</span>
+            </a>
+            <a routerLink="/subscriptions" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"
+                style="width: 20px; height: 20px;">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+              <span>Subscriptions</span>
+            </a>
+            <a routerLink="/booking-history" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"
+                style="width: 20px; height: 20px;">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span>Booking History</span>
+            </a>
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <button class="logout-btn" (click)="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon"
+              style="width: 20px; height: 20px;">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
             Logout
           </button>
-        </nav>
+        </div>
       </div>
     </aside>
 
@@ -128,12 +87,7 @@
         <div class="transaction-header">
           <h3 class="card-title">Transaction History</h3>
           <div class="transaction-controls">
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Search..."
-              [(ngModel)]="searchQuery"
-            />
+            <input type="text" class="search-input" placeholder="Search..." [(ngModel)]="searchQuery" />
             <button class="btn btn-icon" title="Filter">
               <span class="filter-icon">⚙️</span>
               Filter
@@ -171,32 +125,21 @@
 
         <!-- Pagination -->
         <div class="pagination-container">
-          <span class="pagination-info"
-            >Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+          <span class="pagination-info">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ currentPage === totalPages ? totalItems : currentPage * itemsPerPage }} of
-            {{ totalItems }} results</span
-          >
+            {{ totalItems }} results</span>
           <div class="pagination-controls">
             <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
-              <
-            </button>
-            <span
-              *ngFor="let page of [1, 2, 3]; let i = index"
-              class="page-number"
-              [class.active]="page === currentPage"
-              (click)="goToPage(page)"
-            >
-              {{ page }}
-            </span>
-            <span class="page-number">...</span>
-            <span class="page-number" (click)="goToPage(totalPages)">{{ totalPages }}</span>
-            <button
-              class="pagination-btn"
-              (click)="nextPage()"
-              [disabled]="currentPage === totalPages"
-            >
-              >
-            </button>
+              < </button>
+                <span *ngFor="let page of [1, 2, 3]; let i = index" class="page-number"
+                  [class.active]="page === currentPage" (click)="goToPage(page)">
+                  {{ page }}
+                </span>
+                <span class="page-number">...</span>
+                <span class="page-number" (click)="goToPage(totalPages)">{{ totalPages }}</span>
+                <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+                  >
+                </button>
           </div>
         </div>
       </div>

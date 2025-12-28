@@ -21,8 +21,8 @@ export class GymFilterComponent {
   selectedRating = 0;
 
   locations = [
-    'Cairo (Al Qāhirah)',
-    'Alexandria (Al Iskandariyah)',
+    'Cairo',
+    'Alexandria',
     'Giza',
     'Shubra El-Kheima',
     'Port Said',

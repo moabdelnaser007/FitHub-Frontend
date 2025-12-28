@@ -67,13 +67,14 @@ button {
    it's rendered inside `.find-gym-page`. */
 .find-gym-page .filter-panel {
   position: fixed !important;
-  left: calc(max(16px, (100% - 1400px) / 2 + 32px)) !important;
+  left: 32px !important;
   top: calc(var(--header-height, 96px) + 12px) !important;
-  width: calc(var(--filter-width) - var(--filter-gap)) !important;
+  width: 340px !important;
   z-index: 55 !important;
   max-height: calc(100vh - (var(--header-height, 96px) + 40px)) !important;
   overflow: auto !important;
-  background: #fff; /* ensure visible background */
+  background: #fff;
+  /* ensure visible background */
   border-radius: 14px;
 }
 

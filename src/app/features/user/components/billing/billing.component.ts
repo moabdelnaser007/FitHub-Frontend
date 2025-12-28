@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
+import { UsersService, User } from '../../../../services/users.service';
 
 interface Transaction {
   date: string;
@@ -19,7 +20,7 @@ interface Transaction {
   styleUrls: ['./billing.component.css'],
 })
 export class BillingComponent implements OnInit {
-  currentCredits: number = 12;
+  currentUser: User | null = null;
   searchQuery: string = '';
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -78,8 +79,27 @@ export class BillingComponent implements OnInit {
 
   paginatedTransactions: Transaction[] = [];
 
+  constructor(
+    private usersService: UsersService,
+    private router: Router
+  ) { }
+
   ngOnInit(): void {
     this.updatePaginatedTransactions();
+    this.loadUserProfile();
+  }
+
+  loadUserProfile(): void {
+    this.usersService.getMe().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.currentUser = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+      }
+    });
   }
 
   updatePaginatedTransactions(): void {
@@ -113,7 +133,15 @@ export class BillingComponent implements OnInit {
   }
 
   logout(): void {
-    console.log('Log out clicked');
-    // TODO: Implement logout functionality
+    // Clear authentication data
+    localStorage.removeItem('fitHubToken');
+    localStorage.removeItem('fitHubUser');
+
+    // Navigate to login page
+    this.router.navigate(['/login']);
+  }
+
+  goToRecharge(): void {
+    this.router.navigate(['/gyms']);
   }
 }

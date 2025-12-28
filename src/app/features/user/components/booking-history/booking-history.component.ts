@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
+import { UsersService, User } from '../../../../services/users.service';
 
 type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled' | 'No-Show';
 
@@ -21,12 +22,38 @@ interface BookingItem {
   templateUrl: './booking-history.component.html',
   styleUrls: ['./booking-history.component.css'],
 })
-export class BookingHistoryComponent {
+export class BookingHistoryComponent implements OnInit {
+  currentUser: User | null = null;
+
   searchTerm = '';
   statusFilter: 'all' | BookingStatus = 'all';
   currentPage = 1;
   itemsPerPage = 7;
   readonly math = Math;
+
+  constructor(
+    private usersService: UsersService,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+
+
+  loadUserProfile(): void {
+    this.usersService.getMe().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.currentUser = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+      }
+    });
+  }
 
   // Review modal state
   showReviewModal = false;
@@ -175,7 +202,15 @@ export class BookingHistoryComponent {
   }
 
   logout(): void {
-    console.log('Logout clicked');
-    // TODO: Implement logout functionality
+    // Clear authentication data
+    localStorage.removeItem('fitHubToken');
+    localStorage.removeItem('fitHubUser');
+
+    // Navigate to login page
+    this.router.navigate(['/login']);
+  }
+
+  goToRecharge(): void {
+    this.router.navigate(['/gyms']);
   }
 }
