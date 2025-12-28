@@ -56,19 +56,7 @@
           />
         </div>
 
-        <!-- Role -->
-        <div class="form-group">
-          <label for="role" class="form-label">Role</label>
-          <select
-            id="role"
-            class="form-select"
-            [(ngModel)]="user.role"
-            name="role"
-            required
-          >
-            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
-          </select>
-        </div>
+       
 
         <!-- Account Status -->
         <div class="form-group">

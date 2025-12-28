@@ -228,4 +228,8 @@ export class BranchDetailsComponent implements OnInit {
   onEditBranch(): void {
     this.router.navigate(['/gym-owner/edit-branch', this.branchId]);
   }
+  onAssignNewStaff(): void {
+  console.log('Navigate to assign unassigned staff for branch:', this.branchId);
+  this.router.navigate(['/gym-owner/assign-staff', this.branchId]);
+}
 }

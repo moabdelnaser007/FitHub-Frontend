@@ -1,0 +1,64 @@
+<div class="container">
+ 
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <div class="header-section">
+        <div class="header-text">
+          <h1>Upcoming Bookings</h1>
+          <p>Manage and track all future bookings for your gyms.</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input 
+              type="text" 
+              placeholder="Search by name..." 
+              [(ngModel)]="searchText"
+              (keyup.enter)="onSearch()"
+            />
+          </div>
+          <button class="filter-btn" (click)="onFilter()">
+            <span class="material-symbols-outlined">filter_list</span>
+            Filter
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>USER</th>
+                <th>BRANCH</th>
+                <th>DATE & TIME</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let booking of bookings">
+                <td class="user-name">{{ booking.user }}</td>
+                <td>{{ booking.branch }}</td>
+                <td>{{ booking.dateTime }}</td>
+                <td>
+                  <span [class]="'status-badge ' + getStatusClass(booking.status)">
+                    {{ booking.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="table-footer">
+          <span class="footer-text">Showing 1 to 7 of 112 entries</span>
+          <div class="pagination">
+            <button (click)="onPrevious()">Previous</button>
+            <button (click)="onNext()">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

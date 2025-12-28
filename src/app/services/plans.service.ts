@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 /* =======================
@@ -13,7 +13,6 @@ export interface Plan {
   branchId: number;
   name: string;
   description: string;
-  price: number;
   creditsCost: number;
   visitsLimit: number;
   durationDays: number;
@@ -31,7 +30,6 @@ export interface CreatePlanRequest {
   branchId: number;
   name: string;
   description: string;
-  price: number;
   creditsCost: number;
   visitsLimit: number;
   durationDays: number;
@@ -43,7 +41,6 @@ export interface UpdatePlanRequest {
   branchId: number;
   name: string;
   description: string;
-  price: number;
   creditsCost: number;
   visitsLimit: number;
   durationDays: number;
@@ -62,15 +59,40 @@ export class PlansService {
 
   constructor(private http: HttpClient) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('fitHubToken');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
   /* =======================
      GET Plans By Branch
      GET /ByBranch/{branchId}
   ======================= */
   getPlansByBranch(branchId: number): Observable<Plan[]> {
-    return this.http.get<ApiResponse<Plan[]>>(`${this.apiUrl}/ByBranch/${branchId}`).pipe(
-      map((res) => res.data ?? []),
-      catchError(() => of([]))
-    );
+    console.log('🔵 Fetching plans for branch:', branchId);
+    
+    return this.http
+      .get<ApiResponse<Plan[]>>(`${this.apiUrl}/ByBranch/${branchId}`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Plans API Response:', response)),
+        map((res) => {
+          if (res.isSuccess && res.data) {
+            console.log('✅ Plans loaded:', res.data);
+            return res.data;
+          }
+          console.log('⚠️ No plans found or error');
+          return [];
+        }),
+        catchError((error) => {
+          console.error('❌ Error loading plans:', error);
+          return of([]);
+        })
+      );
   }
 
   /* =======================
@@ -78,10 +100,25 @@ export class PlansService {
      GET /{planId}
   ======================= */
   getPlan(planId: number): Observable<Plan> {
-    return this.http.get<ApiResponse<Plan>>(`${this.apiUrl}/${planId}`).pipe(
-      map((res) => res.data),
-      catchError((err) => throwError(() => err))
-    );
+    console.log('🔵 Fetching plan:', planId);
+    
+    return this.http
+      .get<ApiResponse<Plan>>(`${this.apiUrl}/${planId}`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Plan API Response:', response)),
+        map((res) => {
+          if (res.isSuccess && res.data) {
+            return res.data;
+          }
+          throw new Error(res.message || 'Failed to load plan');
+        }),
+        catchError((error) => {
+          console.error('❌ Error loading plan:', error);
+          return throwError(() => new Error(error.message || 'Error loading plan'));
+        })
+      );
   }
 
   /* =======================
@@ -89,10 +126,25 @@ export class PlansService {
      POST /{branchId}/Create
   ======================= */
   createPlan(branchId: number, planData: CreatePlanRequest): Observable<Plan> {
-    return this.http.post<ApiResponse<Plan>>(`${this.apiUrl}/${branchId}/Create`, planData).pipe(
-      map((res) => res.data),
-      catchError((err) => throwError(() => err))
-    );
+    console.log('🔵 Creating plan for branch:', branchId, planData);
+    
+    return this.http
+      .post<ApiResponse<Plan>>(`${this.apiUrl}/${branchId}/Create`, planData, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Create Plan Response:', response)),
+        map((res) => {
+          if (res.isSuccess && res.data) {
+            return res.data;
+          }
+          throw new Error(res.message || 'Failed to create plan');
+        }),
+        catchError((error) => {
+          console.error('❌ Error creating plan:', error);
+          return throwError(() => new Error(error.message || 'Error creating plan'));
+        })
+      );
   }
 
   /* =======================
@@ -100,10 +152,25 @@ export class PlansService {
      PUT /Update
   ======================= */
   updatePlan(planData: UpdatePlanRequest): Observable<Plan> {
-    return this.http.put<ApiResponse<Plan>>(`${this.apiUrl}/Update`, planData).pipe(
-      map((res) => res.data),
-      catchError((err) => throwError(() => err))
-    );
+    console.log('🔵 Updating plan:', planData);
+    
+    return this.http
+      .put<ApiResponse<Plan>>(`${this.apiUrl}/Update`, planData, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Update Plan Response:', response)),
+        map((res) => {
+          if (res.isSuccess && res.data) {
+            return res.data;
+          }
+          throw new Error(res.message || 'Failed to update plan');
+        }),
+        catchError((error) => {
+          console.error('❌ Error updating plan:', error);
+          return throwError(() => new Error(error.message || 'Error updating plan'));
+        })
+      );
   }
 
   /* =======================
@@ -111,10 +178,25 @@ export class PlansService {
      DELETE /Delete/{planId}
   ======================= */
   deletePlan(planId: number): Observable<boolean> {
-    return this.http.delete<ApiResponse<boolean>>(`${this.apiUrl}/Delete/${planId}`).pipe(
-      map((res) => res.data === true),
-      catchError(() => of(false))
-    );
+    console.log('🔵 Deleting plan:', planId);
+    
+    return this.http
+      .delete<ApiResponse<boolean>>(`${this.apiUrl}/Delete/${planId}`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Delete Plan Response:', response)),
+        map((res) => {
+          if (res.isSuccess) {
+            return true;
+          }
+          return false;
+        }),
+        catchError((error) => {
+          console.error('❌ Error deleting plan:', error);
+          return of(false);
+        })
+      );
   }
 
   /* =======================
@@ -122,10 +204,25 @@ export class PlansService {
      PUT /Activate/{planId}
   ======================= */
   activatePlan(planId: number): Observable<boolean> {
-    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/Activate/${planId}`, {}).pipe(
-      map((res) => res.data === true),
-      catchError(() => of(false))
-    );
+    console.log('🔵 Activating plan:', planId);
+    
+    return this.http
+      .put<ApiResponse<boolean>>(`${this.apiUrl}/Activate/${planId}`, {}, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Activate Plan Response:', response)),
+        map((res) => {
+          if (res.isSuccess) {
+            return true;
+          }
+          return false;
+        }),
+        catchError((error) => {
+          console.error('❌ Error activating plan:', error);
+          return of(false);
+        })
+      );
   }
 
   /* =======================
@@ -133,9 +230,24 @@ export class PlansService {
      PUT /Deactivate/{planId}
   ======================= */
   deactivatePlan(planId: number): Observable<boolean> {
-    return this.http.put<ApiResponse<boolean>>(`${this.apiUrl}/Deactivate/${planId}`, {}).pipe(
-      map((res) => res.data === true),
-      catchError(() => of(false))
-    );
+    console.log('🔵 Deactivating plan:', planId);
+    
+    return this.http
+      .put<ApiResponse<boolean>>(`${this.apiUrl}/Deactivate/${planId}`, {}, {
+        headers: this.getHeaders(),
+      })
+      .pipe(
+        tap((response) => console.log('✅ Deactivate Plan Response:', response)),
+        map((res) => {
+          if (res.isSuccess) {
+            return true;
+          }
+          return false;
+        }),
+        catchError((error) => {
+          console.error('❌ Error deactivating plan:', error);
+          return of(false);
+        })
+      );
   }
 }
