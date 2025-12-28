@@ -45,15 +45,19 @@ import { BranchesComponent } from './features/gym-owner/components/manage-branch
 import { AddBranchComponent } from './features/gym-owner/components/add-branch/add-branch.component';
 import { BranchDetailsComponent } from './features/gym-owner/components/branch-details/branch-details.component';
 import { EditBranchComponent } from './features/gym-owner/components/edit-branch/edit-branch.component';
-import{ SubscriptionPlansComponent } from './features/gym-owner/components/subscription-plans/subscription-plans.component';
+import { SubscriptionPlansComponent } from './features/gym-owner/components/subscription-plans/subscription-plans.component';
 import { AddSubscriptionPlansComponent } from './features/gym-owner/components/add-subscription-plans/add-subscription-plans.component';
 
 import { ManageStaffComponent } from './features/gym-owner/components/manage-staff/manage-staff.component';
 import { AddStaffComponent } from './features/gym-owner/components/add-staff/add-staff.component';
 import { StaffDetailsComponent } from './features/gym-owner/components/staff-details/staff-details.component';
 import { EditStaffComponent } from './features/gym-owner/components/edit-staff/edit-staff.component';
-
+import { AssignUnassignedStaffComponent } from './features/gym-owner/components/assign-staff/assign-staff.component';
 import { BranchesListComponent } from './features/gym-owner/components/branch-list/branch-list.component';
+
+import { EditPlanComponent } from './features/gym-owner/components/edit-plan/edit-plan.component';
+
+import { BookingsComponent } from './features/gym-owner/components/booking/booking.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -84,36 +88,41 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'gym-owner-application/:id', component: GymOwnerDetailsComponent },
-      {path: 'manage-users', component: ManageUsersComponent},
-      {path: 'user-details/:id', component: UserDetailsComponent},
-      {path: 'edit-user/:id', component: EditUserComponent},
-       { path: 'manage-gyms', component: ManageGymsComponent },
+      { path: 'manage-users', component: ManageUsersComponent },
+      { path: 'user-details/:id', component: UserDetailsComponent },
+      { path: 'edit-user/:id', component: EditUserComponent },
+      { path: 'manage-gyms', component: ManageGymsComponent },
       { path: 'edit-gym/:id', component: EditGymComponent },
       {
         path: 'gym-details/:id',
         component: GymDetailsComponent,
       },
-      {path: 'reports', component: ReportsComponent},
-      {path: 'report-details/:id', component: ReportDetailsComponent}
+      { path: 'reports', component: ReportsComponent },
+      { path: 'report-details/:id', component: ReportDetailsComponent }
     ],
   },
-  {path: 'gym-owner', component: GymOwnerLayoutComponent,
+  {
+    path: 'gym-owner', component: GymOwnerLayoutComponent,
     children: [
-  {path: 'dashboard', component: GymOwnerDashboardComponent},
-  {path: 'manage-branches', component: BranchesComponent},
-  {path: 'add-branch', component: AddBranchComponent},
-  {path: 'branch-details/:id', component: BranchDetailsComponent},
-  {path: 'edit-branch/:id', component: EditBranchComponent},
-  {path: 'subscription-plans/:id', component: SubscriptionPlansComponent},
-  {path: 'add-subscription-plan', component: AddSubscriptionPlansComponent},
-  {path: 'manage-staff/:id', component: ManageStaffComponent},
-  {path: 'add-staff/:id', component: AddStaffComponent},
-   {path: 'manage-staff', component: ManageStaffComponent},
-   {path: 'add-staff', component: AddStaffComponent},
-   {path: 'staff-details/:id', component: StaffDetailsComponent},
-   {path: 'edit-staff/:id', component: EditStaffComponent},
-   {path: 'branches-list', component: BranchesListComponent}
-  ]},
+      { path: 'dashboard', component: GymOwnerDashboardComponent },
+      { path: 'manage-branches', component: BranchesComponent },
+      { path: 'add-branch', component: AddBranchComponent },
+      { path: 'branch-details/:id', component: BranchDetailsComponent },
+      { path: 'edit-branch/:id', component: EditBranchComponent },
+      { path: 'subscription-plans/:id', component: SubscriptionPlansComponent },
+      { path: 'add-subscription-plan', component: AddSubscriptionPlansComponent },
+      { path: 'manage-staff/:id', component: ManageStaffComponent },
+      { path: 'add-staff/:id', component: AddStaffComponent },
+      { path: 'manage-staff', component: ManageStaffComponent },
+      { path: 'add-staff', component: AddStaffComponent },
+      { path: 'staff-details/:id', component: StaffDetailsComponent },
+      { path: 'edit-staff/:id', component: EditStaffComponent },
+      { path: 'branches-list', component: BranchesListComponent },
+      { path: 'assign-staff/:id', component: AssignUnassignedStaffComponent },
+      { path: 'edit-plan/:planId', component: EditPlanComponent },
+      { path: 'bookings', component: BookingsComponent }
+    ]
+  },
 
   { path: '**', redirectTo: '' },
 ];

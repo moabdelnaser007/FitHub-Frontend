@@ -23,7 +23,6 @@ export class GymOwnerLayoutComponent {
     { icon: 'group', label: 'Staff', route: '/gym-owner/manage-staff' },
     { icon: 'credit_card', label: 'Subscription Plans', route: '/gym-owner/branches-list' },
     { icon: 'calendar_month', label: 'Bookings', route: '/gym-owner/bookings' },
-    { icon: 'settings', label: 'Settings', route: '/gym-owner/settings' }
   ];
 
   setActiveMenuItem(item: MenuItem): void {

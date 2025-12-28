@@ -51,7 +51,6 @@
           <tr>
             <th>Plan Name</th>
             <th>Description</th>
-            <th>Price</th>
             <th>Credits</th>
             <th>Visits</th>
             <th>Duration</th>
@@ -64,7 +63,6 @@
           <tr *ngFor="let plan of filteredPlans">
             <td>{{ plan.name }}</td>
             <td>{{ plan.description || 'N/A' }}</td>
-            <td>${{ plan.price.toFixed(2) }}</td>
             <td>{{ plan.creditsCost }}</td>
             <td>{{ plan.visitsLimit }}</td>
             <td>{{ getDurationText(plan.durationDays) }}</td>
@@ -95,7 +93,7 @@
           </tr>
 
           <tr *ngIf="filteredPlans.length === 0">
-            <td colspan="8" class="empty-state">
+            <td colspan="7" class="empty-state">
               No plans found
             </td>
           </tr>
@@ -107,10 +105,59 @@
     <div class="back-button-container">
       <button class="btn-back" (click)="goBack()">
         <span class="material-symbols-outlined">arrow_back</span>
-        Back to Branch Details
+        Back to Branches list
       </button>
     </div>
   </div>
 
-  <!-- Delete Modal (زي ما هو) -->
+  <!-- Delete Modal -->
+  <div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h2>Delete Plan</h2>
+        <button class="close-btn" (click)="closeDeleteModal()" [disabled]="isDeleting">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="warning-icon">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <p class="warning-text">
+          Are you sure you want to delete <strong>{{ planToDelete?.name }}</strong>?
+        </p>
+        <p class="warning-subtext">
+          This action cannot be undone. All data associated with this plan will be permanently deleted.
+        </p>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button 
+          class="btn-cancel-modal" 
+          (click)="closeDeleteModal()"
+          [disabled]="isDeleting"
+        >
+          Cancel
+        </button>
+        <button 
+          class="btn-delete-modal" 
+          (click)="confirmDelete()"
+          [disabled]="isDeleting"
+        >
+          <span *ngIf="!isDeleting">Delete Plan</span>
+          <span *ngIf="isDeleting" class="deleting-state">
+            <div class="spinner-small"></div>
+            Deleting...
+          </span>
+        </button>
+      </div>
+      
+    </div>
+  </div>
+
 </div>

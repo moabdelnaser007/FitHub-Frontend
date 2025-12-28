@@ -133,15 +133,21 @@
         </section>
 
         <!-- Staff Management -->
-        <section class="info-card">
-          <h2>Staff Management</h2>
-          <p class="info-text">Manage your branch staff members</p>
-          <button class="btn-primary full-width" (click)="onManageStaff()">
-            <span class="material-symbols-outlined">group</span>
-            Manage Staff
-          </button>
-        </section>
-
+        <!-- Staff Management Section - استبدل القديم بده -->
+<section class="info-card">
+  <h2>Staff Management</h2>
+  <p class="info-text">Manage your branch staff members</p>
+  <div class="staff-actions">
+    <button class="btn-primary full-width" (click)="onManageStaff()">
+      <span class="material-symbols-outlined">group</span>
+      Manage Staff
+    </button>
+    <button class="btn-secondary full-width" (click)="onAssignNewStaff()">
+      <span class="material-symbols-outlined">person_add</span>
+      Assign New Staff Member
+    </button>
+  </div>
+</section>
       </div>
 
     </div>

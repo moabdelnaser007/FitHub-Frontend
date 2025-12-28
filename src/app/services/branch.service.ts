@@ -193,22 +193,22 @@ export class BranchService {
   }
 
   deleteBranch(id: number): Observable<boolean> {
-    return this.http
-      .delete<DeleteBranchResponse>(`${this.apiUrl}/DeleteGymBranch?id=${id}`, {
-        headers: this.getHeaders(),
+  return this.http
+    .delete<DeleteBranchResponse>(`${this.apiUrl}/DeleteGymBranch/${id}`, { // ✅ غيرت من ?id= لـ /{id}
+      headers: this.getHeaders(),
+    })
+    .pipe(
+      tap((response) => console.log('🔍 DeleteBranch Response:', response)),
+      map((response) => {
+        if (response.isSuccess) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to delete branch');
+      }),
+      catchError((error) => {
+        console.error('❌ DeleteBranch Error:', error);
+        return throwError(() => new Error(error.message || 'Error deleting branch'));
       })
-      .pipe(
-        tap((response) => console.log('🔍 DeleteBranch Response:', response)),
-        map((response) => {
-          if (response.isSuccess) {
-            return response.data;
-          }
-          throw new Error(response.message || 'Failed to delete branch');
-        }),
-        catchError((error) => {
-          console.error('❌ DeleteBranch Error:', error);
-          return throwError(() => new Error(error.message || 'Error deleting branch'));
-        })
-      );
-  }
+    );
+}
 }
