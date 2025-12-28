@@ -24,9 +24,11 @@ interface Branch {
   styleUrls: ['./manage-branches.component.css']
 })
 export class BranchesComponent implements OnInit {
-  
+
   searchQuery: string = '';
-  currentFilter: string = 'all';
+  showFilterMenu: boolean = false;
+  selectedStatus: string | null = null;
+
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 1;
@@ -36,7 +38,7 @@ export class BranchesComponent implements OnInit {
   isLoading: boolean = false;
   loadError: string | null = null;
 
-  // للـ Delete Modal
+  // Delete Modal
   showDeleteModal: boolean = false;
   branchToDelete: Branch | null = null;
   isDeleting: boolean = false;
@@ -44,7 +46,7 @@ export class BranchesComponent implements OnInit {
   constructor(
     private branchService: BranchService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadBranches();
@@ -57,9 +59,9 @@ export class BranchesComponent implements OnInit {
     this.branchService.getAllBranches().subscribe({
       next: (data: BranchData[]) => {
         console.log('🔍 Branches data from API:', data);
-        
+
         this.branches = data.map((branch) => ({
-          id: branch.id, // ✅ استخدام الـ ID الحقيقي من الـ API
+          id: branch.id,
           name: branch.branchName,
           address: branch.address,
           city: branch.city,
@@ -69,8 +71,6 @@ export class BranchesComponent implements OnInit {
           genderType: branch.genderType,
           status: this.mapStatus(branch.status)
         }));
-
-        console.log('✅ Mapped branches with IDs:', this.branches);
 
         this.totalPages = Math.ceil(this.branches.length / this.itemsPerPage);
         this.applyFilters();
@@ -99,8 +99,13 @@ export class BranchesComponent implements OnInit {
     this.applyFilters();
   }
 
-  setFilter(filter: string): void {
-    this.currentFilter = filter;
+  onFilter(): void {
+    this.showFilterMenu = !this.showFilterMenu;
+  }
+
+  selectStatusFilter(status: string | null): void {
+    this.selectedStatus = status;
+    this.showFilterMenu = false;
     this.currentPage = 1;
     this.applyFilters();
   }
@@ -110,21 +115,21 @@ export class BranchesComponent implements OnInit {
 
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
-      result = result.filter(branch => 
+      result = result.filter(branch =>
         branch.name.toLowerCase().includes(query) ||
         branch.address.toLowerCase().includes(query) ||
         branch.city.toLowerCase().includes(query)
       );
     }
 
-    if (this.currentFilter !== 'all') {
-      result = result.filter(branch => branch.status === this.currentFilter);
+    if (this.selectedStatus) {
+      result = result.filter(branch => branch.status === this.selectedStatus?.toLowerCase());
     }
 
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     this.filteredBranches = result.slice(startIndex, endIndex);
-    
+
     this.totalPages = Math.ceil(result.length / this.itemsPerPage);
   }
 
@@ -134,13 +139,10 @@ export class BranchesComponent implements OnInit {
   }
 
   viewBranch(branch: Branch): void {
-    console.log('👁️ Viewing branch:', branch);
-    console.log('👁️ Branch ID:', branch.id);
     this.router.navigate(['/gym-owner/branch-details', branch.id]);
   }
 
   editBranch(branch: Branch): void {
-    console.log('✏️ Edit branch:', branch);
     this.router.navigate(['/gym-owner/edit-branch', branch.id]);
   }
 
@@ -163,12 +165,8 @@ export class BranchesComponent implements OnInit {
     const branchId = this.branchToDelete.id;
     const branchName = this.branchToDelete.name;
 
-    console.log('🗑️ Deleting branch ID:', branchId);
-    
     this.branchService.deleteBranch(branchId).subscribe({
       next: (success) => {
-        console.log('✅ Delete response:', success);
-        
         if (success) {
           this.branches = this.branches.filter(b => b.id !== branchId);
           this.applyFilters();
@@ -219,6 +217,6 @@ export class BranchesComponent implements OnInit {
   }
 
   getPageNumbers(): number[] {
-    return Array.from({length: this.totalPages}, (_, i) => i + 1);
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 }

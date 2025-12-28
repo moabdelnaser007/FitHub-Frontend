@@ -18,7 +18,7 @@ export class AuthService {
   private readonly TOKEN_KEY = 'fitHubToken';
   private readonly USER_KEY = 'fitHubUser';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // ================= Register =================
   registerUser(dto: RegisterUserDto): Observable<UserResponseDto> {
@@ -175,5 +175,40 @@ export class AuthService {
         return user;
       })
     );
+  }
+
+  // ================= Token Utilities =================
+  private getDecodedToken(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error('Error decoding token', e);
+      return null;
+    }
+  }
+
+  getRoleFromToken(token: string): string | null {
+    const decoded = this.getDecodedToken(token);
+    if (!decoded) return null;
+
+    // Check known claims for role
+    // Microsoft identity standard claim
+    if (decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']) {
+      return decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    }
+    // Standard role claim
+    if (decoded['role']) {
+      return decoded['role'];
+    }
+    return null;
   }
 }

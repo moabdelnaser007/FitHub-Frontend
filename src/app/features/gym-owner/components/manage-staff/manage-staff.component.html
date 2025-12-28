@@ -1,20 +1,20 @@
 <div class="staff-page">
-  
+
   <!-- Page Header -->
   <!-- Page Header -->
-<div >
   <div>
-    <h1>
-      {{ isViewingBranchStaff ? 'Branch Staff' : 'All Staff Members' }}
-    </h1>
-    <p>
-      {{ isViewingBranchStaff 
-         ? 'View and manage staff members for this branch.' 
-         : 'View and manage all staff members across all branches.' }}
-    </p>
-    <br>
+    <div>
+      <h1>
+        {{ isViewingBranchStaff ? 'Branch Staff' : 'All Staff Members' }}
+      </h1>
+      <p>
+        {{ isViewingBranchStaff
+        ? 'View and manage staff members for this branch.'
+        : 'View and manage all staff members across all branches.' }}
+      </p>
+      <br>
+    </div>
   </div>
-</div>
 
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
@@ -31,20 +31,33 @@
 
   <!-- Main Content -->
   <div *ngIf="!isLoading && !loadError">
-    
-    <!-- Search and Actions -->
-    <div class="toolbar">
-      <div class="search-container">
-        <span class="material-symbols-outlined search-icon">search</span>
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Search by name, role, email, or phone..."
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()"
-        />
+
+    <!-- Custom Toolbar with Search, Filter, and Add Button -->
+    <div class="toolbar"
+      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+
+      <div class="actions-left" style="display: flex; gap: 12px; align-items: center;">
+        <!-- Search -->
+        <div class="search-box">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input type="text" placeholder="Search staff..." [(ngModel)]="searchQuery" (keyup)="onSearch()" />
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-container" style="position: relative;">
+          <button class="filter-btn" (click)="onFilter()">
+            <span class="material-symbols-outlined">filter_list</span>
+            {{ selectedStatus ? selectedStatus : 'Filter' }}
+          </button>
+          <div *ngIf="showFilterMenu" class="filter-dropdown">
+            <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
+            <div class="filter-item" (click)="selectStatusFilter('ACTIVE')">Active</div>
+            <div class="filter-item" (click)="selectStatusFilter('INACTIVE')">Inactive</div>
+          </div>
+        </div>
       </div>
-      
+
+      <!-- Add Button -->
       <button class="btn-add" (click)="addNewStaff()">
         <span class="material-symbols-outlined">add</span>
         <span>Add New Staff</span>
@@ -57,10 +70,10 @@
         <thead>
           <tr>
             <th>Staff Name</th>
-          
+
             <th>Email</th>
             <th>Phone Number</th>
-           
+
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -75,17 +88,13 @@
                 <span class="staff-name">{{ staff.fullName }}</span>
               </div>
             </td>
-     
+
             <td>{{ staff.email }}</td>
             <td>{{ staff.phone }}</td>
-            
+
             <td>
               <label class="toggle-switch">
-                <input 
-                  type="checkbox" 
-                  [checked]="staff.status === 'ACTIVE'"
-                  (change)="toggleStatus(staff)"
-                />
+                <input type="checkbox" [checked]="staff.status === 'ACTIVE'" (change)="toggleStatus(staff)" />
                 <span class="toggle-slider"></span>
               </label>
               <span class="status-text" [ngClass]="getStatusClass(staff.status)">
@@ -94,25 +103,13 @@
             </td>
             <td>
               <div class="action-buttons">
-                <button 
-                  class="action-btn view-btn" 
-                  (click)="viewStaff(staff)"
-                  title="View Details"
-                >
+                <button class="action-btn view-btn" (click)="viewStaff(staff)" title="View Details">
                   <span class="material-symbols-outlined">visibility</span>
                 </button>
-                <button 
-                  class="action-btn edit-btn" 
-                  (click)="editStaff(staff)"
-                  title="Edit"
-                >
+                <button class="action-btn edit-btn" (click)="editStaff(staff)" title="Edit">
                   <span class="material-symbols-outlined">edit</span>
                 </button>
-                <button 
-                  class="action-btn delete-btn" 
-                  (click)="deleteStaff(staff)"
-                  title="Delete"
-                >
+                <button class="action-btn delete-btn" (click)="deleteStaff(staff)" title="Delete">
                   <span class="material-symbols-outlined">delete</span>
                 </button>
               </div>
@@ -131,13 +128,6 @@
       </table>
     </div>
 
-    <!-- Back Button -->
-    <div class="back-button-container">
-      <button class="btn-back" (click)="goBack()">
-        <span class="material-symbols-outlined">arrow_back</span>
-        <span>Back to Branch Details</span>
-      </button>
-    </div>
   </div>
 
   <!-- Delete Confirmation Modal -->
@@ -149,12 +139,12 @@
         </div>
         <h2>Remove Staff Member</h2>
       </div>
-      
+
       <div class="modal-body">
         <p>Are you sure you want to remove <strong>{{ staffToDelete?.fullName }}</strong>?</p>
         <p class="modal-warning">This will remove them from this branch. This action cannot be undone.</p>
       </div>
-      
+
       <div class="modal-footer">
         <button class="btn-cancel-modal" (click)="closeDeleteModal()" [disabled]="isDeleting">
           Cancel

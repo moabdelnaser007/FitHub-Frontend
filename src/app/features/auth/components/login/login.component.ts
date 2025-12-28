@@ -20,7 +20,7 @@ export class LoginComponent {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -38,12 +38,29 @@ export class LoginComponent {
 
     this.authService.login(this.email, this.password).subscribe({
       next: (token) => {
-        console.log('✅ Login successful! Token returned:', token);
-        console.log('✅ Token in localStorage:', localStorage.getItem('fitHubToken'));
-        console.log('✅ isLoggedIn():', this.authService.isLoggedIn());
+        console.log('✅ Login successful!');
+
+        // Check role from token for immediate redirect
+        const role = this.authService.getRoleFromToken(token);
+        console.log('🔑 Role from token:', role);
+
+        // Fetch current user details to update state
+        this.authService.getCurrentUser().subscribe({
+          next: (user) => {
+            console.log('✅ User details fetched:', user);
+          },
+          error: (err) => console.error('❌ Failed to fetch user details:', err)
+        });
 
         this.isLoading = false;
-        this.router.navigate(['/']);
+
+        if (role && (role === 'Owner' || role === 'GymOwner' || role.toLowerCase() === 'gymowner')) {
+          console.log('🔀 Redirecting to Gym Owner Dashboard (based on token)');
+          this.router.navigate(['/gym-owner/dashboard']);
+        } else {
+          console.log('🔀 Redirecting to Home');
+          this.router.navigate(['/']);
+        }
       },
       error: (err) => {
         this.isLoading = false;

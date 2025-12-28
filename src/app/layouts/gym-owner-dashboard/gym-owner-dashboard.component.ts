@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { AuthService } from '../../features/auth/services/auth.service';
 
 interface MenuItem {
   icon: string;
@@ -23,6 +24,8 @@ export class GymOwnerLayoutComponent {
     { icon: 'group', label: 'Staff', route: '/gym-owner/manage-staff' },
     { icon: 'credit_card', label: 'Subscription Plans', route: '/gym-owner/branches-list' },
     { icon: 'calendar_month', label: 'Bookings', route: '/gym-owner/bookings' },
+    { icon: 'card_membership', label: 'Subscriptions', route: '/gym-owner/subscriptions' },
+    { icon: 'payments', label: 'Settlements', route: '/gym-owner/settlements' },
   ];
 
   setActiveMenuItem(item: MenuItem): void {
@@ -30,12 +33,18 @@ export class GymOwnerLayoutComponent {
     item.active = true;
   }
 
+  constructor(private router: Router, private authService: AuthService) { }
+
+  // ...
+
   onProfile(): void {
     console.log('Navigate to profile');
+    this.router.navigate(['/gym-owner/profile']);
   }
 
   onLogout(): void {
     console.log('Logout');
-    // Add logout logic
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

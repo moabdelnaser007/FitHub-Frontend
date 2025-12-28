@@ -1,5 +1,5 @@
 <div class="branches-page">
-  
+
   <!-- Page Header -->
   <div class="hhh">
     <div>
@@ -30,96 +30,55 @@
   <!-- Content (only show if not loading and no error) -->
   <div *ngIf="!isLoading && !loadError">
     <!-- Search and Filters -->
-    <div class="filters-section">
-      <div class="search-container">
+    <div class="filters-section" style="display: flex; gap: 12px; margin-bottom: 24px;">
+      <div class="search-box">
         <span class="material-symbols-outlined search-icon">search</span>
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Search by branch name, address, or city..."
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()"
-        />
+        <input type="text" placeholder="Search by branch name, address, or city..." [(ngModel)]="searchQuery"
+          (keyup)="onSearch()" />
       </div>
 
-      <div class="filter-buttons">
-        <button 
-          class="filter-btn"
-          [class.active]="currentFilter === 'all'"
-          (click)="setFilter('all')"
-        >
-          All
+      <div class="filter-container" style="position: relative;">
+        <button class="filter-btn" (click)="onFilter()">
+          <span class="material-symbols-outlined">filter_list</span>
+          {{ selectedStatus ? (selectedStatus | titlecase) : 'Filter' }}
         </button>
-        <button 
-          class="filter-btn"
-          [class.active]="currentFilter === 'active'"
-          (click)="setFilter('active')"
-        >
-          Active
-        </button>
-        <button 
-          class="filter-btn"
-          [class.active]="currentFilter === 'inactive'"
-          (click)="setFilter('inactive')"
-        >
-          Inactive
-        </button>
-        <button 
-          class="filter-btn"
-          [class.active]="currentFilter === 'pending'"
-          (click)="setFilter('pending')"
-        >
-          Pending
-        </button>
+        <div *ngIf="showFilterMenu" class="filter-dropdown">
+          <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
+          <div class="filter-item" (click)="selectStatusFilter('active')">Active</div>
+          <div class="filter-item" (click)="selectStatusFilter('inactive')">Inactive</div>
+          <div class="filter-item" (click)="selectStatusFilter('pending')">Pending</div>
+        </div>
       </div>
     </div>
 
     <!-- Branches List -->
     <div class="branches-list">
-      <div 
-        class="branch-card" 
-        *ngFor="let branch of filteredBranches"
-      >
+      <div class="branch-card" *ngFor="let branch of filteredBranches">
         <div class="branch-info">
           <h3 class="branch-name">{{ branch.name }}</h3>
           <p class="branch-address">{{ branch.address }}, {{ branch.city }}</p>
           <p class="branch-details">
-            <span>📞 {{ branch.phone }}</span> | 
-            <span>⏰ {{ branch.openTime }} - {{ branch.closeTime }}</span> | 
+            <span>📞 {{ branch.phone }}</span> |
+            <span>⏰ {{ branch.openTime }} - {{ branch.closeTime }}</span> |
             <span>{{ branch.genderType }}</span>
           </p>
         </div>
 
         <div class="branch-status">
-          <span 
-            class="status-badge" 
-            [ngClass]="getStatusClass(branch.status)"
-          >
+          <span class="status-badge" [ngClass]="getStatusClass(branch.status)">
             <span class="status-dot"></span>
             {{ getStatusText(branch.status) }}
           </span>
         </div>
 
         <div class="branch-actions">
-          <button 
-            class="action-btn view-btn" 
-            (click)="viewBranch(branch)"
-            title="View"
-          >
+          <button class="action-btn view-btn" (click)="viewBranch(branch)" title="View">
             <span class="material-symbols-outlined">visibility</span>
           </button>
-          <button 
-            class="action-btn edit-btn" 
-            (click)="editBranch(branch)"
-            title="Edit"
-          >
+          <button class="action-btn edit-btn" (click)="editBranch(branch)" title="Edit">
             <span class="material-symbols-outlined">edit</span>
           </button>
-          <button 
-            class="action-btn delete-btn" 
-            (click)="deleteBranch(branch)"
-            title="Delete"
-          >
+          <button class="action-btn delete-btn" (click)="deleteBranch(branch)" title="Delete">
             <span class="material-symbols-outlined">delete</span>
           </button>
         </div>
@@ -135,57 +94,46 @@
 
     <!-- Pagination -->
     <div class="pagination" *ngIf="totalPages > 1">
-      <button 
-        class="pagination-btn" 
-        (click)="previousPage()"
-        [disabled]="currentPage === 1"
-      >
+      <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
         <span class="material-symbols-outlined">chevron_left</span>
       </button>
 
-      <button 
-        *ngFor="let page of getPageNumbers()"
-        class="pagination-btn page-number"
-        [class.active]="currentPage === page"
-        (click)="goToPage(page)"
-      >
+      <button *ngFor="let page of getPageNumbers()" class="pagination-btn page-number"
+        [class.active]="currentPage === page" (click)="goToPage(page)">
         {{ page }}
       </button>
 
-      <button 
-        class="pagination-btn" 
-        (click)="nextPage()"
-        [disabled]="currentPage === totalPages"
-      >
+      <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
         <span class="material-symbols-outlined">chevron_right</span>
       </button>
     </div>
   </div>
-<!-- Delete Confirmation Modal -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="modal-icon-wrapper">
-        <span class="material-symbols-outlined modal-icon-danger">warning</span>
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-icon-wrapper">
+          <span class="material-symbols-outlined modal-icon-danger">warning</span>
+        </div>
+        <h2>Delete Branch</h2>
       </div>
-      <h2>Delete Branch</h2>
-    </div>
-    
-    <div class="modal-body">
-      <p>Are you sure you want to delete <strong>{{ branchToDelete?.name }}</strong>?</p>
-      <p class="modal-warning">This action cannot be undone. All data associated with this branch will be permanently deleted.</p>
-    </div>
-    
-    <div class="modal-footer">
-      <button class="btn-cancel-modal" (click)="closeDeleteModal()" [disabled]="isDeleting">
-        Cancel
-      </button>
-      <button class="btn-delete-modal" (click)="confirmDelete()" [disabled]="isDeleting">
-        <span *ngIf="!isDeleting">Delete Branch</span>
-        <span *ngIf="isDeleting">Deleting...</span>
-      </button>
+
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong>{{ branchToDelete?.name }}</strong>?</p>
+        <p class="modal-warning">This action cannot be undone. All data associated with this branch will be permanently
+          deleted.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel-modal" (click)="closeDeleteModal()" [disabled]="isDeleting">
+          Cancel
+        </button>
+        <button class="btn-delete-modal" (click)="confirmDelete()" [disabled]="isDeleting">
+          <span *ngIf="!isDeleting">Delete Branch</span>
+          <span *ngIf="isDeleting">Deleting...</span>
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
 </div>

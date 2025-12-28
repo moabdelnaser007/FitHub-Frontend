@@ -58,6 +58,9 @@ import { BranchesListComponent } from './features/gym-owner/components/branch-li
 import { EditPlanComponent } from './features/gym-owner/components/edit-plan/edit-plan.component';
 
 import { BookingsComponent } from './features/gym-owner/components/booking/booking.component';
+import { GymOwnerSubscriptionsComponent } from './features/gym-owner/components/subscriptions/subscriptions.component';
+import { SettlementsComponent } from './features/gym-owner/components/settlements/settlements.component';
+import { GymOwnerProfileComponent } from './features/gym-owner/components/profile/profile.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -120,7 +123,10 @@ export const routes: Routes = [
       { path: 'branches-list', component: BranchesListComponent },
       { path: 'assign-staff/:id', component: AssignUnassignedStaffComponent },
       { path: 'edit-plan/:planId', component: EditPlanComponent },
-      { path: 'bookings', component: BookingsComponent }
+      { path: 'bookings', component: BookingsComponent },
+      { path: 'subscriptions', component: GymOwnerSubscriptionsComponent },
+      { path: 'settlements', component: SettlementsComponent },
+      { path: 'profile', component: GymOwnerProfileComponent }
     ]
   },
 
