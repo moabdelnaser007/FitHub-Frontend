@@ -35,7 +35,7 @@ import { ManageUsersComponent } from './features/admin/pages/manage-users/manage
 import { UserDetailsComponent } from './features/admin/pages/user-details/user-details.component';
 import { EditUserComponent } from './features/admin/pages/edit-user-details/edit-user-details.component';
 
-import { ReportsComponent } from './features/admin/pages/reports/reports.component';
+import { SubscriptionComponent } from './features/admin/pages/subscription/subscription.component';
 import { ReportDetailsComponent } from './features/admin/pages/report-details/report-details.component';
 
 
@@ -61,6 +61,9 @@ import { BookingsComponent } from './features/gym-owner/components/booking/booki
 import { GymOwnerSubscriptionsComponent } from './features/gym-owner/components/subscriptions/subscriptions.component';
 import { SettlementsComponent } from './features/gym-owner/components/settlements/settlements.component';
 import { GymOwnerProfileComponent } from './features/gym-owner/components/profile/profile.component';
+import { AdminProfileComponent } from './features/admin/pages/profile/profile.component';
+import { AdminBookingsComponent } from './features/admin/pages/bookings/bookings.component';
+import { AdminSettlementsComponent } from './features/admin/pages/settlements/settlements.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -100,8 +103,11 @@ export const routes: Routes = [
         path: 'gym-details/:id',
         component: GymDetailsComponent,
       },
-      { path: 'reports', component: ReportsComponent },
-      { path: 'report-details/:id', component: ReportDetailsComponent }
+      { path: 'subscription', component: SubscriptionComponent },
+      { path: 'report-details/:id', component: ReportDetailsComponent },
+      { path: 'profile', component: AdminProfileComponent },
+      { path: 'bookings', component: AdminBookingsComponent },
+      { path: 'settlements', component: AdminSettlementsComponent }
     ],
   },
   {

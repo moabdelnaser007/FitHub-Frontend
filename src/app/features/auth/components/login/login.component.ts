@@ -57,6 +57,9 @@ export class LoginComponent {
         if (role && (role === 'Owner' || role === 'GymOwner' || role.toLowerCase() === 'gymowner')) {
           console.log('🔀 Redirecting to Gym Owner Dashboard (based on token)');
           this.router.navigate(['/gym-owner/dashboard']);
+        } else if (role && (role === 'Admin' || role.toLowerCase() === 'admin')) {
+          console.log('🔀 Redirecting to Admin Dashboard (based on token)');
+          this.router.navigate(['/admin/dashboard']);
         } else {
           console.log('🔀 Redirecting to Home');
           this.router.navigate(['/']);

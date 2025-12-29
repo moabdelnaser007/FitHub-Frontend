@@ -1,0 +1,73 @@
+<div class="settlements-page">
+    <div class="admin-page-header">
+        <div>
+            <h1>Settlements</h1>
+            <p>Manage and approve payouts to gym owners.</p>
+        </div>
+    </div>
+
+    <div class="controls-section">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search by Amount or ID..." [(ngModel)]="searchText">
+        </div>
+
+        <div class="filter-box">
+            <select [(ngModel)]="statusFilter">
+                <option value="ALL">All Status</option>
+                <option value="PENDING">Pending</option>
+                <option value="PAID">Paid</option>
+            </select>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading settlements...</p>
+    </div>
+
+    <div *ngIf="error" class="error-msg">
+        {{ error }}
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading && !error">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date Created</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Payout Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of filteredSettlements">
+                    <td>#{{ item.id }}</td>
+                    <td>{{ item.createdAt | date:'medium' }}</td>
+                    <td class="amount">${{ item.amount }}</td>
+                    <td>
+                        <span class="status-badge" [class.paid]="item.status === 'PAID'"
+                            [class.pending]="item.status === 'PENDING'">
+                            {{ item.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <span *ngIf="item.payoutDate">{{ item.payoutDate | date:'medium' }}</span>
+                        <span *ngIf="!item.payoutDate">-</span>
+                    </td>
+                    <td>
+                        <button *ngIf="item.status === 'PENDING'" class="btn-approve" (click)="onApprove(item)"
+                            [disabled]="processingId === item.id">
+                            {{ processingId === item.id ? 'Processing...' : 'Approve' }}
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="settlements.length === 0">
+                    <td colspan="6" class="empty-state">No settlements found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

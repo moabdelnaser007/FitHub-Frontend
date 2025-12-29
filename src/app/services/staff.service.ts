@@ -65,6 +65,7 @@ export interface UpdateStaffRequest {
   fullName: string;
   email: string;
   phone: string;
+  city: string;
   role: string;
   status: string;
 }
@@ -88,7 +89,7 @@ export interface UpdateStaffResponse {
 export class StaffService {
   private apiUrl = `${environment.apiBaseUrl}/owner/Staff`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   getStaffMembers(branchId: number): Observable<StaffMember[]> {
     const url = `${this.apiUrl}/GetStaffMembers/${branchId}`;
     console.log('🔵 Fetching staff from URL:', url);

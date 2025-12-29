@@ -21,53 +21,31 @@
         <!-- Full Name -->
         <div class="form-group">
           <label for="full-name" class="form-label">Full Name</label>
-          <input
-            type="text"
-            id="full-name"
-            class="form-input"
-            [(ngModel)]="user.fullName"
-            name="fullName"
-            required
-          />
+          <input type="text" id="full-name" class="form-input" [(ngModel)]="user.fullName" name="fullName" required />
         </div>
 
         <!-- Email -->
         <div class="form-group">
           <label for="email" class="form-label">Email</label>
-          <input
-            type="email"
-            id="email"
-            class="form-input"
-            [(ngModel)]="user.email"
-            name="email"
-            required
-          />
+          <input type="email" id="email" class="form-input" [(ngModel)]="user.email" name="email" required />
         </div>
 
         <!-- Phone Number -->
         <div class="form-group">
           <label for="phone-number" class="form-label">Phone Number</label>
-          <input
-            type="tel"
-            id="phone-number"
-            class="form-input"
-            [(ngModel)]="user.phone"
-            name="phone"
-          />
+          <input type="tel" id="phone-number" class="form-input" [(ngModel)]="user.phone" name="phone" />
+        </div>
+        <div class="form-group">
+          <label for="city" class="form-label">City</label>
+          <input type="text" id="city" class="form-input" [(ngModel)]="user.city" name="city" />
         </div>
 
-       
+
 
         <!-- Account Status -->
         <div class="form-group">
           <label for="account-status" class="form-label">Account Status</label>
-          <select
-            id="account-status"
-            class="form-select"
-            [(ngModel)]="user.status"
-            name="status"
-            required
-          >
+          <select id="account-status" class="form-select" [(ngModel)]="user.status" name="status" required>
             <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
           </select>
         </div>
@@ -75,20 +53,10 @@
 
       <!-- Form Footer -->
       <div class="form-footer">
-        <button
-          type="button"
-          class="btn btn-cancel"
-          (click)="onCancel()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="button"
-          class="btn btn-save"
-          (click)="onSave()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn btn-save" (click)="onSave()" [disabled]="isSaving">
           {{ isSaving ? 'Saving...' : 'Save Changes' }}
         </button>
       </div>

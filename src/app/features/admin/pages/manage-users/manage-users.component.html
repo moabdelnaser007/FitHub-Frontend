@@ -1,4 +1,11 @@
 <div class="manage-users-container">
+  <div class="admin-page-header">
+    <div>
+      <h1>User Management</h1>
+      <p>Manage users, assign roles, and monitor account status.</p>
+    </div>
+  </div>
+
   <div class="users-card">
     <!-- Header with Search and Filters -->
     <div class="users-header">
@@ -6,24 +13,14 @@
         <!-- Search Input -->
         <div class="search-wrapper">
           <span class="material-icons search-icon">search</span>
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Search users..."
-            [(ngModel)]="searchQuery"
-            (input)="onSearch()"
-          />
+          <input type="text" class="search-input" placeholder="Search users..." [(ngModel)]="searchQuery"
+            (input)="onSearch()" />
         </div>
 
         <!-- Status Filter -->
         <div class="filter-wrapper">
           <label for="status-filter" class="sr-only">Filter by status</label>
-          <select
-            id="status-filter"
-            class="status-filter"
-            [(ngModel)]="statusFilter"
-            (change)="onStatusFilterChange()"
-          >
+          <select id="status-filter" class="status-filter" [(ngModel)]="statusFilter" (change)="onStatusFilterChange()">
             <option value="all">Status: All</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
@@ -32,11 +29,6 @@
         </div>
       </div>
 
-      <!-- Add User Button -->
-      <button class="btn-add-user" (click)="onAddUser()">
-        <span class="material-icons">add</span>
-        Add User
-      </button>
     </div>
 
     <!-- Loading State -->
@@ -90,13 +82,8 @@
             <td>
               <div class="status-toggle-wrapper" [ngClass]="getStatusClass(user.status)">
                 <label class="toggle-label" [class.disabled]="user.status === 'Suspended'">
-                  <input
-                    type="checkbox"
-                    class="toggle-input"
-                    [checked]="user.isActive"
-                    [disabled]="user.status === 'Suspended'"
-                    (change)="onToggleStatus(user)"
-                  />
+                  <input type="checkbox" class="toggle-input" [checked]="user.isActive"
+                    [disabled]="user.status === 'Suspended'" (change)="onToggleStatus(user)" />
                   <div class="toggle-slider"></div>
                   <span class="status-text">{{ user.status }}</span>
                 </label>
@@ -145,7 +132,7 @@
       <div class="modal-header">
         <h3 class="modal-title">Delete User</h3>
         <p class="modal-description">
-          Are you sure you want to delete <strong>{{ userToDelete?.fullName }}</strong> 
+          Are you sure you want to delete <strong>{{ userToDelete?.fullName }}</strong>
           ({{ userToDelete?.email }})?
           This action cannot be undone.
         </p>
@@ -153,18 +140,10 @@
 
       <!-- Modal Actions -->
       <div class="modal-actions">
-        <button
-          class="modal-btn modal-btn-cancel"
-          (click)="closeDeleteModal()"
-          [disabled]="isDeleting"
-        >
+        <button class="modal-btn modal-btn-cancel" (click)="closeDeleteModal()" [disabled]="isDeleting">
           Cancel
         </button>
-        <button
-          class="modal-btn modal-btn-delete"
-          (click)="confirmDelete()"
-          [disabled]="isDeleting"
-        >
+        <button class="modal-btn modal-btn-delete" (click)="confirmDelete()" [disabled]="isDeleting">
           {{ isDeleting ? 'Deleting...' : 'Delete User' }}
         </button>
       </div>

@@ -26,13 +26,13 @@
 
 .header-text h1 {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 8px;
 }
 
 .header-text p {
-  color: #666;
+  color: #2563eb;
   font-size: 14px;
 }
 
