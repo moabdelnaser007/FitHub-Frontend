@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { GymService } from '../../../../../services/gym.service';
 import { PlansService } from '../../../../../services/plans.service';
 import { SubscriptionService } from '../../../../../services/subscription.service';
+import { FooterComponent } from '../../../../../shared/components/footer/footer.component';
 
 interface TimeSlot {
   time: string;
@@ -39,7 +40,7 @@ interface Amenity {
 @Component({
   selector: 'app-gym-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent],
   templateUrl: './gym-detail.component.html',
   styleUrl: './gym-detail.component.css',
 })

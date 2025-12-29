@@ -4,8 +4,7 @@
       <div class="brand-icon">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path
-            d="M5.21 8.39 4.1 7.28 2.69 8.69l1.11 1.11 5 5L7.1 16.5l1.41 1.41 1.7-1.7 2.54 2.54 1.41-1.41-2.54-2.54 1.7-1.7-1.41-1.41-1.7 1.7-3.67-3.67 1.7-1.7-1.41-1.41-1.7 1.7Z"
-          />
+            d="M5.21 8.39 4.1 7.28 2.69 8.69l1.11 1.11 5 5L7.1 16.5l1.41 1.41 1.7-1.7 2.54 2.54 1.41-1.41-2.54-2.54 1.7-1.7-1.41-1.41-1.7 1.7-3.67-3.67 1.7-1.7-1.41-1.41-1.7 1.7Z" />
         </svg>
       </div>
       <span class="brand-name">FitHub</span>
@@ -14,35 +13,32 @@
     <div class="heading">
       <h1>Confirm OTP</h1>
       <p class="muted">Enter the 6-digit code sent to your email to verify your identity.</p>
-      <p class="muted" *ngIf="email">We sent the code to <strong>{{ email }}</strong></p>
+      @if (email) {
+      <p class="muted">We sent the code to <strong>{{ email }}</strong></p>
+      }
     </div>
 
     <form class="form" (ngSubmit)="submit()">
       <label class="field">
         <span>OTP</span>
-        <input
-          type="text"
-          name="otp"
-          [(ngModel)]="otp"
-          maxlength="6"
-          inputmode="numeric"
-          placeholder="-   -   -   -   -   -"
-          required
-        />
+        <input type="text" name="otp" [(ngModel)]="otp" maxlength="6" inputmode="numeric"
+          placeholder="-   -   -   -   -   -" required />
       </label>
 
-      <p class="error" *ngIf="submitted && otp.trim().length !== 6">
+      @if (submitted && otp.trim().length !== 6) {
+      <p class="error">
         Enter the 6-digit code we sent you.
       </p>
-      <p class="info" *ngIf="statusMessage">{{ statusMessage }}</p>
+      }
+      @if (statusMessage) {
+      <p class="info">{{ statusMessage }}</p>
+      }
 
-      <div class="info" *ngIf="loading">Verifying…</div>
+      @if (loading) {
+      <div class="info">Verifying…</div>
+      }
 
-      <button
-        type="submit"
-        class="primary"
-        [disabled]="loading || otp.trim().length !== 6"
-      >
+      <button type="submit" class="primary" [disabled]="loading || otp.trim().length !== 6">
         Verify OTP
       </button>
     </form>

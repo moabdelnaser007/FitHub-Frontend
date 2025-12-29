@@ -6,11 +6,12 @@ import { GymFilterComponent, FilterChange } from './gym-filter/gym-filter.compon
 import { GymListComponent } from './gym-list/gym-list.component';
 import { Gym } from '../../../../shared/components/gym-card/gym-card.component';
 import { GymSearchFilters } from '../../../../services/gym.service';
+import { FooterComponent } from '../../../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-find-gym',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, GymFilterComponent, GymListComponent],
+  imports: [CommonModule, FormsModule, RouterModule, GymFilterComponent, GymListComponent, FooterComponent],
   templateUrl: './find-gym.component.html',
   styleUrl: './find-gym.component.css',
 })
@@ -23,7 +24,7 @@ export class FindGymComponent {
   reviewText = '';
   anonymous = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   navigateToProfile(): void {
     this.router.navigate(['/profile']);

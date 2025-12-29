@@ -1,8 +1,14 @@
 export interface ResponseViewModel<T> {
-  data: T | null;
-  isSuccess: boolean;
-  message: string;
-  errorCode: number;
+  data?: T | null;
+  isSuccess?: boolean;
+  message?: string;
+  errorCode?: string | number;
+
+  // PascalCase alternatives for robustness
+  Data?: T | null;
+  IsSuccess?: boolean;
+  Message?: string;
+  ErrorCode?: string | number;
 }
 
 export interface RegisterUserDto {

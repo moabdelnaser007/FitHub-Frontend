@@ -75,10 +75,22 @@
 
     <!-- Main content -->
     <main class="profile-container">
-      <div class="page-header">
-        <div>
-          <h2 class="page-title">Billing & Transactions</h2>
-          <p class="page-sub">View your credit plan purchases and transaction history.</p>
+      <!-- Current Balance Card in Main Content -->
+      <div class="balance-card-container">
+        <div class="balance-card">
+          <div class="balance-info">
+            <div class="balance-label">Current Balance</div>
+            <div class="balance-amount">{{ userBalance }} Credits</div>
+            <div class="balance-valid">Valid until Dec 30, 2024</div>
+          </div>
+          <button class="btn btn-primary btn-recharge" (click)="goToRecharge()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="width: 18px; height: 18px; margin-right: 8px;">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Recharge Balance
+          </button>
         </div>
       </div>
 
@@ -103,7 +115,7 @@
                 <span class="sort-icon">↓</span>
               </th>
               <th>Description</th>
-              <th>Amount Paid</th>
+              <th>Status</th>
               <th>Credits</th>
             </tr>
           </thead>
@@ -111,35 +123,39 @@
             <tr *ngFor="let transaction of paginatedTransactions">
               <td class="date-cell">{{ transaction.date }}</td>
               <td>{{ transaction.description }}</td>
-              <td>{{ transaction.amountPaid }}</td>
-              <td class="credits-cell">
-                <span class="credits-badge">{{ transaction.credits }}</span>
-                <a href="#" class="invoice-link">
-                  <span class="invoice-icon">📄</span>
-                  Invoice
-                </a>
+              <td>
+                <span class="status-badge" [class.badge-confirmed]="transaction.status === 'CONFIRMED'">
+                  {{ transaction.status }}
+                </span>
               </td>
+              <td class="credits-cell">
+                <span class="credits-badge danger">{{ transaction.credits }}</span>
+              </td>
+            </tr>
+            <tr *ngIf="transactions.length === 0 && !isLoading">
+              <td colspan="4" style="text-align: center; padding: 2rem;">No transactions found.</td>
+            </tr>
+            <tr *ngIf="isLoading">
+              <td colspan="4" style="text-align: center; padding: 2rem;">Loading transactions...</td>
             </tr>
           </tbody>
         </table>
 
         <!-- Pagination -->
-        <div class="pagination-container">
+        <div class="pagination-container" *ngIf="transactions.length > 0">
           <span class="pagination-info">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ currentPage === totalPages ? totalItems : currentPage * itemsPerPage }} of
             {{ totalItems }} results</span>
           <div class="pagination-controls">
             <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">
-              < </button>
-                <span *ngFor="let page of [1, 2, 3]; let i = index" class="page-number"
-                  [class.active]="page === currentPage" (click)="goToPage(page)">
-                  {{ page }}
-                </span>
-                <span class="page-number">...</span>
-                <span class="page-number" (click)="goToPage(totalPages)">{{ totalPages }}</span>
-                <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
-                  >
-                </button>
+              &lt; </button>
+            <span *ngFor="let page of [].constructor(totalPages); let i = index" class="page-number"
+              [class.active]="(i + 1) === currentPage" (click)="goToPage(i + 1)">
+              {{ i + 1 }}
+            </span>
+            <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+              &gt;
+            </button>
           </div>
         </div>
       </div>

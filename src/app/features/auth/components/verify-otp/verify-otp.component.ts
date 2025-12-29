@@ -22,7 +22,7 @@ export class VerifyOtpComponent implements OnInit {
     private route: ActivatedRoute,
     private otpService: OtpService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // read email from query params
@@ -59,15 +59,17 @@ export class VerifyOtpComponent implements OnInit {
           this.statusMessage = 'OTP verified. Redirecting to reset password...';
           // short delay so user sees the success message before navigation
           setTimeout(() => {
-            this.router.navigate(['/reset-password'], { queryParams: { email: this.email } });
+            this.router.navigate(['/reset-password'], { queryParams: { email: this.email, otp: this.otp.trim() } });
           }, 600);
         } else {
           this.statusMessage = res.message || 'Invalid OTP. Try again.';
         }
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.statusMessage = 'Verification failed. Try again.';
+        console.error('❌ OTP Verification error:', err);
+        const apiMessage = err.error?.Message || err.error?.message;
+        this.statusMessage = apiMessage || 'Verification failed. Try again.';
       },
     });
   }

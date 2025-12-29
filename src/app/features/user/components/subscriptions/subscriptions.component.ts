@@ -27,6 +27,7 @@ export class SubscriptionsComponent implements OnInit {
   subscriptions: SubscriptionItem[] = [];
   isLoading = false;
   errorMessage = '';
+  userBalance: number = 0;
 
   getProgressPercentage(sub: SubscriptionItem): number {
     // Since we only have remainingVisits, we can't show progress unless we know the total.
@@ -47,6 +48,20 @@ export class SubscriptionsComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserProfile();
     this.loadSubscriptions();
+    this.loadWalletBalance();
+  }
+
+  loadWalletBalance(): void {
+    this.usersService.getWalletBalance().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.userBalance = response.data.balance;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading wallet balance:', error);
+      },
+    });
   }
 
   loadUserProfile(): void {

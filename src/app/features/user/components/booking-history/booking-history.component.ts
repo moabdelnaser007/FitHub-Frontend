@@ -1,24 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { UsersService, User } from '../../../../services/users.service';
+import { BookingService, BookingItem as ApiBookingItem } from '../../../../services/booking.service';
+import { FormsModule } from '@angular/forms';
 
 type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled' | 'No-Show';
 
 interface BookingItem {
-  gym: string;
-  code: string;
-  date: string;
-  credits: number;
-  status: BookingStatus;
+  id: number;
+  branchName: string;
+  scheduledDateTime: string;
+  creditsCost: number;
+  status: string;
+  hasReview: boolean;
 }
 
 @Component({
   selector: 'app-booking-history',
   standalone: true,
-  imports: [CommonModule, NgIf, NgFor, RouterModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, RouterModule, FormsModule, HeaderComponent],
   templateUrl: './booking-history.component.html',
   styleUrls: ['./booking-history.component.css'],
 })
@@ -27,17 +29,21 @@ export class BookingHistoryComponent implements OnInit {
 
   searchTerm = '';
   statusFilter: 'all' | BookingStatus = 'all';
+  userBalance: number = 0;
   currentPage = 1;
   itemsPerPage = 7;
   readonly math = Math;
 
   constructor(
     private usersService: UsersService,
+    private bookingService: BookingService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
+    this.loadWalletBalance();
+    this.loadBookings();
   }
 
 
@@ -55,6 +61,19 @@ export class BookingHistoryComponent implements OnInit {
     });
   }
 
+  loadWalletBalance(): void {
+    this.usersService.getWalletBalance().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.userBalance = response.data.balance;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading wallet balance:', error);
+      },
+    });
+  }
+
   // Review modal state
   showReviewModal = false;
   selectedBookingCode = '';
@@ -63,77 +82,36 @@ export class BookingHistoryComponent implements OnInit {
   reviewText = '';
   isAnonymous = false;
 
-  bookings: BookingItem[] = [
-    {
-      gym: 'PowerUp Fitness - Downtown',
-      code: '#234567',
-      date: 'Nov 10, 2023 at 6:00 PM',
-      credits: 5,
-      status: 'Confirmed',
-    },
-    {
-      gym: 'Zenith Yoga Studio',
-      code: '#198765',
-      date: 'Oct 28, 2023 at 9:00 AM',
-      credits: 3,
-      status: 'Completed',
-    },
-    {
-      gym: 'Iron Temple Gym',
-      code: '#543210',
-      date: 'Oct 22, 2023 at 5:00 PM',
-      credits: 4,
-      status: 'Cancelled',
-    },
-    {
-      gym: 'The Cycling Hub',
-      code: '#987654',
-      date: 'Oct 18, 2023 at 7:30 AM',
-      credits: 4,
-      status: 'No-Show',
-    },
-    {
-      gym: 'AquaFit Center',
-      code: '#112233',
-      date: 'Oct 15, 2023 at 11:00 AM',
-      credits: 6,
-      status: 'Completed',
-    },
-    {
-      gym: 'PowerUp Fitness - Uptown',
-      code: '#445566',
-      date: 'Oct 12, 2023 at 7:00 PM',
-      credits: 5,
-      status: 'Completed',
-    },
-    {
-      gym: 'Zenith Yoga Studio',
-      code: '#778899',
-      date: 'Oct 5, 2023 at 9:00 AM',
-      credits: 3,
-      status: 'Completed',
-    },
-    {
-      gym: 'Urban Boxing Club',
-      code: '#334455',
-      date: 'Sep 30, 2023 at 6:00 PM',
-      credits: 4,
-      status: 'Completed',
-    },
-    {
-      gym: 'Pilates Loft',
-      code: '#221133',
-      date: 'Sep 22, 2023 at 10:00 AM',
-      credits: 2,
-      status: 'Confirmed',
-    },
-  ];
+  // Info modal state
+  showInfoModal = false;
+  infoMessage = '';
+
+  loadBookings(): void {
+    this.bookingService.getMyBookings().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.bookings = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading bookings:', error);
+      }
+    });
+  }
+
+  bookings: BookingItem[] = [];
 
   get filteredBookings(): BookingItem[] {
-    const term = this.searchTerm.toLowerCase();
-    return this.bookings.filter((b) => {
-      const matchesTerm = !term || b.gym.toLowerCase().includes(term);
-      const matchesStatus = this.statusFilter === 'all' || b.status === this.statusFilter;
+    const term = (this.searchTerm || '').toLowerCase();
+    const statusFilterLower = this.statusFilter.toLowerCase();
+
+    return (this.bookings || []).filter((b) => {
+      const branchName = (b.branchName || '').toLowerCase();
+      const status = (b.status || '').toLowerCase();
+
+      const matchesTerm = !term || branchName.includes(term);
+      const matchesStatus = statusFilterLower === 'all' || status === statusFilterLower;
+
       return matchesTerm && matchesStatus;
     });
   }
@@ -165,16 +143,26 @@ export class BookingHistoryComponent implements OnInit {
     if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
-  leaveReview(code: string): void {
-    const booking = this.bookings.find((b) => b.code === code);
+  leaveReview(id: any): void {
+    const bookingId = Number(id);
+    const booking = this.bookings.find((b) => Number(b.id) === bookingId);
     if (booking) {
-      this.selectedBookingCode = code;
-      this.selectedGymName = booking.gym;
-      this.rating = 0;
-      this.reviewText = '';
-      this.isAnonymous = false;
-      this.showReviewModal = true;
+      if (booking.status.toUpperCase() === 'COMPLETED') {
+        this.selectedBookingCode = booking.id.toString();
+        this.selectedGymName = booking.branchName;
+        this.rating = 0;
+        this.reviewText = '';
+        this.isAnonymous = false;
+        this.showReviewModal = true;
+      } else {
+        this.infoMessage = 'You should go to the gym before you can add a review.';
+        this.showInfoModal = true;
+      }
     }
+  }
+
+  closeInfoModal(): void {
+    this.showInfoModal = false;
   }
 
   setRating(stars: number): void {
@@ -187,18 +175,40 @@ export class BookingHistoryComponent implements OnInit {
 
   submitReview(): void {
     if (this.rating === 0) {
-      alert('Please select a rating');
+      this.infoMessage = 'Please select a rating';
+      this.showInfoModal = true;
       return;
     }
-    console.log('Submitting review:', {
-      bookingCode: this.selectedBookingCode,
-      gym: this.selectedGymName,
-      rating: this.rating,
-      review: this.reviewText,
-      anonymous: this.isAnonymous,
+
+    const bookingId = Number(this.selectedBookingCode);
+
+    this.bookingService.submitReview(
+      bookingId,
+      this.rating,
+      this.reviewText,
+      this.isAnonymous
+    ).subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          this.closeReviewModal();
+          this.infoMessage = response.message || 'Review submitted successfully';
+          this.showInfoModal = true;
+          this.loadBookings();
+        } else {
+          this.infoMessage = response.message || 'Failed to submit review';
+          this.showInfoModal = true;
+        }
+      },
+      error: (error) => {
+        console.error('Error submitting review:', error);
+        if (error.error && error.error.message) {
+          this.infoMessage = error.error.message;
+        } else {
+          this.infoMessage = 'An error occurred while submitting your review. Please try again.';
+        }
+        this.showInfoModal = true;
+      }
     });
-    // Here you would typically call a service to submit the review
-    this.closeReviewModal();
   }
 
   logout(): void {

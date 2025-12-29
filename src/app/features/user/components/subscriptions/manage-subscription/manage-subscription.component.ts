@@ -25,6 +25,7 @@ export class ManageSubscriptionComponent implements OnInit {
   subscriptionId: number | null = null;
   isLoading = true;
   errorMessage = '';
+  userBalance: number = 0;
 
   // Billing history (Still hardcoded as per current API scope)
 
@@ -63,10 +64,24 @@ export class ManageSubscriptionComponent implements OnInit {
       this.subscriptionId = +idParam;
       this.loadUserProfile();
       this.loadSubscriptionDetails();
+      this.loadWalletBalance();
     } else {
       this.errorMessage = 'Invalid Subscription ID';
       this.isLoading = false;
     }
+  }
+
+  loadWalletBalance(): void {
+    this.usersService.getWalletBalance().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.userBalance = response.data.balance;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading wallet balance:', error);
+      },
+    });
   }
 
   loadUserProfile(): void {
@@ -104,12 +119,35 @@ export class ManageSubscriptionComponent implements OnInit {
   }
 
   cancelSubscription(): void {
-    console.log('Cancelling subscription for:', this.subscription?.branchName);
-    // Add cancel subscription logic here
+    if (!this.subscriptionId || !this.subscription) return;
+
+    if (confirm(`Are you sure you want to cancel your subscription to ${this.subscription.branchName}?`)) {
+      this.isLoading = true;
+      this.subscriptionService.cancelSubscription(this.subscriptionId).subscribe({
+        next: (success) => {
+          if (success) {
+            alert('Subscription cancelled successfully.');
+            this.loadSubscriptionDetails(); // Reload to update status
+          } else {
+            alert('Failed to cancel subscription.');
+          }
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error cancelling subscription:', error);
+          alert('An error occurred while cancelling your subscription.');
+          this.isLoading = false;
+        }
+      });
+    }
   }
 
   backToSubscriptions(): void {
     this.router.navigate(['/subscriptions']);
+  }
+
+  goToRecharge(): void {
+    this.router.navigate(['/choose-plan-payment']);
   }
 
   onLogout(): void {

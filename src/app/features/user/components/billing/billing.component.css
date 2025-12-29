@@ -231,31 +231,85 @@ nav a.active {
   gap: 22px;
 }
 
-.page-header {
+/* Balance Card in Main Content */
+.balance-card-container {
+  margin-bottom: 32px;
+}
+
+.balance-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary) 0%, #1e43cc 100%);
+  color: #fff;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.25);
+  overflow: hidden;
+  position: relative;
+}
+
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 220px;
+  height: 220px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.balance-info {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-  padding: 20px 24px;
+  position: relative;
+  z-index: 1;
 }
 
-.page-title {
-  font-size: 28px;
+.balance-label {
+  font-weight: 500;
+  opacity: 0.88;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.balance-amount {
+  font-size: 36px;
   font-weight: 800;
-  color: #111827;
+  line-height: 1;
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
 }
 
-.page-sub {
-  font-size: 15px;
-  color: #6b7280;
-  margin: 0;
+.balance-valid {
+  font-size: 12px;
+  opacity: 0.82;
   font-weight: 400;
+}
+
+.btn-recharge {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  box-shadow: none;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-recharge:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Cards */

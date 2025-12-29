@@ -75,10 +75,22 @@
 
     <!-- Main Content Area -->
     <main class="profile-container">
-      <div class="page-header">
-        <div>
-          <h2 class="page-title">My Subscriptions</h2>
-          <p class="page-sub">View your active gym subscriptions and track your visits.</p>
+      <!-- Current Balance Card in Main Content -->
+      <div class="balance-card-container">
+        <div class="balance-card">
+          <div class="balance-info">
+            <div class="balance-label">Current Balance</div>
+            <div class="balance-amount">{{ userBalance }} Credits</div>
+            <div class="balance-valid">Valid until Dec 30, 2024</div>
+          </div>
+          <button class="btn btn-primary btn-recharge" (click)="goToRecharge()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="width: 18px; height: 18px; margin-right: 8px;">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Recharge Balance
+          </button>
         </div>
       </div>
 

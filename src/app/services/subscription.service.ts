@@ -88,4 +88,18 @@ export class SubscriptionService {
             })
         );
     }
+
+    cancelSubscription(subscriptionId: number): Observable<boolean> {
+        return this.http.post<SubscriptionApiResponse>(
+            `${this.apiUrl}/${subscriptionId}/cancel`,
+            {},
+            { headers: this.getHeaders() }
+        ).pipe(
+            map(response => response && response.isSuccess),
+            catchError(error => {
+                console.error('Error cancelling subscription:', error);
+                return throwError(() => error);
+            })
+        );
+    }
 }

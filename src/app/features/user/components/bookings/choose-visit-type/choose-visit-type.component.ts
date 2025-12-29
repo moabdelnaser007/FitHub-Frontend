@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../../shared/components/header/header.component';
 import { SubscriptionService, ActiveSubscription } from '../../../../../services/subscription.service';
+import { BookingService } from '../../../../../services/booking.service';
 
 @Component({
     selector: 'app-choose-visit-type',
@@ -29,7 +30,8 @@ export class ChooseVisitTypeComponent implements OnInit {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private subscriptionService: SubscriptionService
+        private subscriptionService: SubscriptionService,
+        private bookingService: BookingService
     ) { }
 
     ngOnInit(): void {
@@ -88,15 +90,57 @@ export class ChooseVisitTypeComponent implements OnInit {
     }
 
     continue(): void {
-        // Navigate to confirmation (mock)
-        console.log('Continuing with:', this.selectedType);
+        if (this.selectedType === 'single') {
+            this.handleSingleVisitBooking();
+        } else {
+            // Subscription booking logic (mock for now or as per existing flow)
+            this.navigateToConfirmation();
+        }
+    }
+
+    private handleSingleVisitBooking(): void {
+        // Construct scheduledDateTime: date is YYYY-MM-DD, time is HH:mm AM/PM
+        let scheduledDateTime = '';
+        try {
+            const [year, month, day] = this.date.split('-').map(Number);
+            let [timeStr, modifier] = this.time.split(' ');
+            let [hours, minutes] = timeStr.split(':').map(Number);
+
+            if (modifier === 'PM' && hours < 12) hours += 12;
+            if (modifier === 'AM' && hours === 12) hours = 0;
+
+            const dateObj = new Date(year, month - 1, day, hours, minutes);
+            scheduledDateTime = dateObj.toISOString();
+        } catch (e) {
+            console.error('Error parsing date/time', e);
+            // Fallback to current time if parsing fails
+            scheduledDateTime = new Date().toISOString();
+        }
+
+        this.bookingService.createBooking(this.gymId, scheduledDateTime).subscribe({
+            next: (response) => {
+                if (response.isSuccess) {
+                    this.navigateToConfirmation(response.data);
+                } else {
+                    alert(response.message || 'Booking failed');
+                }
+            },
+            error: (err) => {
+                console.error('Booking API error', err);
+                alert('An error occurred while confirming your booking.');
+            }
+        });
+    }
+
+    private navigateToConfirmation(bookingCode?: string): void {
         this.router.navigate(['/booking-confirmation'], {
             queryParams: {
                 type: this.selectedType,
                 gymName: this.gymName,
                 date: this.date,
                 time: this.time,
-                cost: this.selectedType === 'single' ? this.cost : 0
+                cost: this.selectedType === 'single' ? this.cost : 0,
+                bookingCode: bookingCode
             }
         });
     }

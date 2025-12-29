@@ -30,6 +30,7 @@ export class BookingConfirmationComponent implements OnInit {
       if (params['date']) this.date = params['date'];
       if (params['time']) this.time = params['time'];
       if (params['cost']) this.creditsUsed = Number(params['cost']);
+      if (params['bookingCode']) this.bookingCode = params['bookingCode'];
 
       // If we had gymID, we could fetch address, but we'll leave placeholder for now
       // dependent on what was passed or if we fetch details again
