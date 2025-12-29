@@ -1,56 +1,64 @@
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="admin-layout">
-  
 
-   
-<aside class="gym-owner-sidebar">
-  <div class="sidebar-content">
-    <!-- Logo Section -->
-    <div class="logo-section">
-      <div class="logo-wrapper">
-        <div class="logo-icon"></div>
-        <h1 class="logo-text">FitHub</h1>
+
+
+  <aside class="gym-owner-sidebar">
+    <!-- New Sidebar Header matching Admin -->
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-mark">F</div>
+        FitHub
+      </div>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="logo-section">
+        <!-- Main Navigation -->
+        <nav class="nav-menu">
+          <a *ngFor="let item of menuItems" [routerLink]="item.route" class="nav-item" [class.active]="item.active"
+            (click)="setActiveMenuItem(item)">
+            <span class="material-symbols-outlined">{{ item.icon }}</span>
+            <p>{{ item.label }}</p>
+          </a>
+        </nav>
       </div>
 
-      <!-- Main Navigation -->
-      <nav class="nav-menu">
-        <a
-          *ngFor="let item of menuItems"
-          [routerLink]="item.route"
-          class="nav-item"
-          [class.active]="item.active"
-          (click)="setActiveMenuItem(item)"
-        >
-          <span class="material-symbols-outlined">{{ item.icon }}</span>
-          <p>{{ item.label }}</p>
+      <!-- Bottom Section -->
+      <div class="bottom-section">
+        <a class="nav-item" (click)="onProfile()">
+          <span class="material-symbols-outlined">account_circle</span>
+          <p>Profile</p>
         </a>
-      </nav>
+        <a class="nav-item" (click)="onLogout()">
+          <span class="material-symbols-outlined">logout</span>
+          <p>Logout</p>
+        </a>
+      </div>
     </div>
-
-    <!-- Bottom Section -->
-    <div class="bottom-section">
-      <a class="nav-item" (click)="onProfile()">
-        <span class="material-symbols-outlined">account_circle</span>
-        <p>Profile</p>
-      </a>
-      <a class="nav-item" (click)="onLogout()">
-        <span class="material-symbols-outlined">logout</span>
-        <p>Logout</p>
-      </a>
-    </div>
-  </div>
-</aside>
+  </aside>
 
   <!-- Main content -->
   <div class="content">
-      
 
-    <!-- Header 
+    <!-- Header -->
     <header class="header">
-      <h3>Admin</h3>
-      <button>Logout</button>
-    </header> -->
+      <div class="header-left">
+        <!-- Removed Brand text as per Admin refinements if implied, but user said "like admin header" which has Brand text/Logo in Sidebar and Brand Text in Header originally, then removed 
+      Wait, in Step 858 I removed the brand from Top Header. Admin Top Header is CLEAN (Empty).
+      I will follow the CLEAN Admin Top Header style. Empty left, empty center, empty right. 
+      Actually, let's keep it consistent: Sidebar has Brand. Top Header is Dark Bar. -->
+      </div>
+
+      <div class="header-center">
+      </div>
+
+      <div class="header-right">
+      </div>
+    </header>
 
     <!-- Pages here -->
     <main class="page">
@@ -60,8 +68,3 @@
   </div>
 
 </div>
-
-
-
-
-

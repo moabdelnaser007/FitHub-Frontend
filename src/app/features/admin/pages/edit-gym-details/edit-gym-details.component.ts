@@ -269,7 +269,7 @@ export class EditGymComponent implements OnInit {
 
   onCancel(): void {
     if (confirm('Are you sure you want to discard changes?')) {
-      this.router.navigate(['/admin/gym-management']);
+      this.router.navigate(['/admin/manage-gyms']);
     }
   }
 

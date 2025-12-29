@@ -1,0 +1,102 @@
+<div class="assign-staff-page">
+  
+  <!-- Page Header -->
+  <header>
+    <h1>Assign Staff to Branch</h1>
+    <p>Select unassigned staff members to assign to this branch</p>
+  </header>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading unassigned staff...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading">
+    
+    <!-- No Unassigned Staff -->
+    <div *ngIf="unassignedStaff.length === 0" class="empty-state">
+      <span class="material-symbols-outlined">person_off</span>
+      <h3>No Unassigned Staff Members</h3>
+      <p>All staff members are currently assigned to branches.</p>
+      <button class="btn-primary" (click)="onCancel()">
+        Back to Branch Details
+      </button>
+    </div>
+
+    <!-- Staff List -->
+    <div *ngIf="unassignedStaff.length > 0" class="staff-card">
+      
+      <!-- Select All Header -->
+      <div class="select-all-header">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="selectAll"
+            (change)="onToggleSelectAll()"
+          />
+          <span>Select All ({{ selectedStaffIds.length }} selected)</span>
+        </label>
+      </div>
+
+      <!-- Staff List -->
+      <div class="staff-list">
+        <div 
+          *ngFor="let staff of unassignedStaff" 
+          class="staff-item"
+          [class.selected]="isStaffSelected(staff.id)"
+        >
+          <label class="staff-checkbox">
+            <input 
+              type="checkbox"
+              [checked]="isStaffSelected(staff.id)"
+              (change)="toggleStaffSelection(staff.id)"
+            />
+            <div class="staff-info">
+              <div class="staff-avatar">
+                <span class="material-symbols-outlined">person</span>
+              </div>
+              <div class="staff-details">
+                <h4>{{ staff.fullName }}</h4>
+                <p class="staff-email">{{ staff.email }}</p>
+                <div class="staff-meta">
+                  <span class="meta-item">
+                    <span class="material-symbols-outlined">phone</span>
+                    {{ staff.phone }}
+                  </span>
+                  <span class="meta-item">
+                    <span class="material-symbols-outlined">location_on</span>
+                    {{ staff.city }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Actions Footer -->
+      <div class="actions-footer">
+        <button 
+          class="btn-cancel" 
+          (click)="onCancel()"
+          [disabled]="isAssigning"
+        >
+          Cancel
+        </button>
+        <button 
+          class="btn-assign" 
+          (click)="onAssignSelected()"
+          [disabled]="selectedStaffIds.length === 0 || isAssigning"
+        >
+          <span class="material-symbols-outlined" *ngIf="!isAssigning">check</span>
+          <span>{{ isAssigning ? 'Assigning...' : 'Assign Selected (' + selectedStaffIds.length + ')' }}</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

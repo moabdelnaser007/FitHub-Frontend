@@ -10,7 +10,39 @@
   background: #f8fafc;
   min-height: 100vh;
 }
+/* ضيف في branch-details.component.css */
 
+.staff-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: white;
+  color: #3b82f6;
+  border: 2px solid #3b82f6;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.btn-secondary .material-symbols-outlined {
+  font-size: 20px;
+}
 /* ============================================
    Loading & Error States
    ============================================ */

@@ -7,8 +7,8 @@
 
   <!-- Content -->
   <div *ngIf="!isLoading" class="details-layout">
-    <!-- Main Content -->
-    <div class="main-content">
+    <!-- Left Column -->
+    <div class="left-column">
       <!-- Personal Information Card -->
       <div class="info-card">
         <div class="card-header">
@@ -35,33 +35,7 @@
           </div>
         </div>
       </div>
-
-      <!-- Activity Overview Card -->
-      <div class="info-card">
-        <div class="card-header">
-          <h2 class="card-title">Activity Overview</h2>
-        </div>
-        <div class="card-body">
-          <div class="activity-grid">
-            <div class="activity-item">
-              <label class="info-label">Number of bookings</label>
-              <p class="activity-value">{{ user.numberOfBookings }}</p>
-            </div>
-            <div class="activity-item">
-              <label class="info-label">Last login</label>
-              <p class="info-value">{{ user.lastLogin }}</p>
-            </div>
-            <div class="activity-item">
-              <label class="info-label">Membership/Plan</label>
-              <p class="info-value">{{ user.membership }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
+<br>
       <!-- Account Information Card -->
       <div class="info-card">
         <div class="card-header">
@@ -88,11 +62,13 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Actions Card -->
-      <div class="info-card">
+    <!-- Right Column - Actions -->
+    <div class="right-column">
+      <div class="info-card2">
         <div class="card-body">
-          <h2 class="card-title actions-title">Actions</h2>
+          <h2 class="card-title actions-title"></h2>
           <div class="actions-buttons">
             <button class="btn btn-primary" (click)="onEditUser()">
               <span class="material-icons">edit</span>

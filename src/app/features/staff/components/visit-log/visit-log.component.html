@@ -1,0 +1,67 @@
+<div class="visit-page">
+    <div class="admin-page-header">
+        <div>
+            <h1>Visit Log</h1>
+            <p>View history of member check-ins for your branch.</p>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+        <p>Loading visits...</p>
+    </div>
+
+    <div *ngIf="error" class="error-msg">
+        {{ error }}
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" [(ngModel)]="searchTerm" placeholder="Search by branch name...">
+        </div>
+
+        <div class="filter-dropdown">
+            <button class="filter-btn" (click)="toggleFilter()">
+                <span class="material-symbols-outlined">filter_list</span>
+                {{ filterType === 'ALL' ? 'All Visits' : filterType === 'FREE' ? 'Free Visits' : 'Deducted Visits' }}
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="dropdown-menu" *ngIf="isDropdownOpen">
+                <div class="dropdown-item" (click)="setFilter('ALL')" [class.active]="filterType === 'ALL'">All Visits
+                </div>
+                <div class="dropdown-item" (click)="setFilter('FREE')" [class.active]="filterType === 'FREE'">Free /
+                    Unlimited</div>
+                <div class="dropdown-item" (click)="setFilter('DEDUCTED')" [class.active]="filterType === 'DEDUCTED'">
+                    Deducted (Debit)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading && !error">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Branch Name</th>
+                    <th>Check-in Time</th>
+                    <th>Credits Deducted</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let log of filteredLogs">
+                    <td>#{{ log.visitId }}</td>
+                    <td>{{ log.branchName }}</td>
+                    <td>{{ log.checkInTime | date:'medium' }}</td>
+                    <td>
+                        <span class="credits-badge" [class.free]="log.creditsDeducted === 0">
+                            {{ log.creditsDeducted > 0 ? '-' + log.creditsDeducted : 'Free/Unlimited' }}
+                        </span>
+                    </td>
+                </tr>
+                <tr *ngIf="logs.length === 0">
+                    <td colspan="4" class="empty-state">No visits recorded yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

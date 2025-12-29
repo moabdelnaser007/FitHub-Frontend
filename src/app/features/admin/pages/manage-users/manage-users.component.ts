@@ -168,7 +168,7 @@ export class ManageUsersComponent implements OnInit {
 
   onAddUser(): void {
     console.log('Add new user');
-    this.router.navigate(['/admin/add-user']);
+    this.router.navigate(['/auth/register']);
   }
 
   getStatusClass(status: string): string {

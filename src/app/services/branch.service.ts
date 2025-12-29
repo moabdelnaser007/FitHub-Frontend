@@ -92,7 +92,7 @@ export interface DeleteBranchResponse {
 export class BranchService {
   private apiUrl = `${environment.apiBaseUrl}/owner/Branch`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('fitHubToken');
@@ -194,7 +194,7 @@ export class BranchService {
 
   deleteBranch(id: number): Observable<boolean> {
     return this.http
-      .delete<DeleteBranchResponse>(`${this.apiUrl}/DeleteGymBranch?id=${id}`, {
+      .delete<DeleteBranchResponse>(`${this.apiUrl}/DeleteGymBranch/${id}`, { // ✅ غيرت من ?id= لـ /{id}
         headers: this.getHeaders(),
       })
       .pipe(
@@ -210,5 +210,36 @@ export class BranchService {
           return throwError(() => new Error(error.message || 'Error deleting branch'));
         })
       );
+  }
+
+  addImagesToBranch(id: number, images: File[]): Observable<any> {
+    const formData = new FormData();
+    images.forEach((file) => {
+      formData.append('images', file);
+    });
+
+    const token = localStorage.getItem('fitHubToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.post(`${this.apiUrl}/AddImagesToBranch/${id}`, formData, { headers });
+  }
+
+  getBranchImages(branchId: number): Observable<any> {
+    const token = localStorage.getItem('fitHubToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get(`${this.apiUrl}/GetBranchImages?branchId=${branchId}`, { headers });
+  }
+
+  deleteBranchImage(branchId: number, imageName: string): Observable<any> {
+    const token = localStorage.getItem('fitHubToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    // Assuming endpoint structure based on GetBranchImages
+    return this.http.delete(`${this.apiUrl}/DeleteBranchImage/${branchId}?imageName=${imageName}`, { headers });
   }
 }

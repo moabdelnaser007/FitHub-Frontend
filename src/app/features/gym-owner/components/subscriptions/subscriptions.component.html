@@ -1,0 +1,80 @@
+<div class="container">
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="header-section">
+                <div class="header-text">
+                    <h1>Subscriptions</h1>
+                    <p>Manage and track all subscriptions for your gym branches.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <span class="material-symbols-outlined search-icon">search</span>
+                        <input type="text" placeholder="Search by branch..." [(ngModel)]="searchText"
+                            (keyup)="onSearch()" />
+                    </div>
+                    <div class="filter-container" style="position: relative;">
+                        <button class="filter-btn" (click)="onFilter()">
+                            <span class="material-symbols-outlined">filter_list</span>
+                            {{ selectedStatus ? selectedStatus : 'Filter' }}
+                        </button>
+                        <div *ngIf="showFilterMenu" class="filter-dropdown">
+                            <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
+                            <div *ngFor="let status of uniqueStatuses" class="filter-item"
+                                (click)="selectStatusFilter(status)">
+                                {{ status }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table *ngIf="!isLoading && !error">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>BRANCH</th>
+                                <th>PLAN</th>
+                                <th>REMAINING VISITS</th>
+                                <th>END DATE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let sub of subscriptions">
+                                <td>#{{ sub.subscriptionId }}</td>
+                                <td>{{ sub.branchName }}</td>
+                                <td>{{ sub.planName }}</td>
+                                <td>{{ sub.remainingVisits }}</td>
+                                <td>{{ sub.endDate | date:'medium' }}</td>
+                                <td>
+                                    <span [class]="'status-badge ' + getStatusClass(sub.status)">
+                                        {{ sub.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div *ngIf="isLoading" class="loading-state">
+                        <p>Loading subscriptions...</p>
+                    </div>
+
+                    <div *ngIf="error" class="error-state">
+                        <p>{{ error }}</p>
+                    </div>
+                </div>
+
+                <div class="table-footer" *ngIf="!isLoading && !error">
+                    <span class="footer-text">Showing {{ subscriptions.length }} entries</span>
+                    <div class="pagination">
+                        <button (click)="onPrevious()">Previous</button>
+                        <button (click)="onNext()">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

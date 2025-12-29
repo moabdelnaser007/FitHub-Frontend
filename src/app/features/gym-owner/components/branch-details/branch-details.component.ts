@@ -40,6 +40,7 @@ export class BranchDetailsComponent implements OnInit {
   };
 
   amenities: string[] = [];
+  branchImages: any[] = [];
 
   operatingHours = {
     openingTime: '',
@@ -60,13 +61,13 @@ export class BranchDetailsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private branchService: BranchService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const branchId = this.route.snapshot.paramMap.get('id');
-    
+
     console.log('🟢 Branch ID from URL:', branchId);
-    
+
     if (branchId) {
       this.branchId = parseInt(branchId);
       this.loadBranchDetails(this.branchId);
@@ -84,7 +85,7 @@ export class BranchDetailsComponent implements OnInit {
     this.branchService.getBranchById(branchId).subscribe({
       next: (branch: BranchData) => {
         console.log('✅ Branch data received:', branch);
-        
+
         // Update branch info
         this.branchInfo = {
           name: branch.branchName,
@@ -112,9 +113,12 @@ export class BranchDetailsComponent implements OnInit {
 
         // Parse working days
         this.parseWorkingDays(branch.workingDays);
-        
+
         this.isLoading = false;
         console.log('✅ All data loaded successfully');
+
+        // Load images after loading branch details
+        this.loadBranchImages(branchId);
       },
       error: (error) => {
         console.error('❌ Error loading branch:', error);
@@ -124,9 +128,42 @@ export class BranchDetailsComponent implements OnInit {
     });
   }
 
+  loadBranchImages(branchId: number): void {
+    this.branchService.getBranchImages(branchId).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.branchImages = res.data;
+          console.log('✅ Branch images loaded:', this.branchImages);
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error loading images:', err);
+      }
+    });
+  }
+
+  deleteImage(imageName: string): void {
+    if (!confirm('Are you sure you want to delete this image?')) return;
+
+    this.branchService.deleteBranchImage(this.branchId, imageName).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.branchImages = this.branchImages.filter(img => img.imageName !== imageName);
+          console.log('✅ Image deleted successfully');
+        } else {
+          alert(res.message || 'Failed to delete image');
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error deleting image:', err);
+        // alert('An error occurred while deleting the image');
+      }
+    });
+  }
+
   formatTime(time: string): string {
     if (!time) return 'N/A';
-    
+
     try {
       // Format: "9.00:00:00" -> "09:00"
       // The hour is BEFORE the dot, minutes are AFTER the dot
@@ -136,10 +173,10 @@ export class BranchDetailsComponent implements OnInit {
         const timePart = parts[1]; // "00:00:00"
         const timeComponents = timePart.split(':');
         const minutes = timeComponents[0] || '00'; // Minutes are first component after dot
-        
+
         return `${hour.toString().padStart(2, '0')}:${minutes.padStart(2, '0')}`;
       }
-      
+
       // Fallback: Format "09:00:00" -> "09:00"
       const timeParts = time.split(':');
       if (timeParts.length >= 2) {
@@ -148,7 +185,7 @@ export class BranchDetailsComponent implements OnInit {
     } catch (e) {
       console.error('Error formatting time:', e, 'Input:', time);
     }
-    
+
     return time;
   }
 
@@ -160,16 +197,16 @@ export class BranchDetailsComponent implements OnInit {
       'Male': 'Males Only',
       'Female': 'Females Only'
     };
-    
+
     return genderMap[genderType] || genderType;
   }
 
   parseAmenities(amenitiesStr: string): string[] {
     if (!amenitiesStr) return [];
-    
+
     // Split by comma and format names
     const amenityNames = amenitiesStr.split(',').map(a => a.trim());
-    
+
     // Format amenity names for display (add spaces before capitals)
     return amenityNames.map(name => {
       // Convert "SwimmingPool" to "Swimming Pool"
@@ -180,10 +217,10 @@ export class BranchDetailsComponent implements OnInit {
 
   parseWorkingDays(workingDaysStr: string): void {
     if (!workingDaysStr) return;
-    
+
     // Reset all days
     this.workingDays.forEach(day => day.active = false);
-    
+
     const dayMap: { [key: string]: string } = {
       'sunday': 'Sun',
       'monday': 'Mon',
@@ -193,9 +230,9 @@ export class BranchDetailsComponent implements OnInit {
       'friday': 'Fri',
       'saturday': 'Sat'
     };
-    
+
     const activeDays = workingDaysStr.toLowerCase().split(',').map(d => d.trim());
-    
+
     activeDays.forEach(dayName => {
       const shortDay = dayMap[dayName];
       if (shortDay) {
@@ -206,7 +243,12 @@ export class BranchDetailsComponent implements OnInit {
   }
 
   onManagePlans(): void {
-    console.log('Manage Plans clicked');
+    // Debugging: Alert to confirm interaction and ID
+    // alert(`Navigating to plans for branch ID: ${this.branchId}`); 
+    console.log('Manage Plans clicked - Redirecting to Plans', this.branchId);
+
+    // Use navigateByUrl for absolute certainty
+    this.router.navigateByUrl(`/gym-owner/subscription-plans/${this.branchId}`);
   }
 
   onManageStaff(): void {
@@ -227,5 +269,9 @@ export class BranchDetailsComponent implements OnInit {
 
   onEditBranch(): void {
     this.router.navigate(['/gym-owner/edit-branch', this.branchId]);
+  }
+  onAssignNewStaff(): void {
+    console.log('Navigate to assign unassigned staff for branch:', this.branchId);
+    this.router.navigate(['/gym-owner/assign-staff', this.branchId]);
   }
 }
