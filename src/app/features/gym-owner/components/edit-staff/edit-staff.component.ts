@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StaffService, StaffMember, UpdateStaffRequest } from '../../../../services/staff.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 @Component({
   selector: 'app-edit-staff',
@@ -17,6 +18,7 @@ export class EditStaffComponent implements OnInit {
   isLoading: boolean = true;
   isSaving: boolean = false;
   loadError: string | null = null;
+  cities = EGYPT_CITIES;
 
   // Form Data
   fullName: string = '';

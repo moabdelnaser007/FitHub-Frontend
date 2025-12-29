@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BranchService, CreateBranchRequest } from '../../../../services/branch.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 interface Amenity {
   name: string;
@@ -23,8 +24,9 @@ interface WeekDay {
   styleUrls: ['./add-branch.component.css']
 })
 export class AddBranchComponent {
-  
+
   isSubmitting: boolean = false;
+  cities = EGYPT_CITIES;
 
   // Branch Information
   branchName: string = '';
@@ -37,7 +39,7 @@ export class AddBranchComponent {
   // Operating Hours
   openingTime: string = '06:00';
   closingTime: string = '22:00';
-  
+
   // Working Days
   weekDays: WeekDay[] = [
     { label: 'Sun', value: 'sunday', selected: true },
@@ -67,12 +69,12 @@ export class AddBranchComponent {
   amenities: Amenity[] = [
     { name: 'Wifi', selected: false },
     { name: 'Parking', selected: false },
-     { name: 'Locker', selected: false },
+    { name: 'Locker', selected: false },
     { name: 'Shower', selected: false },
-   
+
     { name: 'Sauna', selected: false },
     { name: 'SwimmingPool', selected: false },
-   { name: 'AirConditioning', selected: false },
+    { name: 'AirConditioning', selected: false },
     { name: 'PersonalTrainer', selected: false }
 
   ];
@@ -80,7 +82,7 @@ export class AddBranchComponent {
   constructor(
     private router: Router,
     private branchService: BranchService
-  ) {}
+  ) { }
 
   toggleDay(day: WeekDay): void {
     day.selected = !day.selected;
@@ -88,7 +90,7 @@ export class AddBranchComponent {
 
   formatTimeForAPI(time: string): string {
     if (!time) return '0.00:00:00';
-    
+
     try {
       const [hours, minutes] = time.split(':');
       return `${parseInt(hours)}.${minutes}:00:00`;
@@ -100,7 +102,7 @@ export class AddBranchComponent {
 
   getWorkingDaysString(): string {
     const activeDays = this.weekDays.filter(day => day.selected);
-    
+
     const dayMap: { [key: string]: string } = {
       'Sun': 'Sunday',
       'Mon': 'Monday',
@@ -110,7 +112,7 @@ export class AddBranchComponent {
       'Fri': 'Friday',
       'Sat': 'Saturday'
     };
-    
+
     return activeDays.map(day => dayMap[day.label]).join(',');
   }
 

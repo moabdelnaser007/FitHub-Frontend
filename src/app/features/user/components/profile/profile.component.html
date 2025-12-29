@@ -128,7 +128,10 @@
               </div>
               <div class="form-row full">
                 <label for="city">City</label>
-                <input id="city" type="text" formControlName="city" />
+                <select id="city" formControlName="city">
+                  <option value="" disabled>Select your city</option>
+                  <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+                </select>
               </div>
             </div>
 

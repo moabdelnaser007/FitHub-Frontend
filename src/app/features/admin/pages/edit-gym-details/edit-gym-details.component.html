@@ -29,55 +29,33 @@
         <div class="form-grid">
           <div class="form-group">
             <label for="gym-name" class="form-label">Gym Name *</label>
-            <input
-              type="text"
-              id="gym-name"
-              class="form-input"
-              [(ngModel)]="branchData.name"
-              placeholder="Enter gym name"
-            />
+            <input type="text" id="gym-name" class="form-input" [(ngModel)]="branchData.name"
+              placeholder="Enter gym name" />
           </div>
 
           <div class="form-group">
             <label for="phone" class="form-label">Phone Number *</label>
-            <input
-              type="tel"
-              id="phone"
-              class="form-input"
-              [(ngModel)]="branchData.phone"
-              placeholder="+20 123 456 7890"
-            />
+            <input type="tel" id="phone" class="form-input" [(ngModel)]="branchData.phone"
+              placeholder="+20 123 456 7890" />
           </div>
 
           <div class="form-group form-group-full">
             <label for="address" class="form-label">Full Address *</label>
-            <input
-              type="text"
-              id="address"
-              class="form-input"
-              [(ngModel)]="branchData.address"
-              placeholder="Enter full address"
-            />
+            <input type="text" id="address" class="form-input" [(ngModel)]="branchData.address"
+              placeholder="Enter full address" />
           </div>
 
           <div class="form-group">
             <label for="city" class="form-label">City *</label>
-            <input
-              type="text"
-              id="city"
-              class="form-input"
-              [(ngModel)]="branchData.city"
-              placeholder="Enter city"
-            />
+            <select id="city" class="form-select" [(ngModel)]="branchData.city">
+              <option value="" disabled>Select city</option>
+              <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+            </select>
           </div>
 
           <div class="form-group">
             <label for="gender-type" class="form-label">Gender Type *</label>
-            <select
-              id="gender-type"
-              class="form-select"
-              [(ngModel)]="genderType"
-            >
+            <select id="gender-type" class="form-select" [(ngModel)]="genderType">
               <option value="">Select gender type</option>
               <option value="Mixed">Mixed</option>
               <option value="MaleOnly">Male Only</option>
@@ -87,25 +65,14 @@
 
           <div class="form-group">
             <label for="visit-cost" class="form-label">Visit Credits Cost</label>
-            <input
-              type="number"
-              id="visit-cost"
-              class="form-input"
-              [(ngModel)]="branchData.visitCreditsCost"
-              placeholder="Enter cost"
-              min="0"
-            />
+            <input type="number" id="visit-cost" class="form-input" [(ngModel)]="branchData.visitCreditsCost"
+              placeholder="Enter cost" min="0" />
           </div>
 
           <div class="form-group form-group-full">
             <label for="description" class="form-label">Description</label>
-            <textarea
-              id="description"
-              class="form-input"
-              [(ngModel)]="branchData.description"
-              placeholder="Enter gym description"
-              rows="3"
-            ></textarea>
+            <textarea id="description" class="form-input" [(ngModel)]="branchData.description"
+              placeholder="Enter gym description" rows="3"></textarea>
           </div>
         </div>
       </div>
@@ -120,12 +87,7 @@
             <div class="status-row">
               <p class="status-text">Set gym as active or inactive</p>
               <label class="status-toggle">
-                <input
-                  type="checkbox"
-                  class="toggle-input"
-                  [checked]="isActive"
-                  (change)="onToggleStatus()"
-                />
+                <input type="checkbox" class="toggle-input" [checked]="isActive" (change)="onToggleStatus()" />
                 <div class="toggle-slider"></div>
                 <span class="status-label">{{ getStatusLabel(branchStatus) }}</span>
               </label>
@@ -140,21 +102,11 @@
             <div class="hours-inputs">
               <div class="form-group">
                 <label for="opening-time" class="form-label">Opening Time</label>
-                <input
-                  type="time"
-                  id="opening-time"
-                  class="form-input"
-                  [(ngModel)]="operatingHours.opening"
-                />
+                <input type="time" id="opening-time" class="form-input" [(ngModel)]="operatingHours.opening" />
               </div>
               <div class="form-group">
                 <label for="closing-time" class="form-label">Closing Time</label>
-                <input
-                  type="time"
-                  id="closing-time"
-                  class="form-input"
-                  [(ngModel)]="operatingHours.closing"
-                />
+                <input type="time" id="closing-time" class="form-input" [(ngModel)]="operatingHours.closing" />
               </div>
             </div>
           </div>
@@ -166,13 +118,8 @@
         <h2 class="form-card-title">Working Days *</h2>
         <div class="working-days-section">
           <div class="days-grid">
-            <button
-              *ngFor="let day of weekDays"
-              class="day-btn"
-              [class.active]="day.selected"
-              (click)="toggleDay(day)"
-              type="button"
-            >
+            <button *ngFor="let day of weekDays" class="day-btn" [class.active]="day.selected" (click)="toggleDay(day)"
+              type="button">
               {{ day.label }}
             </button>
           </div>
@@ -183,16 +130,8 @@
       <div class="form-card">
         <h2 class="form-card-title">Amenities</h2>
         <div class="amenities-grid">
-          <label
-            *ngFor="let amenity of amenities"
-            class="amenity-checkbox"
-            [class.selected]="amenity.selected"
-          >
-            <input
-              type="checkbox"
-              [(ngModel)]="amenity.selected"
-              (change)="toggleAmenity(amenity)"
-            />
+          <label *ngFor="let amenity of amenities" class="amenity-checkbox" [class.selected]="amenity.selected">
+            <input type="checkbox" [(ngModel)]="amenity.selected" (change)="toggleAmenity(amenity)" />
             <span class="amenity-icon">
               <span class="material-symbols-outlined" *ngIf="amenity.selected">check_circle</span>
               <span class="material-symbols-outlined" *ngIf="!amenity.selected">radio_button_unchecked</span>
@@ -205,20 +144,10 @@
 
     <!-- Action Footer -->
     <div class="action-footer">
-      <button
-        class="btn btn-cancel"
-        (click)="onCancel()"
-        [disabled]="isSaving"
-        type="button"
-      >
+      <button class="btn btn-cancel" (click)="onCancel()" [disabled]="isSaving" type="button">
         Cancel
       </button>
-      <button
-        class="btn btn-save"
-        (click)="onSave()"
-        [disabled]="isSaving"
-        type="button"
-      >
+      <button class="btn btn-save" (click)="onSave()" [disabled]="isSaving" type="button">
         {{ isSaving ? 'Saving...' : 'Save Changes' }}
       </button>
     </div>

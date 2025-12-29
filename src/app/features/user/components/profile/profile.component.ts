@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { UsersService, User, UpdateUserRequest } from '../../../../services/users.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +20,7 @@ export class ProfileComponent implements OnInit {
   errorMessage = '';
   showSidebarMenu = false;
   userBalance: number = 0;
+  cities = EGYPT_CITIES;
 
   constructor(
     private fb: FormBuilder,

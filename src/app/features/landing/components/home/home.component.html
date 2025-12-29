@@ -127,20 +127,21 @@
           Have a question or want to partner with us? We would love to hear from you.
         </p>
       </div>
-      <form class="contact-form">
+      <form class="contact-form" (ngSubmit)="sendMessage()">
         <div class="input-row">
           <label>
             <span>Name</span>
-            <input type="text" name="name" placeholder="Your Name" />
+            <input type="text" name="name" placeholder="Your Name" [(ngModel)]="contactName" required />
           </label>
           <label>
             <span>Email</span>
-            <input type="email" name="email" placeholder="you@example.com" />
+            <input type="email" name="email" placeholder="you@example.com" [(ngModel)]="contactEmail" required />
           </label>
         </div>
         <label class="full-width">
           <span>Message</span>
-          <textarea name="message" rows="4" placeholder="How can we help?"></textarea>
+          <textarea name="message" rows="4" placeholder="How can we help?" [(ngModel)]="contactMessage"
+            required></textarea>
         </label>
         <button class="primary" type="submit">Send Message</button>
       </form>

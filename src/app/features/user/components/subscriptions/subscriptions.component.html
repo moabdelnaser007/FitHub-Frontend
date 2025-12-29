@@ -116,8 +116,8 @@
               <p class="plan-name">{{ sub.planName }}</p>
             </div>
             <span class="status-badge" [ngClass]="{
-                'status-active': sub.status?.toLowerCase() === 'active',
-                'status-expired': sub.status?.toLowerCase() === 'expired'
+                'status-active': sub.status.toLowerCase() === 'active',
+                'status-expired': sub.status.toLowerCase() === 'expired'
               }">
               {{ sub.status }}
             </span>
@@ -140,10 +140,10 @@
           </div>
 
           <div class="card-footer">
-            <button class="btn-manage" *ngIf="sub.status?.toLowerCase() === 'active'" (click)="manageSubscription(sub)">
+            <button class="btn-manage" *ngIf="sub.status.toLowerCase() === 'active'" (click)="manageSubscription(sub)">
               Manage Subscription
             </button>
-            <button class="btn-renew" *ngIf="sub.status?.toLowerCase() === 'expired'" (click)="renewSubscription(sub)">
+            <button class="btn-renew" *ngIf="sub.status.toLowerCase() === 'expired'" (click)="renewSubscription(sub)">
               Renew
             </button>
           </div>

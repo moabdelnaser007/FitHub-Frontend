@@ -30,7 +30,7 @@
             <label for="branchName">Branch Name</label>
             <input type="text" id="branchName" [(ngModel)]="branchData.name" class="form-input">
           </div>
-          
+
           <div class="form-group">
             <label for="phoneNumber">Phone Number</label>
             <input type="text" id="phoneNumber" [(ngModel)]="branchData.phone" class="form-input">
@@ -53,7 +53,10 @@
 
           <div class="form-group">
             <label for="city">City</label>
-            <input type="text" id="city" [(ngModel)]="branchData.city" class="form-input">
+            <select id="city" [(ngModel)]="branchData.city" class="form-input">
+              <option value="" disabled>Select City</option>
+              <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+            </select>
           </div>
         </div>
       </div>
@@ -71,15 +74,11 @@
             <input type="time" id="closingTime" [(ngModel)]="operatingHours.closing" class="form-input">
           </div>
         </div>
-        
+
         <div class="form-group">
           <label>Working Days</label>
           <div class="days-selector">
-            <button 
-              *ngFor="let day of weekDays" 
-              type="button"
-              [class.selected]="day.selected"
-              (click)="toggleDay(day)"
+            <button *ngFor="let day of weekDays" type="button" [class.selected]="day.selected" (click)="toggleDay(day)"
               class="day-btn">
               {{ day.label }}
             </button>

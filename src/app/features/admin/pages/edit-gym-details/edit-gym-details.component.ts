@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BranchService, UpdateBranchRequest, Branch } from '../../../../services/admin-branches.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 interface BranchFormData {
   name: string;
@@ -37,12 +38,13 @@ interface Amenity {
   styleUrls: ['./edit-gym-details.component.css']
 })
 export class EditGymComponent implements OnInit {
-  
+
+  cities = EGYPT_CITIES;
   branchId: number = 0;
   isLoading: boolean = true;
   isSaving: boolean = false;
   loadError: string | null = null;
-  
+
   branchData: BranchFormData = {
     name: '',
     phone: '',
@@ -86,7 +88,7 @@ export class EditGymComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private branchService: BranchService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
@@ -106,7 +108,7 @@ export class EditGymComponent implements OnInit {
       'Females': 'FemaleOnly',
       'FemaleOnly': 'FemaleOnly'
     };
-    
+
     return mapping[apiGenderType] || 'Mixed';
   }
 
@@ -114,13 +116,13 @@ export class EditGymComponent implements OnInit {
     console.log('🔵 Loading branch data for ID:', this.branchId);
     this.isLoading = true;
     this.loadError = null;
-    
+
     this.branchService.getBranchById(this.branchId).subscribe({
       next: (response) => {
         if (response.isSuccess && response.data) {
           const branch = response.data;
           console.log('✅ Branch data loaded:', branch);
-          
+
           this.branchData = {
             name: branch.branchName,
             phone: branch.phone,
@@ -137,9 +139,9 @@ export class EditGymComponent implements OnInit {
 
           this.branchStatus = branch.status;
           this.genderType = this.normalizeGenderType(branch.genderType);
-          
+
           console.log('📊 Normalized Gender Type:', this.genderType);
-          
+
           if (branch.workingDays) {
             this.parseWorkingDays(branch.workingDays);
           }
@@ -147,7 +149,7 @@ export class EditGymComponent implements OnInit {
           if (branch.amenitiesAvailable) {
             this.parseAmenities(branch.amenitiesAvailable);
           }
-          
+
           this.isLoading = false;
         } else {
           console.error('Failed to load gym:', response.message);
@@ -165,26 +167,26 @@ export class EditGymComponent implements OnInit {
 
   parseTimeFromAPI(time: string): string {
     if (!time) return '00:00';
-    
+
     try {
       const parts = time.split('.');
       if (parts.length >= 2) {
         const hour = parseInt(parts[0]);
         const timePart = parts[1];
         const [minutes] = timePart.split(':');
-        
+
         return `${hour.toString().padStart(2, '0')}:${minutes}`;
       }
     } catch (e) {
       console.error('Error parsing time:', e);
     }
-    
+
     return '00:00';
   }
 
   formatTimeForAPI(time: string): string {
     if (!time) return '0.00:00:00';
-    
+
     try {
       const [hours, minutes] = time.split(':');
       return `${parseInt(hours)}.${minutes}:00:00`;
@@ -196,11 +198,11 @@ export class EditGymComponent implements OnInit {
 
   parseWorkingDays(workingDaysStr: string): void {
     if (!workingDaysStr) return;
-    
+
     this.weekDays.forEach(day => day.selected = false);
-    
+
     const activeDays = workingDaysStr.split(',').map(d => d.trim());
-    
+
     activeDays.forEach(dayName => {
       const day = this.weekDays.find(d => d.value.toLowerCase() === dayName.toLowerCase());
       if (day) day.selected = true;
@@ -209,7 +211,7 @@ export class EditGymComponent implements OnInit {
 
   parseAmenities(amenitiesStr: string): void {
     if (!amenitiesStr) return;
-    
+
     const normalizeAmenity = (amenity: string): string => {
       const normalized = amenity.trim().replace(/\s+/g, '');
       const mapping: { [key: string]: string } = {
@@ -224,14 +226,14 @@ export class EditGymComponent implements OnInit {
         'parking': 'Parking',
         'sauna': 'Sauna'
       };
-      
+
       return mapping[normalized.toLowerCase()] || amenity.trim();
     };
-    
+
     const apiAmenities = amenitiesStr.split(',').map(a => normalizeAmenity(a));
-    
+
     this.amenities.forEach(amenity => {
-      amenity.selected = apiAmenities.some(api => 
+      amenity.selected = apiAmenities.some(api =>
         api.toLowerCase() === amenity.name.toLowerCase()
       );
     });
@@ -327,7 +329,7 @@ export class EditGymComponent implements OnInit {
       alert('Please fill in Branch Name and Phone');
       return false;
     }
-    
+
     if (!this.branchData.address || !this.branchData.city) {
       alert('Please fill in Address and City');
       return false;

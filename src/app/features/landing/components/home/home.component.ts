@@ -30,16 +30,23 @@ interface PlanCard {
 
 import { WalletService } from '../../../../services/wallet.service';
 
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FooterComponent],
+  imports: [CommonModule, RouterModule, FooterComponent, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   private destroy$ = new Subject<void>();
+
+  // Contact Form
+  contactName = '';
+  contactEmail = '';
+  contactMessage = '';
 
   readonly navLinks: NavLink[] = [
     { label: 'Find Gym', href: '/find-gym', isRoute: true },
@@ -124,5 +131,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authService.logout();
     this.isLoggedIn = false;
     this.router.navigate(['/']);
+  }
+
+  sendMessage(): void {
+    if (this.contactName && this.contactEmail && this.contactMessage) {
+      alert('we receve your commit and we will contact you');
+      this.contactName = '';
+      this.contactEmail = '';
+      this.contactMessage = '';
+    } else {
+      alert('Please fill in all fields');
+    }
   }
 }

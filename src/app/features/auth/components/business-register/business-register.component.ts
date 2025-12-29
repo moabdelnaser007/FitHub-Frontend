@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 @Component({
   selector: 'app-business-register',
@@ -17,6 +18,7 @@ export class BusinessRegisterComponent {
   email = '';
   phone = '';
   city = '';
+  cities = EGYPT_CITIES;
   crn = '';
   password = '';
   confirmPassword = '';
@@ -28,7 +30,7 @@ export class BusinessRegisterComponent {
   successMessage = '';
   fieldErrors: { [key: string]: string } = {};
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;

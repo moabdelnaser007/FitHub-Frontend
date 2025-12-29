@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BranchService, BranchData, UpdateBranchRequest } from '../../../../services/branch.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 interface BranchFormData {
   name: string;
@@ -37,12 +38,13 @@ interface Amenity {
   styleUrls: ['./edit-branch.component.css']
 })
 export class EditBranchComponent implements OnInit {
-  
+
   branchId: number = 0;
   isLoading: boolean = true;
   isSaving: boolean = false;
   loadError: string | null = null;
-  
+  cities = EGYPT_CITIES;
+
   branchData: BranchFormData = {
     name: '',
     phone: '',
@@ -85,11 +87,11 @@ export class EditBranchComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private branchService: BranchService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const branchId = this.route.snapshot.paramMap.get('id');
-    
+
     if (branchId) {
       this.branchId = parseInt(branchId);
       this.loadBranchData(this.branchId);
@@ -110,7 +112,7 @@ export class EditBranchComponent implements OnInit {
       'Females': 'FemaleOnly',
       'FemaleOnly': 'FemaleOnly'
     };
-    
+
     return mapping[apiGenderType] || 'Mixed';
   }
 
@@ -118,11 +120,11 @@ export class EditBranchComponent implements OnInit {
     console.log('🔵 Loading branch data for ID:', id);
     this.isLoading = true;
     this.loadError = null;
-    
+
     this.branchService.getBranchById(id).subscribe({
       next: (branch: BranchData) => {
         console.log('✅ Branch data loaded:', branch);
-        
+
         this.branchData = {
           name: branch.branchName,
           phone: branch.phone,
@@ -139,9 +141,9 @@ export class EditBranchComponent implements OnInit {
 
         this.branchStatus = branch.status;
         this.genderType = this.normalizeGenderType(branch.genderType);
-        
+
         console.log('📊 Normalized Gender Type:', this.genderType);
-        
+
         if (branch.workingDays) {
           this.parseWorkingDays(branch.workingDays);
         }
@@ -149,7 +151,7 @@ export class EditBranchComponent implements OnInit {
         if (branch.amenitiesAvailable) {
           this.parseAmenities(branch.amenitiesAvailable);
         }
-        
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -162,26 +164,26 @@ export class EditBranchComponent implements OnInit {
 
   parseTimeFromAPI(time: string): string {
     if (!time) return '00:00';
-    
+
     try {
       const parts = time.split('.');
       if (parts.length >= 2) {
         const hour = parseInt(parts[0]);
         const timePart = parts[1];
         const [minutes] = timePart.split(':');
-        
+
         return `${hour.toString().padStart(2, '0')}:${minutes}`;
       }
     } catch (e) {
       console.error('Error parsing time:', e);
     }
-    
+
     return '00:00';
   }
 
   formatTimeForAPI(time: string): string {
     if (!time) return '0.00:00:00';
-    
+
     try {
       const [hours, minutes] = time.split(':');
       return `${parseInt(hours)}.${minutes}:00:00`;
@@ -193,7 +195,7 @@ export class EditBranchComponent implements OnInit {
 
   parseWorkingDays(workingDaysStr: string): void {
     if (!workingDaysStr) return;
-    
+
     const dayMap: { [key: string]: string } = {
       'sunday': 'Sun',
       'monday': 'Mon',
@@ -203,11 +205,11 @@ export class EditBranchComponent implements OnInit {
       'friday': 'Fri',
       'saturday': 'Sat'
     };
-    
+
     this.weekDays.forEach(day => day.selected = false);
-    
+
     const activeDays = workingDaysStr.toLowerCase().split(',').map(d => d.trim());
-    
+
     activeDays.forEach(dayName => {
       const shortDay = dayMap[dayName];
       if (shortDay) {
@@ -219,7 +221,7 @@ export class EditBranchComponent implements OnInit {
 
   parseAmenities(amenitiesStr: string): void {
     if (!amenitiesStr) return;
-    
+
     // Normalize amenities from API (handle old formats)
     const normalizeAmenity = (amenity: string): string => {
       const normalized = amenity.trim().replace(/\s+/g, '');
@@ -235,14 +237,14 @@ export class EditBranchComponent implements OnInit {
         'parking': 'Parking',
         'sauna': 'Sauna'
       };
-      
+
       return mapping[normalized.toLowerCase()] || amenity.trim();
     };
-    
+
     const apiAmenities = amenitiesStr.split(',').map(a => normalizeAmenity(a));
-    
+
     this.amenities.forEach(amenity => {
-      amenity.selected = apiAmenities.some(api => 
+      amenity.selected = apiAmenities.some(api =>
         api.toLowerCase() === amenity.name.toLowerCase()
       );
     });
@@ -250,7 +252,7 @@ export class EditBranchComponent implements OnInit {
 
   getWorkingDaysString(): string {
     const activeDays = this.weekDays.filter(day => day.selected);
-    
+
     const dayMap: { [key: string]: string } = {
       'Sun': 'Sunday',
       'Mon': 'Monday',
@@ -260,7 +262,7 @@ export class EditBranchComponent implements OnInit {
       'Fri': 'Friday',
       'Sat': 'Saturday'
     };
-    
+
     return activeDays.map(day => dayMap[day.label]).join(',');
   }
 
@@ -333,7 +335,7 @@ export class EditBranchComponent implements OnInit {
       alert('Please fill in Branch Name and Phone');
       return false;
     }
-    
+
     if (!this.branchData.address || !this.branchData.city) {
       alert('Please fill in Address and City');
       return false;

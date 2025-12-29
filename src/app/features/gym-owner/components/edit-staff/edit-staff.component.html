@@ -64,7 +64,10 @@
 
             <div class="form-group">
               <label for="city">City</label>
-              <input type="text" id="city" class="form-input" [(ngModel)]="city" name="city" />
+              <select id="city" class="form-input" [(ngModel)]="city" name="city">
+                <option value="" disabled>Select City</option>
+                <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+              </select>
             </div>
           </div>
         </div>

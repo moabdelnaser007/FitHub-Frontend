@@ -1,5 +1,5 @@
 <div class="add-staff-page">
-  
+
   <!-- Back Button 
   <div class="back-link">
     <button (click)="onCancel()" class="btn-back-link">
@@ -9,7 +9,7 @@
   </div>-->
 
   <!-- Page Header -->
-  <div >
+  <div>
     <h1>Add New Staff Member</h1>
     <p>Enter the details below to add a new staff member to your team.</p>
     <br>
@@ -18,66 +18,40 @@
   <!-- Form Card -->
   <div class="form-card">
     <form (ngSubmit)="onSubmit()">
-      
+
       <div class="form-content">
-        
+
         <!-- Personal Information -->
         <div class="form-section">
           <h3 class="section-title">Personal Information</h3>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label for="fullName">Full Name <span class="required">*</span></label>
-              <input 
-                type="text" 
-                id="fullName"
-                class="form-input"
-                placeholder="e.g. Jane Doe"
-                [(ngModel)]="fullName"
-                name="fullName"
-                required
-              />
+              <input type="text" id="fullName" class="form-input" placeholder="e.g. Jane Doe" [(ngModel)]="fullName"
+                name="fullName" required />
             </div>
 
             <div class="form-group">
               <label for="email">Email Address <span class="required">*</span></label>
-              <input 
-                type="email" 
-                id="email"
-                class="form-input"
-                placeholder="e.g. jane.doe@example.com"
-                [(ngModel)]="email"
-                name="email"
-                required
-              />
+              <input type="email" id="email" class="form-input" placeholder="e.g. jane.doe@example.com"
+                [(ngModel)]="email" name="email" required />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="phone">Phone Number <span class="required">*</span></label>
-              <input 
-                type="tel" 
-                id="phone"
-                class="form-input"
-                placeholder="e.g. (123) 456-7890"
-                [(ngModel)]="phone"
-                name="phone"
-                required
-              />
+              <input type="tel" id="phone" class="form-input" placeholder="e.g. (123) 456-7890" [(ngModel)]="phone"
+                name="phone" required />
             </div>
 
             <div class="form-group">
               <label for="city">City <span class="required">*</span></label>
-              <input 
-                type="text" 
-                id="city"
-                class="form-input"
-                placeholder="e.g. Cairo"
-                [(ngModel)]="city"
-                name="city"
-                required
-              />
+              <select id="city" class="form-input" [(ngModel)]="city" name="city" required>
+                <option value="" disabled selected>e.g. Cairo</option>
+                <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+              </select>
             </div>
           </div>
         </div>
@@ -85,78 +59,57 @@
         <!-- Role Information -->
         <div class="form-section">
           <h3 class="section-title">Role Information</h3>
-          
+
           <div class="form-row">
-            
+
 
             <div class="form-group">
               <label for="status">Status</label>
-              <select 
-                id="status"
-                class="form-input"
-                [(ngModel)]="status"
-                name="status"
-              >
+              <select id="status" class="form-input" [(ngModel)]="status" name="status">
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
               </select>
             </div>
           </div>
         </div>
-<!-- ✅ Branch Assignment Section - Optional -->
-<div class="form-section">
-  <h3 class="section-title">Branch Assignment (Optional)</h3>
-  
-  <div class="form-row">
-    <div class="form-group full-width">
-      <label for="branch">Assign to Branch</label>
-      <select 
-        id="branch"
-        class="form-input"
-        [(ngModel)]="selectedBranchId"
-        name="branch"
-        [disabled]="isLoadingBranches"
-      >
-        <option [ngValue]="null">
-          {{ isLoadingBranches ? 'Loading branches...' : 'No branch - Assign later' }}
-        </option>
-        <option *ngFor="let branch of branches" [ngValue]="branch.id">
-          {{ branch.name }} - {{ branch.city }}
-        </option>
-      </select>
-      <p class="field-hint">
-        <span class="material-symbols-outlined">info</span>
-        <span>You can assign this staff member to a branch now or do it later from the staff list.</span>
-      </p>
-      <p class="field-hint warning" *ngIf="!isLoadingBranches && branches.length === 0">
-        <span class="material-symbols-outlined">warning</span>
-        <span>No branches available. Please add a branch first or assign later.</span>
-      </p>
-    </div>
-  </div>
-</div>
+        <!-- ✅ Branch Assignment Section - Optional -->
+        <div class="form-section">
+          <h3 class="section-title">Branch Assignment (Optional)</h3>
+
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="branch">Assign to Branch</label>
+              <select id="branch" class="form-input" [(ngModel)]="selectedBranchId" name="branch"
+                [disabled]="isLoadingBranches">
+                <option [ngValue]="null">
+                  {{ isLoadingBranches ? 'Loading branches...' : 'No branch - Assign later' }}
+                </option>
+                <option *ngFor="let branch of branches" [ngValue]="branch.id">
+                  {{ branch.name }} - {{ branch.city }}
+                </option>
+              </select>
+              <p class="field-hint">
+                <span class="material-symbols-outlined">info</span>
+                <span>You can assign this staff member to a branch now or do it later from the staff list.</span>
+              </p>
+              <p class="field-hint warning" *ngIf="!isLoadingBranches && branches.length === 0">
+                <span class="material-symbols-outlined">warning</span>
+                <span>No branches available. Please add a branch first or assign later.</span>
+              </p>
+            </div>
+          </div>
+        </div>
         <!-- Account Security -->
         <div class="form-section">
           <h3 class="section-title">Account Security</h3>
-          
+
           <div class="form-row">
             <div class="form-group">
               <label for="password">Password <span class="required">*</span></label>
               <div class="password-input-wrapper">
-                <input 
-                  [type]="showPassword ? 'text' : 'password'"
-                  id="password"
-                  class="form-input"
-                  placeholder="Minimum 6 characters"
-                  [(ngModel)]="password"
-                  name="password"
-                  required
-                />
-                <button 
-                  type="button"
-                  class="password-toggle"
-                  (click)="togglePasswordVisibility()"
-                >
+                <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-input"
+                  placeholder="Minimum 6 characters" [(ngModel)]="password" name="password" required />
+                <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
                   <span class="material-symbols-outlined">
                     {{ showPassword ? 'visibility_off' : 'visibility' }}
                   </span>
@@ -167,20 +120,9 @@
             <div class="form-group">
               <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
               <div class="password-input-wrapper">
-                <input 
-                  [type]="showConfirmPassword ? 'text' : 'password'"
-                  id="confirmPassword"
-                  class="form-input"
-                  placeholder="Re-enter password"
-                  [(ngModel)]="confirmPassword"
-                  name="confirmPassword"
-                  required
-                />
-                <button 
-                  type="button"
-                  class="password-toggle"
-                  (click)="toggleConfirmPasswordVisibility()"
-                >
+                <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" class="form-input"
+                  placeholder="Re-enter password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+                <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
                   <span class="material-symbols-outlined">
                     {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
                   </span>
@@ -189,26 +131,17 @@
             </div>
           </div>
 
-         
+
         </div>
 
       </div>
 
       <!-- Form Footer -->
       <div class="form-footer">
-        <button 
-          type="button" 
-          class="btn-cancel" 
-          (click)="onCancel()"
-          [disabled]="isSubmitting"
-        >
+        <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="isSubmitting">
           Cancel
         </button>
-        <button 
-          type="submit" 
-          class="btn-submit"
-          [disabled]="isSubmitting"
-        >
+        <button type="submit" class="btn-submit" [disabled]="isSubmitting">
           <span class="material-symbols-outlined" *ngIf="!isSubmitting">add</span>
           <span>{{ isSubmitting ? 'Adding...' : 'Add Staff Member' }}</span>
         </button>

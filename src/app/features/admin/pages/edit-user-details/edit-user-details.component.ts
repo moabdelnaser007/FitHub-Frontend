@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService, UpdateUserRequest } from '../../../../services/users.service'; // عدّلي المسار حسب مشروعك
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 interface UserForm {
   id: string;
@@ -26,7 +27,8 @@ export class EditUserComponent implements OnInit {
   isLoading: boolean = true;
   isSaving: boolean = false;
   errorMessage: string = '';
-  
+  cities = EGYPT_CITIES;
+
   user: UserForm = {
     id: '',
     fullName: '',
@@ -44,19 +46,19 @@ export class EditUserComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private usersService: UsersService // ✅ حقن الـ Service
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.params['id'];
     console.log('🔍 Editing user with ID:', this.userId);
-    
+
     // ✅ جرّب تجيب البيانات من localStorage الأول
     const savedUserData = localStorage.getItem('editUserData');
-    
+
     if (savedUserData) {
       try {
         const userData = JSON.parse(savedUserData);
-        
+
         // تأكد إن الـ ID مطابق
         if (userData.id === Number(this.userId)) {
           this.user = {
@@ -70,7 +72,7 @@ export class EditUserComponent implements OnInit {
           };
           this.isLoading = false;
           console.log('✅ Loaded user data from localStorage:', userData);
-          
+
           // امسح البيانات بعد ما استخدمتها
           localStorage.removeItem('editUserData');
           return;
@@ -79,7 +81,7 @@ export class EditUserComponent implements OnInit {
         console.error('Error parsing saved user data:', e);
       }
     }
-    
+
     // لو مفيش بيانات محفوظة، اجلبها من الـ API
     console.log('⚠️ No saved data found, loading from API...');
     this.loadUserData(this.userId);
@@ -89,12 +91,12 @@ export class EditUserComponent implements OnInit {
   loadUserData(id: string): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     // استخدام GetAllUsers وفلترة اليوزر المطلوب
     this.usersService.getAllUsers().subscribe({
       next: (users) => {
         const userData = users.find(user => user.id === Number(id));
-        
+
         if (userData) {
           this.user = {
             id: userData.id.toString(),
@@ -111,7 +113,7 @@ export class EditUserComponent implements OnInit {
           alert('User not found!');
           this.router.navigate(['/admin/manage-users']);
         }
-        
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -133,7 +135,7 @@ export class EditUserComponent implements OnInit {
 
     this.isSaving = true;
     this.errorMessage = '';
-    
+
     const updateData: UpdateUserRequest = {
       fullName: this.user.fullName,
       email: this.user.email,
@@ -144,11 +146,11 @@ export class EditUserComponent implements OnInit {
     };
 
     console.log('Saving user:', updateData);
-    
+
     this.usersService.updateUser(Number(this.userId), updateData).subscribe({
       next: (response) => {
         console.log('Update response:', response);
-        
+
         if (response.isSuccess) {
           alert('User updated successfully!');
           this.router.navigate(['/admin/user-details', this.userId]);
@@ -156,7 +158,7 @@ export class EditUserComponent implements OnInit {
           this.errorMessage = response.message || 'Failed to update user';
           alert(this.errorMessage);
         }
-        
+
         this.isSaving = false;
       },
       error: (error) => {

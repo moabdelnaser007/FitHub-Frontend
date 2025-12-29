@@ -3,7 +3,9 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { Action } from 'rxjs/internal/scheduler/Action';
 import { RegisterUserDto } from '../../../../models/auth.models';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +19,7 @@ export class RegisterComponent {
   email = '';
   phone = '';
   city = '';
+  cities = EGYPT_CITIES;
   password = '';
   confirmPassword = '';
 
@@ -27,7 +30,7 @@ export class RegisterComponent {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
   togglePassword() {
     this.showPassword = !this.showPassword;

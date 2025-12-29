@@ -1,6 +1,7 @@
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { EGYPT_CITIES } from '../../../../../shared/data/cities';
 
 export interface FilterChange {
   location: string;
@@ -20,15 +21,7 @@ export class GymFilterComponent {
   selectedLocation = '';
   selectedRating = 0;
 
-  locations = [
-    'Cairo', 'Giza', 'Alexandria', 'Shubra El Kheima', 'Port Said', 'Suez',
-    'El Mahalla El Kubra', 'Luxor', 'Mansoura', 'Tanta', 'Asyut', 'Ismailia',
-    'Fayoum', 'Zagazig', 'Aswan', 'Damietta', 'Damanhur', 'Minya', 'Beni Suef',
-    'Qena', 'Sohag', 'Hurghada', '6th of October', 'Shibin El Kom', 'Banha',
-    'Kafr El Sheikh', 'Arish', 'Mallawi', '10th of Ramadan', 'Bilbais',
-    'Marsa Matruh', 'Idfu', 'Mit Ghamr', 'Al-Hamidiyya', 'Desouk', 'Qalyub',
-    'Abu Kabir', 'Kafr El Dawwar', 'Girga', 'Akhmim', 'Matareya'
-  ].sort();
+  locations = EGYPT_CITIES;
 
   ratings = [5, 4, 3, 2, 1];
 

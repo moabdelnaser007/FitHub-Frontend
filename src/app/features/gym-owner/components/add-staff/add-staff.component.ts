@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StaffService, CreateStaffRequest } from '../../../../services/staff.service';
 import { BranchService } from '../../../../services/branch.service';
+import { EGYPT_CITIES } from '../../../../shared/data/cities';
 
 @Component({
   selector: 'app-add-staff',
@@ -13,11 +14,12 @@ import { BranchService } from '../../../../services/branch.service';
   styleUrls: ['./add-staff.component.css']
 })
 export class AddStaffComponent implements OnInit {
-  
+
+  cities = EGYPT_CITIES;
   branchId: number = 0;
   isSubmitting: boolean = false;
   isLoadingBranches: boolean = false;
-  
+
   // Form Data
   fullName: string = '';
   email: string = '';
@@ -27,7 +29,7 @@ export class AddStaffComponent implements OnInit {
   confirmPassword: string = '';
   status: string = 'ACTIVE';
   selectedBranchId: number | null = null; // ✅ غيرت لـ null بدل 0
-  
+
   // Password visibility
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
@@ -40,13 +42,13 @@ export class AddStaffComponent implements OnInit {
     private route: ActivatedRoute,
     private staffService: StaffService,
     private branchService: BranchService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const branchIdParam = this.route.snapshot.paramMap.get('id');
-  
+
     console.log('🔵 Add Staff - branchId from URL:', branchIdParam);
-  
+
     if (branchIdParam) {
       this.branchId = parseInt(branchIdParam);
       this.selectedBranchId = this.branchId; // ✅ اختار البرانش تلقائياً
@@ -54,14 +56,14 @@ export class AddStaffComponent implements OnInit {
     } else {
       console.log('🔵 No branch pre-selected - user will choose (optional)');
     }
-  
+
     // ✅ جيب كل البرانشات
     this.loadBranches();
   }
 
   loadBranches(): void {
     this.isLoadingBranches = true;
-    
+
     this.branchService.getAllBranches().subscribe({
       next: (branches) => {
         this.branches = branches.map((b) => ({
@@ -131,7 +133,7 @@ export class AddStaffComponent implements OnInit {
     }
 
     // ✅ شلنا التحقق من البرانش - بقى اختياري
-    
+
     return true;
   }
 
@@ -157,7 +159,7 @@ export class AddStaffComponent implements OnInit {
     this.staffService.createStaff(staffData).subscribe({
       next: (response) => {
         console.log('✅ Staff created successfully:', response);
-        
+
         // ✅ لو في برانش متختار، نعمل assign
         if (this.selectedBranchId) {
           console.log('🔗 Branch selected, will assign after finding staff...');
@@ -180,11 +182,11 @@ export class AddStaffComponent implements OnInit {
   // البحث والـ Assign
   findAndAssignStaff(email: string): void {
     console.log('🔍 Searching for staff with email:', email);
-    
+
     this.staffService.getAllBranchStaff().subscribe({
       next: (allStaff) => {
         const newStaff = allStaff.find(s => s.email.toLowerCase() === email.toLowerCase());
-        
+
         if (newStaff && this.selectedBranchId) {
           console.log('✅ Found staff:', newStaff);
           this.assignStaffToBranch(newStaff.id, this.selectedBranchId);
@@ -205,7 +207,7 @@ export class AddStaffComponent implements OnInit {
   // الـ Assign
   assignStaffToBranch(staffId: number, branchId: number): void {
     console.log(`🔗 Assigning staff ${staffId} to branch ${branchId}`);
-    
+
     this.staffService.assignStaffToBranch(staffId, branchId).subscribe({
       next: (success) => {
         if (success) {
@@ -227,9 +229,9 @@ export class AddStaffComponent implements OnInit {
 
   navigateBack(): void {
     this.isSubmitting = false;
-    
+
     console.log('🔵 Navigating back - branchId:', this.branchId);
-    
+
     if (this.branchId) {
       // لو جاي من branch معين، ارجع للـ branch staff
       this.router.navigate(['/gym-owner/manage-staff', this.branchId]);
