@@ -253,7 +253,7 @@ export class GymDetailsComponent implements OnInit {
   }
 
   onBackToGyms(): void {
-    this.router.navigate(['/admin/gym-management']);
+    this.router.navigate(['/admin/manage-gyms']);
   }
 
   onSuspendGym(): void {

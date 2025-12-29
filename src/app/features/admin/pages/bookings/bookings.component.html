@@ -1,0 +1,70 @@
+<div class="bookings-page">
+    <div class="header-actions">
+        <h1>Detailed Bookings</h1>
+        <div class="actions-wrapper">
+            <div class="search-box">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" placeholder="Search bookings..." [(ngModel)]="searchText">
+            </div>
+
+            <div class="filter-dropdown">
+                <button class="btn-filter" (click)="toggleFilterMenu()">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    <span>{{ selectedStatus }}</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                </button>
+
+                <div class="dropdown-menu" *ngIf="showFilterMenu">
+                    <button (click)="selectStatusFilter('All')" [class.active]="selectedStatus === 'All'">All</button>
+                    <button (click)="selectStatusFilter('Confirmed')"
+                        [class.active]="selectedStatus === 'Confirmed'">Confirmed</button>
+                    <button (click)="selectStatusFilter('Completed')"
+                        [class.active]="selectedStatus === 'Completed'">Completed</button>
+                    <button (click)="selectStatusFilter('Cancelled')"
+                        [class.active]="selectedStatus === 'Cancelled'">Cancelled</button>
+                    <button (click)="selectStatusFilter('NoShow')" [class.active]="selectedStatus === 'NoShow'">No
+                        Show</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading bookings...</p>
+    </div>
+
+    <div *ngIf="error" class="error-msg">
+        {{ error }}
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading && !error">
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking Code</th>
+                    <th>Branch</th>
+                    <th>Date & Time</th>
+                    <th>Cost</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let booking of filteredBookings">
+                    <td class="code">{{ booking.bookingCode }}</td>
+                    <td><span class="branch-badge">{{ booking.branchName }}</span></td>
+                    <td>{{ booking.scheduledDateTime | date:'medium' }}</td>
+                    <td>{{ booking.creditsCost }} Credits</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="getStatusClass(booking.status)">
+                            {{ booking.status }}
+                        </span>
+                    </td>
+                </tr>
+                <tr *ngIf="filteredBookings.length === 0">
+                    <td colspan="5" class="empty-state">No bookings found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

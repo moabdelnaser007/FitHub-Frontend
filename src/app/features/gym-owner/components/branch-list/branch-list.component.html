@@ -1,34 +1,85 @@
 <div class="branches-page">
-  <h1>All Branches</h1>
-  <p>Select a branch to view its subscription plans</p>
 
-  <!-- Loading -->
+  <!-- Page Header -->
+  <div class="hhh">
+    <div>
+      <h1>All Branches</h1>
+      <p>Select a branch to view its subscription plans</p>
+    </div>
+    <!-- Search and Filter (Matching Bookings Style) -->
+    <div class="header-actions">
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" placeholder="Search request..." [(ngModel)]="searchText" (keyup)="onSearch()" />
+      </div>
+      <div class="filter-container" style="position: relative;">
+        <button class="filter-btn" (click)="onFilter()">
+          <span class="material-symbols-outlined">filter_list</span>
+          {{ selectedStatus ? selectedStatus : 'Filter' }}
+        </button>
+        <div *ngIf="showFilterMenu" class="filter-dropdown">
+          <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
+          <div *ngFor="let status of uniqueStatuses" class="filter-item" (click)="selectStatusFilter(status)">
+            {{ status }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+
+  <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
     <p>Loading branches...</p>
   </div>
 
-  <!-- Error -->
+  <!-- Error State -->
   <div *ngIf="loadError && !isLoading" class="error-state">
     <span class="material-icons">error</span>
     <p>{{ loadError }}</p>
   </div>
 
-  <!-- Branch List -->
-  <div *ngIf="!isLoading && !loadError" class="branches-grid">
-    <div 
-      class="branch-card" 
-      *ngFor="let branch of branches" 
-      (click)="goToPlans(branch.id)"
-    >
-      <h3>{{ branch.branchName }}</h3>
-      <p>{{ branch.city }}</p>
-      <span class="view-plans">View Plans →</span>
-    </div>
+  <!-- Content -->
+  <div *ngIf="!isLoading && !loadError">
+    <!-- Branches List -->
+    <div class="branches-list">
+      <div class="branch-card" *ngFor="let branch of filteredBranches" (click)="goToPlans(branch.id)">
+        <div class="branch-info">
+          <h3 class="branch-name">{{ branch.branchName }}</h3>
+          <p class="branch-address">{{ branch.address }}, {{ branch.city }}</p>
+          <p class="branch-details">
+            <span>📞 {{ branch.phone }}</span> |
+            <span>⏰ {{ branch.openTime }} - {{ branch.closeTime }}</span> |
+            <span>{{ branch.genderType }}</span>
+          </p>
+        </div>
 
-    <!-- Empty state -->
-    <div *ngIf="branches.length === 0" class="empty-state">
-      <p>No branches found</p>
+        <div class="branch-status">
+          <span class="status-badge" [ngClass]="{
+              'active': branch.status?.toLowerCase() === 'active',
+              'inactive': branch.status?.toLowerCase() === 'inactive',
+              'pending': branch.status?.toLowerCase() === 'pending'
+            }">
+            <span class="status-dot"></span>
+            {{ branch.status }}
+          </span>
+        </div>
+
+        <div class="branch-actions">
+          <!-- View Plans Button styled like the view button in manage-branches -->
+          <button class="action-btn view-btn" title="View Plans">
+            <span class="material-symbols-outlined">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="filteredBranches.length === 0">
+        <span class="material-symbols-outlined empty-icon">store</span>
+        <h3>No branches found</h3>
+        <p>There are no branches available at the moment.</p>
+      </div>
     </div>
   </div>
 </div>

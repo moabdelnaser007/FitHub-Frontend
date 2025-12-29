@@ -1,73 +1,63 @@
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="admin-layout">
-  
 
-      
-<aside class="sidebar">
-  <div class="sidebar-header">
-    <span class="material-symbols-outlined logo-icon"></span>
-    <h2 class="logo-text">GymPass Admin</h2>
-  </div>
-  
-  <div class="sidebar-content">
-    <nav class="nav-menu">
-      <a 
-        *ngFor="let item of menuItems"
-        class="nav-item" 
-        [class.active]="item.active"
-        [routerLink]="item.route"
-        (click)="setActiveMenuItem(item)"
-      >
-        <span class="material-symbols-outlined">{{ item.icon }}</span>
-        <p>{{ item.label }}</p>
-      </a>
-    </nav>
-    
-    <div class="sidebar-footer">
-      <div class="admin-info">
-        <div 
-          class="admin-avatar" 
-          [style.background-image]="'url(' + adminInfo.avatar + ')'"
-        ></div>
-        <div class="admin-details">
-          <h3>{{ adminInfo.name }}</h3>
-          <p>{{ adminInfo.role }}</p>
-        </div>
+
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-mark">F</div>
+        FitHub
       </div>
-      <button class="logout-btn" (click)="onLogout()">
-        <span class="material-symbols-outlined"></span>
-        <p>Logout</p>
-      </button>
     </div>
-  </div>
-</aside>
+
+    <div class="sidebar-content">
+      <nav class="nav-menu">
+        <a *ngFor="let item of menuItems" class="nav-item" [class.active]="item.active" [routerLink]="item.route"
+          (click)="setActiveMenuItem(item)">
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
+          <p>{{ item.label }}</p>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-info" [routerLink]="['/admin/profile']">
+          <div class="admin-avatar">
+            <span class="material-symbols-outlined">account_circle</span>
+          </div>
+          <div class="admin-details">
+            <h3>{{ adminInfo.name }}</h3>
+            <p>{{ adminInfo.role }}</p>
+          </div>
+        </div>
+        <button class="logout-btn" (click)="onLogout()">
+          <span class="material-symbols-outlined"></span>
+          <p>Logout</p>
+        </button>
+      </div>
+    </div>
+  </aside>
 
 
   <!-- Main content -->
   <div class="content">
-       <!-- Header -->
-      <header class="header">
-        <div class="header-left"></div>
-        
-        <div class="header-center">
-          <div class="search-container">
-            <span class="material-symbols-outlined search-icon">search</span>
-            <input 
-              type="search" 
-              class="search-input" 
-              placeholder="Search gyms, users, plans…"
-            />
-          </div>
-        </div>
-        
-        <div class="header-right">
-          <button class="icon-btn">
-            <span class="material-symbols-outlined">notifications</span>
-          </button>
-          <div class="user-avatar"></div>
-        </div>
-      </header>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <!-- Brand removed as requested -->
+      </div>
+
+      <div class="header-center">
+        <!-- Search Removed -->
+      </div>
+
+      <div class="header-right">
+        <!-- Icons removed as requested -->
+      </div>
+    </header>
 
     <!-- Header 
     <header class="header">

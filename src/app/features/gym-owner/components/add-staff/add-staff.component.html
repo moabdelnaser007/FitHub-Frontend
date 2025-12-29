@@ -1,12 +1,12 @@
 <div class="add-staff-page">
   
-  <!-- Back Button -->
+  <!-- Back Button 
   <div class="back-link">
     <button (click)="onCancel()" class="btn-back-link">
       <span class="material-symbols-outlined">arrow_back</span>
       <span>Back to Staff List</span>
     </button>
-  </div>
+  </div>-->
 
   <!-- Page Header -->
   <div >
@@ -103,31 +103,34 @@
             </div>
           </div>
         </div>
-
-<!-- ✅ Branch Assignment Section - جديد -->
+<!-- ✅ Branch Assignment Section - Optional -->
 <div class="form-section">
-  <h3 class="section-title">Branch Assignment</h3>
+  <h3 class="section-title">Branch Assignment (Optional)</h3>
   
   <div class="form-row">
     <div class="form-group full-width">
-      <label for="branch">Assign to Branch <span class="required">*</span></label>
+      <label for="branch">Assign to Branch</label>
       <select 
         id="branch"
         class="form-input"
         [(ngModel)]="selectedBranchId"
         name="branch"
-        required
         [disabled]="isLoadingBranches"
       >
-        <option value="0">
-          {{ isLoadingBranches ? 'Loading branches...' : 'Select a branch' }}
+        <option [ngValue]="null">
+          {{ isLoadingBranches ? 'Loading branches...' : 'No branch - Assign later' }}
         </option>
-        <option *ngFor="let branch of branches" [value]="branch.id">
+        <option *ngFor="let branch of branches" [ngValue]="branch.id">
           {{ branch.name }} - {{ branch.city }}
         </option>
       </select>
-      <p class="field-hint" *ngIf="!isLoadingBranches && branches.length === 0">
-        ⚠️ No branches available. Please add a branch first.
+      <p class="field-hint">
+        <span class="material-symbols-outlined">info</span>
+        <span>You can assign this staff member to a branch now or do it later from the staff list.</span>
+      </p>
+      <p class="field-hint warning" *ngIf="!isLoadingBranches && branches.length === 0">
+        <span class="material-symbols-outlined">warning</span>
+        <span>No branches available. Please add a branch first or assign later.</span>
       </p>
     </div>
   </div>
@@ -186,10 +189,7 @@
             </div>
           </div>
 
-          <div class="password-hint">
-            <span class="material-symbols-outlined">info</span>
-            <span>Password must be at least 6 characters long</span>
-          </div>
+         
         </div>
 
       </div>

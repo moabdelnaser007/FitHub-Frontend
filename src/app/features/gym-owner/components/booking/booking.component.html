@@ -1,0 +1,67 @@
+<div class="container">
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="content-wrapper">
+      <div class="header-section">
+        <div class="header-text">
+          <h1>Upcoming Bookings</h1>
+          <p>Manage and track all future bookings for your gyms.</p>
+        </div>
+        <div class="header-actions">
+          <div class="search-box">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input type="text" placeholder="Search by name..." [(ngModel)]="searchText" (keyup)="onSearch()" />
+          </div>
+          <div class="filter-container" style="position: relative;">
+            <button class="filter-btn" (click)="onFilter()">
+              <span class="material-symbols-outlined">filter_list</span>
+              {{ selectedStatus ? selectedStatus : 'Filter' }}
+            </button>
+            <div *ngIf="showFilterMenu" class="filter-dropdown">
+              <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
+              <div *ngFor="let status of uniqueStatuses" class="filter-item" (click)="selectStatusFilter(status)">
+                {{ status }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>BRANCH</th>
+                <th>DATE & TIME</th>
+                <th>CREDITS</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let booking of bookings">
+                <td>{{ booking.branchName }}</td>
+                <td>{{ booking.scheduledDateTime | date:'medium' }}</td>
+                <td>{{ booking.creditsCost }}</td>
+                <td>
+                  <span [class]="'status-badge ' + getStatusClass(booking.status)">
+                    {{ booking.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span class="footer-text">Showing {{ bookings.length }} entries</span>
+          <div class="pagination">
+            <button (click)="onPrevious()">Previous</button>
+            <button (click)="onNext()">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

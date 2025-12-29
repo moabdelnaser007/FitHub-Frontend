@@ -106,9 +106,12 @@ export class SubscriptionPlansComponent implements OnInit {
     this.router.navigate(['/gym-owner/plan-details', plan.id]);
   }
 
-  editPlan(plan: Plan): void {
-    this.router.navigate(['/gym-owner/edit-plan', plan.id]);
-  }
+editPlan(plan: Plan): void {
+  console.log('🔵 Navigating to edit plan:', plan.id, 'Branch:', this.branchId);
+  this.router.navigate(['/gym-owner/edit-plan', plan.id], {
+    queryParams: { branchId: this.branchId }
+  });
+}
 
  addNewPlan(): void {
   this.router.navigate(['/gym-owner/add-subscription-plan'], { 
@@ -137,21 +140,37 @@ export class SubscriptionPlansComponent implements OnInit {
   }
 
   confirmDelete(): void {
-    if (!this.planToDelete) return;
+  if (!this.planToDelete) return;
 
-    this.isDeleting = true;
+  this.isDeleting = true;
 
-    this.plansService.deletePlan(this.planToDelete.id).subscribe(success => {
+  this.plansService.deletePlan(this.planToDelete.id).subscribe({
+    next: (success) => {
       if (success) {
+        console.log('✅ Plan deleted successfully');
+        
+        // إزالة الـ plan من القائمة
         this.plans = this.plans.filter(p => p.id !== this.planToDelete!.id);
         this.filteredPlans = this.filteredPlans.filter(p => p.id !== this.planToDelete!.id);
+        
+        // إغلاق الـ modal
+        this.showDeleteModal = false;
+        this.planToDelete = null;
+        this.isDeleting = false;
+        
+      } else {
+        console.error('❌ Failed to delete plan');
+        alert('Failed to delete plan. Please try again.');
+        this.isDeleting = false;
       }
-
-      this.showDeleteModal = false;
-      this.planToDelete = null;
+    },
+    error: (error) => {
+      console.error('❌ Error deleting plan:', error);
+      alert('An error occurred while deleting the plan.');
       this.isDeleting = false;
-    });
-  }
+    }
+  });
+}
 
   /* =========================
      Helpers

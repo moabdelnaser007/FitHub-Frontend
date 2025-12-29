@@ -100,3 +100,26 @@ button {
     padding-left: 0 !important;
   }
 }
+
+
+/* Default Light Theme
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Theme 
+body.dark-theme {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.card {
+  background-color: white;
+  transition: background-color 0.3s;
+}
+
+body.dark-theme .card {
+  background-color: #2d2d2d;
+} */

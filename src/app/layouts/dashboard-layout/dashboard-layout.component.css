@@ -10,7 +10,7 @@
   flex-direction: column;
   width: 256px;
   background-color: #fff;
-  border-right: 1px solid #E5E7EB;
+  /* border-right removed to prevent white line in header */
   flex-shrink: 0;
   position: fixed;
   top: 0;
@@ -26,18 +26,33 @@
   gap: 12px;
   padding: 0 24px;
   height: 64px;
-  border-bottom: 1px solid #E5E7EB;
+  background-color: #0b1120;
+  /* Landing Page Dark */
+  border-bottom: 1px solid #1e293b;
+  color: #e2e8f0;
 }
 
-.logo-icon {
-  color: #4A90E2;
-  font-size: 32px;
-}
-
-.logo-text {
-  font-size: 18px;
+/* Landing Page Brand Styles */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 700;
-  color: #1F2937;
+  font-size: 18px;
+  color: #e2e8f0;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .sidebar-content {
@@ -46,6 +61,8 @@
   justify-content: space-between;
   flex: 1;
   padding: 16px;
+  border-right: 1px solid #E5E7EB;
+  /* Border moved here */
 }
 
 /* Navigation */
@@ -94,15 +111,27 @@
   align-items: center;
   padding: 8px;
   border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-info:hover {
+  background-color: #F3F4F6;
 }
 
 .admin-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqmvXwjP0TbdFCno1OhPwyj5JfbmJ_Vx9hWSgMrymxP52rnxN49GPUamxi40cbeONLB5cYNE_wyOSaBe-hxjJGKab_tdf2iA2I0ZzafVs-MtK95AZdyKacA6K5hz-Tj6jumT_bwsvysX5s_-yux9TeCNMYWIuHBKzx6XDDYS5Gr_UaN7T5QtsLvmD2Rpx_zcwVOZNkuXTftP9AGIF291iI6a8rI4vBi52CuVsA5Y-uuu7pEHWRfPT_4znDFr4snPWJey_zKeOJems');
-  background-size: cover;
-  background-position: center;
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-avatar span {
+  font-size: 24px;
 }
 
 .admin-details h3 {
@@ -145,13 +174,13 @@
 
 /* Content */
 .content {
-flex: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
   margin-left: 256px;
   height: 100vh;
   overflow: hidden;
-  max-width: calc(100vw - 256px); /* أضيفي ده */
+  max-width: calc(100vw - 256px);
 }
 
 /* Header */
@@ -159,18 +188,22 @@ flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #fff;
-  border-bottom: 1px solid #E5E7EB;
+  background-color: #0b1120;
+  /* Landing Page Dark */
+  border-bottom: 1px solid #1e293b;
   padding: 0 24px;
   height: 64px;
   width: 100%;
   position: relative;
   z-index: 20;
   flex-shrink: 0;
+  color: #e2e8f0;
 }
 
 .header-left {
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .header-center {
@@ -179,39 +212,9 @@ flex: 1;
   justify-content: center;
 }
 
+/* Search Removed/Hidden */
 .search-container {
-  position: relative;
-  width: 100%;
-  max-width: 448px;
-  color: #6B7280;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.search-input {
-  width: 100%;
-  padding: 8px 16px 8px 40px;
-  border-radius: 8px;
-  border: 1px solid #E5E7EB;
-  background-color: #F9FAFB;
-  font-size: 14px;
-  color: #1F2937;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.search-input:focus {
-  border-color: #4A90E2;
-}
-
-.search-input::placeholder {
-  color: #6B7280;
+  display: none;
 }
 
 .header-right {
@@ -231,13 +234,14 @@ flex: 1;
   border-radius: 50%;
   border: none;
   background: none;
-  color: #6B7280;
+  color: #e2e8f0;
+  /* Light icon color */
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .icon-btn:hover {
-  background-color: #F3F4F6;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .user-avatar {
@@ -254,7 +258,10 @@ flex: 1;
   padding: 20px;
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden; /* أضيفي ده */
-  max-width: 100%; /* أضيفي ده */
-  box-sizing: border-box; /* أضيفي ده */
+  overflow-x: hidden;
+  /* أضيفي ده */
+  max-width: 100%;
+  /* أضيفي ده */
+  box-sizing: border-box;
+  /* أضيفي ده */
 }

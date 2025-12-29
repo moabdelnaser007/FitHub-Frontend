@@ -1,0 +1,48 @@
+<div class="subscription-page">
+    <div class="admin-page-header">
+        <div>
+            <h1>Subscription History</h1>
+            <p>View all user credit purchases and transaction history.</p>
+        </div>
+    </div>
+
+
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading history...</p>
+    </div>
+
+    <div *ngIf="error" class="error-msg">
+        {{ error }}
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading && !error">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Plan ID</th>
+                    <th>Base Price</th>
+                    <th>Tax</th>
+                    <th>Total Amount</th>
+                    <th>Purchase Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of filteredHistory">
+                    <td>#{{ item.id }}</td>
+                    <td>User #{{ item.userId }}</td>
+                    <td>Plan #{{ item.planId }}</td>
+                    <td>${{ item.basePrice }}</td>
+                    <td>${{ item.taxAmount }}</td>
+                    <td class="total-amount">${{ item.totalAmount }}</td>
+                    <td>{{ item.purchaseDate | date:'medium' }}</td>
+                </tr>
+                <tr *ngIf="filteredHistory.length === 0">
+                    <td colspan="7" class="empty-state">No history found</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
