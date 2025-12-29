@@ -1,5 +1,34 @@
 <div class="payment-page">
-  <app-header></app-header>
+  <!-- Header -->
+  <header class="top-nav">
+    <a class="brand" routerLink="/"> FitHub </a>
+    <nav class="nav-links">
+      <a *ngFor="let link of navLinks" [routerLink]="link.isRoute ? link.href : null"
+        [href]="link.isRoute ? null : link.href" (click)="handleNav(link, $event)">{{ link.label }}</a>
+    </nav>
+    <div class="auth-actions">
+      <ng-container *ngIf="!isLoggedIn">
+        <button class="ghost" routerLink="/login">Log in</button>
+        <button class="primary" routerLink="/register">Sign Up</button>
+      </ng-container>
+      <ng-container *ngIf="isLoggedIn">
+        <button class="profile-btn" (click)="navigateToProfile()" title="Go to Profile">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+              fill="currentColor" />
+          </svg>
+        </button>
+        <button class="logout-btn" (click)="logout()" title="Logout">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+              fill="currentColor" />
+          </svg>
+        </button>
+      </ng-container>
+    </div>
+  </header>
 
   <main class="payment-container">
     <section class="payment-content">
@@ -14,11 +43,7 @@
         <div class="plans-section">
           <div class="plans-list">
             <!-- Basic Plan -->
-            <div
-              class="plan-card"
-              [class.selected]="selectedPlan?.id === 'basic'"
-              (click)="selectPlan(plans[0])"
-            >
+            <div class="plan-card" [class.selected]="selectedPlan?.id === 'basic'" (click)="selectPlan(plans[0])">
               <div class="plan-header">
                 <h3 class="plan-name">{{ plans[0].name }}</h3>
               </div>
@@ -36,12 +61,8 @@
             </div>
 
             <!-- Premium Plan -->
-            <div
-              class="plan-card premium-card"
-              [class.selected]="selectedPlan?.id === 'premium'"
-              (click)="selectPlan(plans[1])"
-            >
-              <div class="plan-badge">Most Popular</div>
+            <div class="plan-card premium-card" [class.selected]="selectedPlan?.id === 'premium'"
+              (click)="selectPlan(plans[1])">
               <div class="plan-header">
                 <h3 class="plan-name">{{ plans[1].name }}</h3>
               </div>
@@ -59,11 +80,7 @@
             </div>
 
             <!-- Gold Plan -->
-            <div
-              class="plan-card"
-              [class.selected]="selectedPlan?.id === 'gold'"
-              (click)="selectPlan(plans[2])"
-            >
+            <div class="plan-card" [class.selected]="selectedPlan?.id === 'gold'" (click)="selectPlan(plans[2])">
               <div class="plan-header">
                 <h3 class="plan-name">{{ plans[2].name }}</h3>
               </div>

@@ -208,8 +208,8 @@ export class GymService {
     // We construct the URL to serve from backend
     if (!branchName || !imageName) return 'assets/default-gym.jpg';
 
-    // URL format: http://localhost:24357/images/Gym/Oxygen/569279a6-260d-4134-bca5-e4893197832a-Oxygen.jfif
-    return `http://localhost:24357/images/Gym/${encodeURIComponent(
+    // URL format: http://localhost:5024/images/Gym/Oxygen/569279a6...
+    return `http://localhost:5024/images/Gym/${encodeURIComponent(
       branchName
     )}/${encodeURIComponent(imageName)}`;
   }

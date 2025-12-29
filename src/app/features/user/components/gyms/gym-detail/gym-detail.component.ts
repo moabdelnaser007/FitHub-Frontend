@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { GymService } from '../../../../../services/gym.service';
 import { PlansService } from '../../../../../services/plans.service';
 import { SubscriptionService } from '../../../../../services/subscription.service';
+import { BookingService, Review } from '../../../../../services/booking.service'; // Added
+// Force rebuild
 import { FooterComponent } from '../../../../../shared/components/footer/footer.component';
 
 interface TimeSlot {
@@ -37,6 +39,8 @@ interface Amenity {
   label: string;
 }
 
+import { AuthService } from '../../../../auth/services/auth.service';
+
 @Component({
   selector: 'app-gym-detail',
   standalone: true,
@@ -45,6 +49,13 @@ interface Amenity {
   styleUrl: './gym-detail.component.css',
 })
 export class GymDetailComponent implements OnInit {
+  isLoggedIn = false;
+  readonly navLinks = [
+    { label: 'Find Gym', href: '/find-gym', isRoute: true },
+    { label: 'Plan', href: '/#plans', isRoute: true },
+    { label: 'About Us', href: '/#about', isRoute: true },
+    { label: 'Contact', href: '/#contact', isRoute: true },
+  ];
   gymId: string = '';
   activeTab: 'about' | 'facilities' | 'schedule' | 'plans' = 'schedule';
 
@@ -53,23 +64,18 @@ export class GymDetailComponent implements OnInit {
   modalMessage = '';
   modalType: 'success' | 'error' = 'success';
 
-  gymName = 'Powerhouse Gym';
-  rating = 4.7;
-  reviewCount = 312;
-  location = 'Downtown, Metropolis';
+  gymName = '';
+  rating = 0;
+  reviewCount = 0;
+  location = '';
 
   selectedDate = '';
+  minDate = '';
   selectedTime = '';
   selectedPlan: Plan | null = null;
   totalCredits = 250;
 
-  images = [
-    'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?w=400&h=300&fit=crop',
-    'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop',
-  ];
+  images: string[] = [];
 
   timeSlots: TimeSlot[] = [
     { time: '09:00 AM', label: '09:00 AM' },
@@ -80,32 +86,13 @@ export class GymDetailComponent implements OnInit {
     { time: '07:00 PM', label: '07:00 PM' },
   ];
 
-  schedules: Schedule[] = [
-    { day: 'Monday', openingTime: '06:00 AM', closingTime: '10:00 PM', status: 'Open' },
-    { day: 'Tuesday', openingTime: '06:00 AM', closingTime: '10:00 PM', status: 'Open' },
-    { day: 'Wednesday', openingTime: '06:00 AM', closingTime: '10:00 PM', status: 'Open' },
-    { day: 'Thursday', openingTime: '06:00 AM', closingTime: '10:00 PM', status: 'Open' },
-    { day: 'Friday', openingTime: '06:00 AM', closingTime: '09:00 PM', status: 'Open' },
-    { day: 'Saturday', openingTime: '08:00 AM', closingTime: '08:00 PM', status: 'Open' },
-    { day: 'Sunday', openingTime: '08:00 AM', closingTime: '06:00 PM', status: 'Closed Today' },
-  ];
+  schedules: Schedule[] = [];
 
-  plans: Plan[] = [
-    { name: 'Basic', credits: 125, visits: 10, recommended: false },
-    { name: 'Premium', credits: 250, visits: 20, recommended: true },
-    { name: 'Gold', credits: 375, visits: 30, recommended: false },
-  ];
+  plans: Plan[] = [];
 
-  amenities: Amenity[] = [
-    { icon: 'fitness', label: 'Free Weights' },
-    { icon: 'group', label: 'Group Classes' },
-    { icon: 'self_improvement', label: 'Yoga Studio' },
-    { icon: 'pool', label: 'Swimming Pool' },
-    { icon: 'shower', label: 'Showers & Lockers' },
-    { icon: 'local_parking', label: 'Free Parking' },
-  ];
-
-  aboutText = `Powerhouse Gym, located in the heart of Downtown Metro City, is a state-of-the-art facility dedicated to helping you achieve your fitness goals. We offer a wide range of equipment, expert trainers, and a motivating atmosphere. Whether you're a beginner or a seasoned athlete, Powerhouse Gym provides everything you need for a complete workout experience.`;
+  amenities: Amenity[] = [];
+  aboutText = '';
+  reviews: Review[] = [];
 
   visitCreditsCost = 0;
 
@@ -114,10 +101,13 @@ export class GymDetailComponent implements OnInit {
     private router: Router,
     private gymService: GymService,
     private plansService: PlansService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    private authService: AuthService,
+    private bookingService: BookingService
   ) { }
 
   ngOnInit(): void {
+    this.checkAuthStatus();
     this.gymId = this.route.snapshot.paramMap.get('id') || '';
     const idNum = Number(this.gymId);
     if (!idNum) return;
@@ -152,6 +142,28 @@ export class GymDetailComponent implements OnInit {
 
     // Preload plans for this branch
     this.loadPlans(idNum);
+
+    // Load reviews
+    this.loadReviews(idNum);
+
+    // Set min date to today
+    const today = new Date();
+    this.minDate = today.toISOString().split('T')[0];
+  }
+
+  private loadReviews(branchId: number): void {
+    this.bookingService.getReviewsByBranch(branchId).subscribe({
+      next: (data) => {
+        this.reviews = data;
+        this.reviewCount = data.length;
+        // Calculate average rating if needed
+        if (data.length > 0) {
+          const sum = data.reduce((acc, curr) => acc + curr.rating, 0);
+          this.rating = Math.round((sum / data.length) * 10) / 10;
+        }
+      },
+      error: (err) => console.error('Failed to load reviews', err)
+    });
   }
 
   private loadPlans(branchId: number): void {
@@ -167,6 +179,22 @@ export class GymDetailComponent implements OnInit {
       },
       error: (err) => console.error('Failed to load plans', err),
     });
+  }
+
+  checkAuthStatus(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
+
+  handleNav(link: any, event: Event) {
+    if (!link.isRoute) {
+      // Logic if needed
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.isLoggedIn = false;
+    this.router.navigate(['/']);
   }
 
   navigateToProfile(): void {
@@ -210,6 +238,12 @@ export class GymDetailComponent implements OnInit {
   }
 
   reserveSpot(): void {
+    if (!this.isLoggedIn) {
+      alert('You must be logged in to reserve a spot. Please log in first.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (!this.selectedDate || !this.selectedTime) {
       alert('Please select a date and time');
       return;
@@ -228,6 +262,12 @@ export class GymDetailComponent implements OnInit {
   }
 
   proceedToPayment(): void {
+    if (!this.isLoggedIn) {
+      alert('You must be logged in to subscribe to a plan. Please log in first.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (!this.selectedPlan || !this.selectedPlan.id) {
       alert('Please select a plan');
       return;

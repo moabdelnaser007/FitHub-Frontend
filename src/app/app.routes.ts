@@ -135,7 +135,6 @@ export const routes: Routes = [
       { path: 'add-staff', component: AddStaffComponent },
       { path: 'staff-details/:id', component: StaffDetailsComponent },
       { path: 'edit-staff/:id', component: EditStaffComponent },
-      { path: 'branches-list', component: BranchesListComponent }
       { path: 'branches-list', component: BranchesListComponent },
       { path: 'assign-staff/:id', component: AssignUnassignedStaffComponent },
       { path: 'edit-plan/:planId', component: EditPlanComponent },

@@ -4,15 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { UsersService, User } from '../../../../services/users.service';
-import { BookingService, BookingItem } from '../../../../services/booking.service';
+import { WalletService } from '../../../../services/wallet.service';
 
 interface Transaction {
-  id?: number;
+  id: number;
   date: string;
   description: string;
-  amountPaid: string;
-  credits: string;
-  status?: string;
+  amountPaid: number;
+  credits: number;
+  type: string;
+  isPositive: boolean;
 }
 
 @Component({
@@ -27,7 +28,7 @@ export class BillingComponent implements OnInit {
   searchQuery: string = '';
   currentPage: number = 1;
   itemsPerPage: number = 5;
-  totalItems: number = 20;
+  totalItems: number = 0;
 
   transactions: Transaction[] = [];
   paginatedTransactions: Transaction[] = [];
@@ -36,50 +37,32 @@ export class BillingComponent implements OnInit {
 
   constructor(
     private usersService: UsersService,
-    private bookingService: BookingService,
+    private walletService: WalletService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
-    this.loadBookings();
+    this.loadTransactions();
     this.loadWalletBalance();
   }
 
-  loadBookings(): void {
+  loadTransactions(): void {
     this.isLoading = true;
-    this.bookingService.getMyBookings().subscribe({
+    this.walletService.getTransactions().subscribe({
       next: (response) => {
         if (response.isSuccess && response.data) {
-          this.transactions = response.data.map(item => this.mapBookingToTransaction(item));
+          this.transactions = response.data;
           this.totalItems = this.transactions.length;
           this.updatePaginatedTransactions();
         }
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error loading bookings:', error);
+        console.error('Error loading transactions:', error);
         this.isLoading = false;
       }
     });
-  }
-
-  private mapBookingToTransaction(item: BookingItem): Transaction {
-    const date = new Date(item.scheduledDateTime);
-    const formattedDate = date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-
-    return {
-      id: item.id,
-      date: formattedDate,
-      description: `${item.branchName} Visit`,
-      amountPaid: '0.00 Credits', // Bookings typically use credits already purchased
-      credits: `-${item.creditsCost}`,
-      status: item.status
-    };
   }
 
   loadWalletBalance(): void {
@@ -133,11 +116,6 @@ export class BillingComponent implements OnInit {
     this.goToPage(this.currentPage + 1);
   }
 
-  onRecharge(): void {
-    console.log('Recharge button clicked');
-    // TODO: Implement recharge functionality
-  }
-
   logout(): void {
     // Clear authentication data
     localStorage.removeItem('fitHubToken');
@@ -148,6 +126,7 @@ export class BillingComponent implements OnInit {
   }
 
   goToRecharge(): void {
-    this.router.navigate(['/gyms']);
+    this.router.navigate(['/choose-plan-payment']);
   }
 }
+

@@ -12,6 +12,14 @@ export interface BookingItem {
     hasReview: boolean;
 }
 
+export interface Review {
+    id: number;
+    userName: string;
+    bookingDate: string;
+    rating: number;
+    comment: string;
+}
+
 export interface BookingResponse<T = string> {
     data: T;
     isSuccess: boolean;
@@ -39,11 +47,14 @@ export class BookingService {
         return headers;
     }
 
-    createBooking(branchId: number, scheduledDateTime: string): Observable<BookingResponse> {
-        const body = {
+    createBooking(branchId: number, scheduledDateTime: string, subscriptionId?: number): Observable<BookingResponse> {
+        const body: any = {
             branchId,
             scheduledDateTime,
         };
+        if (subscriptionId) {
+            body.subscriptionId = subscriptionId;
+        }
         return this.http.post<BookingResponse>(this.apiUrl, body, {
             headers: this.getHeaders(),
         });
@@ -63,6 +74,12 @@ export class BookingService {
             isAnonymous,
         };
         return this.http.post<BookingResponse<boolean>>(`${environment.apiBaseUrl}/reviews`, body, {
+            headers: this.getHeaders(),
+        });
+    }
+
+    getReviewsByBranch(branchId: number): Observable<Review[]> {
+        return this.http.get<Review[]>(`${environment.apiBaseUrl}/reviews/branch/${branchId}`, {
             headers: this.getHeaders(),
         });
     }

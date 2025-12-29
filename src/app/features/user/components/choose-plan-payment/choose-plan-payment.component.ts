@@ -28,20 +28,30 @@ interface PaymentMethod {
   selected?: boolean;
 }
 
+import { AuthService } from '../../../auth/services/auth.service';
+
 @Component({
   selector: 'app-choose-plan-payment',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './choose-plan-payment.component.html',
   styleUrls: ['./choose-plan-payment.component.css'],
 })
 export class ChoosePlanPaymentComponent implements OnInit {
+  isLoggedIn = false;
+  readonly navLinks = [
+    { label: 'Find Gym', href: '/find-gym', isRoute: true },
+    { label: 'Plan', href: '/#plans', isRoute: true },
+    { label: 'About Us', href: '/#about', isRoute: true },
+    { label: 'Contact', href: '/#contact', isRoute: true },
+  ];
+
   paymentForm!: FormGroup;
   selectedPlan: Plan | null = null;
   selectedPaymentMethod: PaymentMethod | null = null;
   saveCardForFuture: boolean = false;
   isProcessing = false;
-
+  // ... (code omitted for brevity)
   plans: Plan[] = [
     {
       id: 'basic',
@@ -96,10 +106,12 @@ export class ChoosePlanPaymentComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.checkAuthStatus();
     this.selectedPlan = this.plans[1]; // Premium selected by default
     this.selectedPaymentMethod = this.paymentMethods[0]; // Card selected by default
     this.initializeForm();
@@ -140,6 +152,12 @@ export class ChoosePlanPaymentComponent implements OnInit {
   }
 
   confirmAndPay(): void {
+    if (!this.authService.isLoggedIn()) {
+      alert('You must be logged in to proceed with the payment. Please log in first.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (!this.selectedPlan) {
       console.warn('Please select a plan');
       return;
@@ -148,14 +166,20 @@ export class ChoosePlanPaymentComponent implements OnInit {
     this.isProcessing = true;
 
     this.walletService.rechargeWallet(this.selectedPlan.planId).subscribe({
-      next: (response) => {
-        if (response && response.redirectUrl) {
+      next: (response: any) => {
+        // Handle potential ResponseViewModel wrapper
+        const data = response.data || response;
+        const redirectUrl = data.redirectUrl || data.RedirectUrl;
+
+        if (redirectUrl) {
           // Redirect the user to the payment gateway
-          window.location.href = response.redirectUrl;
+          window.location.href = redirectUrl;
         } else {
-          console.error('No redirect URL provided');
-          this.isProcessing = false;
+          // If no redirect URL, assume direct success (mock or internal)
+          console.log('Payment successful, redirecting to billing...');
+          this.router.navigate(['/billing']);
         }
+        this.isProcessing = false;
       },
       error: (error) => {
         console.error('Payment initiation failed', error);
@@ -194,5 +218,25 @@ export class ChoosePlanPaymentComponent implements OnInit {
     }
     event.target.value = value;
     this.paymentForm.patchValue({ expiryDate: value }, { emitEvent: false });
+  }
+
+  checkAuthStatus(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
+
+  handleNav(link: any, event: Event) {
+    if (!link.isRoute) {
+      // Logic if needed
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.isLoggedIn = false;
+    this.router.navigate(['/']);
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
   }
 }

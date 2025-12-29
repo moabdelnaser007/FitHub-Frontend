@@ -142,6 +142,11 @@ export class BranchDetailsComponent implements OnInit {
     });
   }
 
+  getImageUrl(imageName: string): string {
+    if (!this.branchInfo.name || !imageName) return 'assets/images/placeholder-gym.jpg';
+    return `http://localhost:5024/images/Gym/${encodeURIComponent(this.branchInfo.name)}/${encodeURIComponent(imageName)}`;
+  }
+
   deleteImage(imageName: string): void {
     if (!confirm('Are you sure you want to delete this image?')) return;
 

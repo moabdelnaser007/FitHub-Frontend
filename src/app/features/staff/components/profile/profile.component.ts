@@ -183,7 +183,7 @@ export class StaffProfileComponent implements OnInit {
     this.userService.getMe().subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          this.user = res.data;
+          this.user = res.data ?? null;
           this.resetEditData();
         }
         this.isLoading = false;

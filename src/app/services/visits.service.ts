@@ -13,7 +13,7 @@ export interface CheckInResponse {
 export interface VisitLog {
     visitId: number;
     branchName: string;
-    memberName: string;
+    memberName?: string;
     checkInTime: string;
     creditsDeducted: number;
 }
@@ -39,5 +39,9 @@ export class VisitsService {
 
     getBranchVisits(branchId: number): Observable<VisitLogResponse> {
         return this.http.get<VisitLogResponse>(`${this.apiUrl}/branch/${branchId}`);
+    }
+
+    getMyBranchVisits(): Observable<VisitLogResponse> {
+        return this.http.get<VisitLogResponse>(`${this.apiUrl}/branch`);
     }
 }

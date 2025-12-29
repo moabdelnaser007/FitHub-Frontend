@@ -111,6 +111,6 @@ export class SubscriptionsComponent implements OnInit {
   }
 
   goToRecharge(): void {
-    this.router.navigate(['/gyms']);
+    this.router.navigate(['/choose-plan-payment']);
   }
 }

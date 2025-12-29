@@ -57,9 +57,31 @@
 }
 
 .subtitle {
-  margin: 0 0 1.5rem;
+  margin: 0 0 1rem;
   color: var(--muted);
   font-size: 14px;
+}
+
+.redirect-msg {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 2rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }
 
 .summary-card {

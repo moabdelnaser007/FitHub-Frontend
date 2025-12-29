@@ -95,8 +95,8 @@
           <h2>Branch Images</h2>
           <div class="images-grid">
             <div *ngFor="let img of branchImages" class="image-item">
-              <!-- Assuming URL pattern based on previous context -->
-              <img [src]="'http://localhost:5024/images/Gym/hero/' + img.imageName" [alt]="img.imageName"
+              <!-- Dynamic URL using helper method -->
+              <img [src]="getImageUrl(img.imageName)" [alt]="img.imageName"
                 onerror="this.src='assets/images/placeholder-gym.jpg'">
               <button class="delete-btn" (click)="deleteImage(img.imageName)" title="Delete Image">
                 <span class="material-symbols-outlined">delete</span>

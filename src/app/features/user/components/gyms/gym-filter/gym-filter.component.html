@@ -4,8 +4,9 @@
   </div>
 
   <div class="filter-section">
-    <label class="filter-label">Location</label>
+    <label class="filter-label">City</label>
     <select class="filter-select" name="location" [(ngModel)]="selectedLocation">
+      <option value="">All Cities</option>
       <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
     </select>
   </div>
@@ -13,18 +14,10 @@
   <div class="filter-section">
     <label class="filter-label">Rating</label>
     <div class="stars-input">
-      <button
-        *ngFor="let star of [1, 2, 3, 4, 5]"
-        class="star-btn"
-        (click)="selectRating(star)"
-        [class.active]="star <= selectedRating"
-        type="button"
-        aria-label="Rate {{ star }} stars"
-      >
+      <button *ngFor="let star of [1, 2, 3, 4, 5]" class="star-btn" (click)="selectRating(star)"
+        [class.active]="star <= selectedRating" type="button" aria-label="Rate {{ star }} stars">
         <svg viewBox="0 0 24 24" class="star-svg">
-          <path
-            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-          />
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
         </svg>
       </button>
     </div>

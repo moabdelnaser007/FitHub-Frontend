@@ -114,7 +114,7 @@ export class AuthService {
   resendOtp(email: string): Observable<{ success: boolean; message: string }> {
     return this.http
       .post<ResponseViewModel<string>>(
-        `${this.base}/Resend-otp`,
+        `${this.base}/resend-otp`,
         { email },
         { headers: { accept: '*/*' } }
       )
@@ -169,22 +169,21 @@ export class AuthService {
     newPassword: string,
     confirmPassword: string
   ): Observable<{ success: boolean; message: string }> {
-    // Standardize all keys to both camelCase and PascalCase to ensure backend compatibility
+    // Standardize to match the working CURL request (lowercase keys)
     const body = {
       email,
-      Email: email,
       otp,
-      Otp: otp,
       newPassword,
-      NewPassword: newPassword,
-      confirmPassword,
-      ConfirmPassword: confirmPassword,
+      confirmPassword
     };
-    console.log('🔄 Calling reset-password with redundant body:', body);
+    console.log('🔄 Calling reset-password with body:', body);
 
     return this.http
       .post<ResponseViewModel<string>>(`${this.base}/reset-password`, body, {
-        headers: { accept: '*/*' },
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        },
       })
       .pipe(
         map((res) => {

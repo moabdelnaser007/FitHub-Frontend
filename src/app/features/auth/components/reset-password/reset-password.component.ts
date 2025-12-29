@@ -30,6 +30,9 @@ export class ResetPasswordComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Ensure clean state for password reset
+    this.authService.logout();
+
     this.route.queryParams.subscribe((qp) => {
       if (qp['email']) {
         this.email = qp['email'];
@@ -46,6 +49,25 @@ export class ResetPasswordComponent implements OnInit {
 
   toggleConfirm(): void {
     this.showConfirm = !this.showConfirm;
+  }
+
+  resendOtp(): void {
+    if (!this.email) return;
+    this.loading = true;
+    this.authService.resendOtp(this.email).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.success) {
+          this.statusMessage = 'A new OTP has been sent to your email.';
+        } else {
+          this.errorMessage = res.message || 'Failed to resend OTP.';
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = 'Error resending OTP.';
+      }
+    });
   }
 
   submit(): void {
@@ -72,16 +94,18 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     this.loading = true;
+    // Normalize email to lowercase to match backend expectations usually
     this.authService
-      .resetPassword(this.email, this.otp, this.password.trim(), this.confirmPassword.trim())
+      .resetPassword(this.email.trim().toLowerCase(), this.otp.trim(), this.password.trim(), this.confirmPassword.trim())
       .subscribe({
-        next: (res: any) => { // Added 'res: any' to the next callback signature
-          this.loading = false; // Keep loading = false
+        next: (res: any) => {
+          console.log('✅ Reset Password Response (New):', res);
+          this.loading = false;
           if (res.success) {
             this.statusMessage = res.message || 'OTP verified. Redirecting to reset password...';
             // Navigate to login after a short delay
             setTimeout(() => this.router.navigate(['/login']), 2000);
-          } else { // Added else block to handle non-success cases if res.success is false
+          } else {
             this.errorMessage = res.message || 'Failed to reset password. Please try again.';
           }
         },

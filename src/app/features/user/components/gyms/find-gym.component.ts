@@ -1,10 +1,11 @@
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { GymFilterComponent, FilterChange } from './gym-filter/gym-filter.component';
 import { GymListComponent } from './gym-list/gym-list.component';
 import { Gym } from '../../../../shared/components/gym-card/gym-card.component';
+import { AuthService } from '../../../auth/services/auth.service';
 import { GymSearchFilters } from '../../../../services/gym.service';
 import { FooterComponent } from '../../../../shared/components/footer/footer.component';
 
@@ -15,7 +16,7 @@ import { FooterComponent } from '../../../../shared/components/footer/footer.com
   templateUrl: './find-gym.component.html',
   styleUrl: './find-gym.component.css',
 })
-export class FindGymComponent {
+export class FindGymComponent implements OnInit {
   searchQuery = '';
   currentFilters: GymSearchFilters = {};
   showReview = false;
@@ -23,8 +24,39 @@ export class FindGymComponent {
   rating = 4;
   reviewText = '';
   anonymous = false;
+  isLoggedIn = false;
 
-  constructor(private router: Router) { }
+  readonly navLinks = [
+    { label: 'Find Gym', href: '/find-gym', isRoute: true },
+    { label: 'Plan', href: '/#plans', isRoute: true },
+    { label: 'About Us', href: '/#about', isRoute: true },
+    { label: 'Contact', href: '/#contact', isRoute: true },
+  ];
+
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void {
+    this.checkAuthStatus();
+  }
+
+  checkAuthStatus(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  }
+
+  handleNav(link: any, event: Event) {
+    if (!link.isRoute) {
+      // For find-gym, we redirect to home anchors if needed (though I made them routes above)
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.isLoggedIn = false;
+    this.router.navigate(['/']);
+  }
 
   navigateToProfile(): void {
     this.router.navigate(['/profile']);

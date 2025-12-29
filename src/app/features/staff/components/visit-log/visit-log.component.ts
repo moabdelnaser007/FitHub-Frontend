@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VisitsService, VisitLog } from '../../../../services/visits.service';
-import { UserService } from '../../../../services/user.service';
 
 @Component({
     selector: 'app-visit-log',
@@ -21,8 +20,7 @@ export class VisitLogComponent implements OnInit {
     isDropdownOpen: boolean = false;
 
     constructor(
-        private visitsService: VisitsService,
-        private userService: UserService
+        private visitsService: VisitsService
     ) { }
 
     ngOnInit(): void {
@@ -30,25 +28,8 @@ export class VisitLogComponent implements OnInit {
     }
 
     loadLogs(): void {
-        this.userService.getMe().subscribe({
-            next: (userRes) => {
-                if (userRes.isSuccess && userRes.data) {
-                    const branchId = userRes.data.branchId || userRes.data.gymId || 1;
-                    this.fetchVisits(branchId);
-                } else {
-                    this.error = 'Failed to fetch user profile';
-                    this.isLoading = false;
-                }
-            },
-            error: (err) => {
-                this.error = 'Failed to load user profile';
-                this.isLoading = false;
-            }
-        });
-    }
-
-    fetchVisits(branchId: number): void {
-        this.visitsService.getBranchVisits(branchId).subscribe({
+        this.isLoading = true;
+        this.visitsService.getMyBranchVisits().subscribe({
             next: (res) => {
                 if (res.isSuccess && res.data) {
                     this.logs = res.data;

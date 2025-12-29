@@ -34,4 +34,14 @@ export class WalletService {
             headers: this.getHeaders(),
         });
     }
+
+    getAllFitHubPlans(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/GetAllFitHubPlans`);
+    }
+
+    getTransactions(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/transactions`, {
+            headers: this.getHeaders()
+        });
+    }
 }

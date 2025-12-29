@@ -28,6 +28,8 @@ interface PlanCard {
   featured?: boolean;
 }
 
+import { WalletService } from '../../../../services/wallet.service';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -64,17 +66,33 @@ export class HomeComponent implements OnInit, OnDestroy {
     },
   ];
 
-  readonly plans: PlanCard[] = [
-    { name: 'Basic', price: 250, credits: 250 },
-    { name: 'Premium', price: 500, credits: 500, featured: true },
-    { name: 'Gold', price: 800, credits: 800 },
-  ];
+  plans: PlanCard[] = [];
 
-
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private walletService: WalletService
+  ) { }
 
   ngOnInit(): void {
     this.checkAuthStatus();
+    this.loadPlans();
+  }
+
+  loadPlans() {
+    this.walletService.getAllFitHubPlans().subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.plans = res.data.map((p: any) => ({
+            name: p.name,
+            price: p.price,
+            credits: p.creditsValue,
+            featured: p.name === 'Premium' // Auto-highlight Premium
+          }));
+        }
+      },
+      error: (err) => console.error('Failed to load plans', err)
+    });
   }
 
   ngOnDestroy(): void {

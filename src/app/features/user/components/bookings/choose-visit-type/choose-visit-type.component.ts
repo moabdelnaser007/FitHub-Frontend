@@ -24,8 +24,9 @@ export class ChooseVisitTypeComponent implements OnInit {
 
     // Subscription Data
     activePlanName: string | null = null;
+    activeSubscriptionId: number | null = null;
     remainingVisits: number = 0;
-    currentBalance: number = 0; // Keeping this for now, though not in API response shown
+    currentBalance: number = 0;
 
     constructor(
         private router: Router,
@@ -46,7 +47,6 @@ export class ChooseVisitTypeComponent implements OnInit {
             if (this.gymId) {
                 this.checkSubscription();
             } else {
-                // If no gym ID, default to single visit as we can't check sub
                 this.selectedType = 'single';
             }
         });
@@ -56,12 +56,12 @@ export class ChooseVisitTypeComponent implements OnInit {
         this.subscriptionService.getActiveSubscriptions(this.gymId).subscribe({
             next: (subs) => {
                 if (subs && subs.length > 0) {
-                    // Check for ACTIVE status and non-zero visits just in case, but API implies 'Active' subs
                     const activeSub = subs.find(s => s.status === 'ACTIVE');
 
                     if (activeSub) {
                         this.activePlanName = activeSub.planName;
                         this.remainingVisits = activeSub.remainingVisits;
+                        this.activeSubscriptionId = activeSub.subscriptionId;
                         this.selectedType = 'subscription';
                     } else {
                         this.setNoSubscription();
@@ -79,12 +79,13 @@ export class ChooseVisitTypeComponent implements OnInit {
 
     setNoSubscription(): void {
         this.activePlanName = null;
+        this.activeSubscriptionId = null;
         this.selectedType = 'single';
     }
 
     selectType(type: 'subscription' | 'single'): void {
         if (type === 'subscription' && !this.activePlanName) {
-            return; // Cannot select if no subscription
+            return;
         }
         this.selectedType = type;
     }
@@ -92,15 +93,12 @@ export class ChooseVisitTypeComponent implements OnInit {
     continue(): void {
         if (this.selectedType === 'single') {
             this.handleSingleVisitBooking();
-        } else {
-            // Subscription booking logic (mock for now or as per existing flow)
-            this.navigateToConfirmation();
+        } else if (this.selectedType === 'subscription') {
+            this.handleSubscriptionBooking();
         }
     }
 
-    private handleSingleVisitBooking(): void {
-        // Construct scheduledDateTime: date is YYYY-MM-DD, time is HH:mm AM/PM
-        let scheduledDateTime = '';
+    private getScheduledDateTime(): string {
         try {
             const [year, month, day] = this.date.split('-').map(Number);
             let [timeStr, modifier] = this.time.split(' ');
@@ -109,13 +107,17 @@ export class ChooseVisitTypeComponent implements OnInit {
             if (modifier === 'PM' && hours < 12) hours += 12;
             if (modifier === 'AM' && hours === 12) hours = 0;
 
+            // Note: Months are 0-indexed in JS Date
             const dateObj = new Date(year, month - 1, day, hours, minutes);
-            scheduledDateTime = dateObj.toISOString();
+            return dateObj.toISOString();
         } catch (e) {
             console.error('Error parsing date/time', e);
-            // Fallback to current time if parsing fails
-            scheduledDateTime = new Date().toISOString();
+            return new Date().toISOString();
         }
+    }
+
+    private handleSingleVisitBooking(): void {
+        const scheduledDateTime = this.getScheduledDateTime();
 
         this.bookingService.createBooking(this.gymId, scheduledDateTime).subscribe({
             next: (response) => {
@@ -128,6 +130,30 @@ export class ChooseVisitTypeComponent implements OnInit {
             error: (err) => {
                 console.error('Booking API error', err);
                 alert('An error occurred while confirming your booking.');
+            }
+        });
+    }
+
+    private handleSubscriptionBooking(): void {
+        if (!this.activeSubscriptionId) {
+            alert('No active subscription found.');
+            return;
+        }
+
+        const scheduledDateTime = this.getScheduledDateTime();
+
+        // Call updated API with subscriptionId
+        this.bookingService.createBooking(this.gymId, scheduledDateTime, this.activeSubscriptionId).subscribe({
+            next: (response) => {
+                if (response.isSuccess) {
+                    this.navigateToConfirmation(response.data);
+                } else {
+                    alert(response.message || 'Subscription booking failed');
+                }
+            },
+            error: (err) => {
+                console.error('Subscription booking API error', err);
+                alert('An error occurred while confirming your subscription booking.');
             }
         });
     }

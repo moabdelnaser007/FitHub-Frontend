@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 
 interface PaymentState {
@@ -19,12 +19,35 @@ interface PaymentState {
   templateUrl: './payment-success.component.html',
   styleUrls: ['./payment-success.component.css'],
 })
-export class PaymentSuccessComponent {
-  state: PaymentState;
+export class PaymentSuccessComponent implements OnInit {
+  state: PaymentState = {};
+  redirectMessage = 'Redirecting to billing in 2 seconds...';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     const nav = this.router.getCurrentNavigation();
-    this.state = (nav?.extras.state as PaymentState) || {};
+    if (nav?.extras.state) {
+      this.state = nav.extras.state as PaymentState;
+    }
+  }
+
+  ngOnInit(): void {
+    // Check for query params if state is empty (external redirect)
+    this.route.queryParams.subscribe((params) => {
+      if (!this.state.txnId && params['id']) {
+        this.state = {
+          txnId: params['id'],
+          amount: params['amount_cents'] ? Number(params['amount_cents']) / 100 : 0,
+          date: params['created_at'],
+          method: 'Card', // Default or derived
+          credits: 0 // Paymob doesn't return this, backend would need to sync it
+        };
+      }
+    });
+
+    // Auto-redirect to billing as requested
+    setTimeout(() => {
+      this.viewTransactions();
+    }, 2000);
   }
 
   get amount(): number {

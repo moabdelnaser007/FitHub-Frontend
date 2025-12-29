@@ -147,17 +147,18 @@ export class BookingHistoryComponent implements OnInit {
     const bookingId = Number(id);
     const booking = this.bookings.find((b) => Number(b.id) === bookingId);
     if (booking) {
-      if (booking.status.toUpperCase() === 'COMPLETED') {
-        this.selectedBookingCode = booking.id.toString();
-        this.selectedGymName = booking.branchName;
-        this.rating = 0;
-        this.reviewText = '';
-        this.isAnonymous = false;
-        this.showReviewModal = true;
-      } else {
-        this.infoMessage = 'You should go to the gym before you can add a review.';
+      if (booking.status.toUpperCase() === 'CONFIRMED') {
+        this.infoMessage = 'You cannot leave a review for a confirmed booking. Please complete your visit first.';
         this.showInfoModal = true;
+        return;
       }
+
+      this.selectedBookingCode = booking.id.toString();
+      this.selectedGymName = booking.branchName;
+      this.rating = 0;
+      this.reviewText = '';
+      this.isAnonymous = false;
+      this.showReviewModal = true;
     }
   }
 
@@ -221,6 +222,6 @@ export class BookingHistoryComponent implements OnInit {
   }
 
   goToRecharge(): void {
-    this.router.navigate(['/gyms']);
+    this.router.navigate(['/choose-plan-payment']);
   }
 }

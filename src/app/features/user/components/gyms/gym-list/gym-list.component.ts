@@ -8,11 +8,14 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import {
   GymCardComponent,
   Gym,
 } from '../../../../../shared/components/gym-card/gym-card.component';
 import { GymService, GymSearchFilters } from '../../../../../services/gym.service';
+import { BookingService } from '../../../../../services/booking.service';
 
 @Component({
   selector: 'app-gym-list',
@@ -31,7 +34,10 @@ export class GymListComponent implements OnInit, OnChanges {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private gymService: GymService) {}
+  constructor(
+    private gymService: GymService,
+    private bookingService: BookingService
+  ) { }
 
   ngOnInit(): void {
     this.loadGyms();
@@ -47,20 +53,65 @@ export class GymListComponent implements OnInit, OnChanges {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Check if any filters are applied
+    // Create a copy of filters to avoid modifying the input
+    // We remove minRating from the service call because ratings are fetched client-side
+    const searchFilters = { ...this.filters };
+    const minRating = searchFilters.minRating;
+    delete searchFilters.minRating;
+
     const hasFilters =
-      this.filters && (this.filters.name || this.filters.city || this.filters.minRating);
+      searchFilters && (searchFilters.name || searchFilters.city);
 
     const apiCall = hasFilters
-      ? this.gymService.searchGyms(this.filters!)
+      ? this.gymService.searchGyms(searchFilters)
       : this.gymService.getAllActiveBranches();
 
     apiCall.subscribe({
       next: (gyms) => {
-        this.gyms = gyms;
-        this.totalPages = Math.ceil(gyms.length / 6); // Assuming 6 gyms per page
-        this.isLoading = false;
-        console.log('✅ Gyms loaded:', gyms);
+        // Prepare requests to fetch ratings for all gyms
+        const ratingRequests = gyms.map((gym) => {
+          const gymId = Number(gym.id);
+          if (!gymId) return of(gym); // Return observable of gym if no ID
+
+          return this.bookingService.getReviewsByBranch(gymId).pipe(
+            map((reviews) => {
+              gym.reviewCount = reviews.length;
+              if (reviews.length > 0) {
+                const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+                gym.rating = Math.round((total / reviews.length) * 10) / 10;
+              } else {
+                gym.rating = 0;
+              }
+              return gym;
+            }),
+            catchError((err) => {
+              console.error(`Failed to load reviews for gym ${gym.id}`, err);
+              return of(gym); // Return the gym even if ratings fail
+            })
+          );
+        });
+
+        // Wait for all ratings to be fetched
+        forkJoin(ratingRequests).subscribe({
+          next: (updatedGyms) => {
+            // Now apply the rating filter
+            if (minRating && minRating > 0) {
+              this.gyms = updatedGyms.filter((g) => g.rating >= minRating);
+            } else {
+              this.gyms = updatedGyms;
+            }
+
+            this.totalPages = Math.ceil(this.gyms.length / 6);
+            this.isLoading = false;
+            console.log('✅ Gyms loaded and filtered:', this.gyms);
+          },
+          error: (err) => {
+            console.error('Error processing ratings:', err);
+            // Fallback: show gyms without rating filtering if forkJoin fails unexpectedly
+            this.gyms = gyms;
+            this.isLoading = false;
+          }
+        });
       },
       error: (error) => {
         console.error('❌ Error loading gyms:', error);

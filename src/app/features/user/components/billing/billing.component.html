@@ -115,7 +115,8 @@
                 <span class="sort-icon">↓</span>
               </th>
               <th>Description</th>
-              <th>Status</th>
+              <th>Type</th>
+              <th>Amount Paid</th>
               <th>Credits</th>
             </tr>
           </thead>
@@ -124,19 +125,24 @@
               <td class="date-cell">{{ transaction.date }}</td>
               <td>{{ transaction.description }}</td>
               <td>
-                <span class="status-badge" [class.badge-confirmed]="transaction.status === 'CONFIRMED'">
-                  {{ transaction.status }}
+                <span class="status-badge" [class.badge-confirmed]="transaction.type === 'RECHARGE'"
+                  [class.badge-pending]="transaction.type === 'DEDUCT'">
+                  {{ transaction.type }}
                 </span>
               </td>
+              <td>{{ transaction.amountPaid }} EGP</td>
               <td class="credits-cell">
-                <span class="credits-badge danger">{{ transaction.credits }}</span>
+                <span class="credits-badge" [class.success]="transaction.isPositive"
+                  [class.danger]="!transaction.isPositive">
+                  {{ transaction.isPositive ? '+' : '-' }}{{ transaction.credits }}
+                </span>
               </td>
             </tr>
             <tr *ngIf="transactions.length === 0 && !isLoading">
-              <td colspan="4" style="text-align: center; padding: 2rem;">No transactions found.</td>
+              <td colspan="5" style="text-align: center; padding: 2rem;">No transactions found.</td>
             </tr>
             <tr *ngIf="isLoading">
-              <td colspan="4" style="text-align: center; padding: 2rem;">Loading transactions...</td>
+              <td colspan="5" style="text-align: center; padding: 2rem;">Loading transactions...</td>
             </tr>
           </tbody>
         </table>
