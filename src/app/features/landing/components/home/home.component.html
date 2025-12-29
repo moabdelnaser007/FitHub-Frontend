@@ -2,13 +2,8 @@
   <header class="top-nav">
     <a class="brand" href="#top"> FitHub </a>
     <nav class="nav-links">
-      <a
-        *ngFor="let link of navLinks"
-        [routerLink]="link.isRoute ? link.href : null"
-        [href]="link.isRoute ? null : link.href"
-        (click)="handleNav(link, $event)"
-        >{{ link.label }}</a
-      >
+      <a *ngFor="let link of navLinks" [routerLink]="link.isRoute ? link.href : null"
+        [href]="link.isRoute ? null : link.href" (click)="handleNav(link, $event)">{{ link.label }}</a>
     </nav>
     <div class="auth-actions">
       <ng-container *ngIf="!isLoggedIn">
@@ -17,31 +12,17 @@
       </ng-container>
       <ng-container *ngIf="isLoggedIn">
         <button class="profile-btn" (click)="navigateToProfile()" title="Go to Profile">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-              fill="currentColor"
-            />
+              fill="currentColor" />
           </svg>
         </button>
         <button class="logout-btn" (click)="logout()" title="Logout">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-              fill="currentColor"
-            />
+              fill="currentColor" />
           </svg>
         </button>
       </ng-container>
@@ -71,16 +52,14 @@
           <div class="icon" [ngClass]="service.icon">
             <svg *ngIf="service.icon === 'location'" viewBox="0 0 24 24" aria-hidden="true">
               <path
-                d="M12 2.5c-4.142 0-7.5 3.284-7.5 7.333 0 5.5 7.5 11.667 7.5 11.667s7.5-6.167 7.5-11.667C19.5 5.784 16.142 2.5 12 2.5Zm0 10.167a2.834 2.834 0 1 1 0-5.667 2.834 2.834 0 0 1 0 5.667Z"
-              />
+                d="M12 2.5c-4.142 0-7.5 3.284-7.5 7.333 0 5.5 7.5 11.667 7.5 11.667s7.5-6.167 7.5-11.667C19.5 5.784 16.142 2.5 12 2.5Zm0 10.167a2.834 2.834 0 1 1 0-5.667 2.834 2.834 0 0 1 0 5.667Z" />
             </svg>
             <svg *ngIf="service.icon === 'plan'" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 5h16v2H4V5Zm0 6h16v2H4v-2Zm0 6h10v2H4v-2Z" />
             </svg>
             <svg *ngIf="service.icon === 'ticket'" viewBox="0 0 24 24" aria-hidden="true">
               <path
-                d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.586a1 1 0 0 1-1.414 0l-.172-.172a2 2 0 0 0-2.828 0 2 2 0 0 1-2.828 0 2 2 0 0 0-2.828 0 2 2 0 0 1-2.828 0 2 2 0 0 0-2.828 0l-.172.172A1 1 0 0 1 3 9.586V7Zm0 5.414a1 1 0 0 0 1.707.707l.172-.172a2 2 0 0 1 2.828 0 2 2 0 0 0 2.828 0 2 2 0 0 1 2.828 0 2 2 0 0 0 2.828 0 2 2 0 0 1 2.828 0l.172.172A1 1 0 0 0 21 12.414V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4.586Z"
-              />
+                d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.586a1 1 0 0 1-1.414 0l-.172-.172a2 2 0 0 0-2.828 0 2 2 0 0 1-2.828 0 2 2 0 0 0-2.828 0 2 2 0 0 1-2.828 0 2 2 0 0 0-2.828 0l-.172.172A1 1 0 0 1 3 9.586V7Zm0 5.414a1 1 0 0 0 1.707.707l.172-.172a2 2 0 0 1 2.828 0 2 2 0 0 0 2.828 0 2 2 0 0 1 2.828 0 2 2 0 0 0 2.828 0 2 2 0 0 1 2.828 0l.172.172A1 1 0 0 0 21 12.414V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4.586Z" />
             </svg>
           </div>
           <h3>{{ service.title }}</h3>
@@ -114,14 +93,8 @@
         <h2>Choose the Plan that Fits You</h2>
       </div>
       <div class="plan-grid">
-        <article
-          class="plan-card"
-          *ngFor="let plan of plans"
-          [ngClass]="{ featured: plan.featured }"
-          (click)="goToPlan()"
-          role="button"
-          tabindex="0"
-        >
+        <article class="plan-card" *ngFor="let plan of plans" [ngClass]="{ featured: plan.featured }"
+          (click)="goToPlan()" role="button" tabindex="0">
           <h3 class="plan-name">{{ plan.name }}</h3>
           <div class="price">
             <span class="amount">{{ plan.price }}</span>
@@ -133,18 +106,14 @@
               <svg class="check-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-                  fill="currentColor"
-                />
+                  fill="currentColor" />
               </svg>
               <span class="credits">{{ plan.credits }} Credits</span>
             </div>
           </div>
 
-          <button
-            class="plan-btn"
-            [ngClass]="{ 'btn-outline': !plan.featured, 'btn-primary': plan.featured }"
-            (click)="$event.stopPropagation(); goToPlan()"
-          >
+          <button class="plan-btn" [ngClass]="{ 'btn-outline': !plan.featured, 'btn-primary': plan.featured }"
+            (click)="$event.stopPropagation(); goToPlan()">
             Choose {{ plan.name }}
           </button>
         </article>
@@ -178,45 +147,5 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <a class="footer-brand" href="#top">
-        <div class="brand-mark">F</div>
-        <div class="footer-brand-text">
-          <div class="brand-name">FitHub</div>
-          <p class="muted">Your single pass to fitness freedom.</p>
-        </div>
-      </a>
-      <div class="footer-links">
-        <a href="#about">About</a>
-        <a href="#services">Services</a>
-        <a href="#plans">Plans</a>
-        <a href="#contact">Contact</a>
-      </div>
-      <div class="footer-social">
-        <a aria-label="Facebook" href="#">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M13 10h2.5l.5-3H13V5.5c0-.9.3-1.5 1.6-1.5H16V1.1C15.4 1 14.1 1 12.6 1 9.9 1 8 2.7 8 5.2V7H5v3h3v9h5v-9Z"
-            />
-          </svg>
-        </a>
-        <a aria-label="Twitter" href="#">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M22 5.8c-.7.3-1.5.6-2.3.6a4 4 0 0 0 1.7-2.2 8 8 0 0 1-2.6 1 4 4 0 0 0-6.8 3.5 11.2 11.2 0 0 1-8.1-4.1 4 4 0 0 0 1.2 5.4 4 4 0 0 1-1.8-.4v.1a4 4 0 0 0 3.2 3.9 4 4 0 0 1-1.8.1 4 4 0 0 0 3.7 2.7A8.1 8.1 0 0 1 2 18a11.5 11.5 0 0 0 6.1 1.8c7.3 0 11.3-6 11.3-11.3v-.5A8 8 0 0 0 22 5.8Z"
-            />
-          </svg>
-        </a>
-        <a aria-label="Instagram" href="#">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm0 2a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h10a2 2 0 0 0 2-2V7c0-1.1-.9-2-2-2H7Zm11.2 1.3a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM12 8.5A3.5 3.5 0 1 1 8.5 12 3.5 3.5 0 0 1 12 8.5Zm0 2a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 12 10.5Z"
-            />
-          </svg>
-        </a>
-      </div>
-    </div>
-    <p class="copyright">© {{ currentYear }} FitHub. All rights reserved.</p>
-  </footer>
+  <app-footer></app-footer>
 </div>

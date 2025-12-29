@@ -18,6 +18,7 @@ import { BillingComponent } from './features/user/components/billing/billing.com
 import { ChoosePlanPaymentComponent } from './features/user/components/choose-plan-payment/choose-plan-payment.component';
 import { PaymentSuccessComponent } from './features/user/components/payment-success/payment-success.component';
 import { PaymentFailedComponent } from './features/user/components/payment-failed/payment-failed.component';
+import { ChooseVisitTypeComponent } from './features/user/components/bookings/choose-visit-type/choose-visit-type.component';
 
 import { AdminDashboardComponent } from './features/admin/pages/dashboard/dashboard.component';
 import { ManageGymsComponent } from './features/admin/pages/manage-gyms/manage-gyms.component';
@@ -91,6 +92,7 @@ export const routes: Routes = [
   { path: 'subscriptions', component: SubscriptionsComponent },
   { path: 'subscriptions/manage/:id', component: ManageSubscriptionComponent },
   { path: 'booking-confirmation', component: BookingConfirmationComponent },
+  { path: 'booking/choose-type', component: ChooseVisitTypeComponent },
   { path: 'booking-history', component: BookingHistoryComponent },
 
 
@@ -133,6 +135,7 @@ export const routes: Routes = [
       { path: 'add-staff', component: AddStaffComponent },
       { path: 'staff-details/:id', component: StaffDetailsComponent },
       { path: 'edit-staff/:id', component: EditStaffComponent },
+      { path: 'branches-list', component: BranchesListComponent }
       { path: 'branches-list', component: BranchesListComponent },
       { path: 'assign-staff/:id', component: AssignUnassignedStaffComponent },
       { path: 'edit-plan/:planId', component: EditPlanComponent },

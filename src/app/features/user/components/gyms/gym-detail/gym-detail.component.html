@@ -13,27 +13,15 @@
       <button class="icon-btn notification-btn" aria-label="Notifications">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path
-            d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"
-          />
+            d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
         </svg>
       </button>
-      <button
-        class="icon-btn profile-btn"
-        (click)="navigateToProfile()"
-        aria-label="User Profile"
-        title="Go to Profile"
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+      <button class="icon-btn profile-btn" (click)="navigateToProfile()" aria-label="User Profile"
+        title="Go to Profile">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-            fill="currentColor"
-          />
+            fill="currentColor" />
         </svg>
       </button>
     </div>
@@ -55,9 +43,7 @@
       <div class="gym-meta">
         <span class="rating">
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-            />
+            <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
           </svg>
           {{ rating }} stars
         </span>
@@ -83,32 +69,16 @@
       <div class="main-content">
         <!-- Tabs -->
         <div class="tabs">
-          <button
-            class="tab-btn"
-            [class.active]="activeTab === 'about'"
-            (click)="setActiveTab('about')"
-          >
+          <button class="tab-btn" [class.active]="activeTab === 'about'" (click)="setActiveTab('about')">
             About
           </button>
-          <button
-            class="tab-btn"
-            [class.active]="activeTab === 'facilities'"
-            (click)="setActiveTab('facilities')"
-          >
+          <button class="tab-btn" [class.active]="activeTab === 'facilities'" (click)="setActiveTab('facilities')">
             Facilities
           </button>
-          <button
-            class="tab-btn"
-            [class.active]="activeTab === 'schedule'"
-            (click)="setActiveTab('schedule')"
-          >
+          <button class="tab-btn" [class.active]="activeTab === 'schedule'" (click)="setActiveTab('schedule')">
             Schedule
           </button>
-          <button
-            class="tab-btn"
-            [class.active]="activeTab === 'plans'"
-            (click)="setActiveTab('plans')"
-          >
+          <button class="tab-btn" [class.active]="activeTab === 'plans'" (click)="setActiveTab('plans')">
             Plans
           </button>
         </div>
@@ -162,12 +132,8 @@
           <!-- Plans Tab -->
           <div *ngIf="activeTab === 'plans'" class="tab-panel">
             <div class="plans-grid">
-              <div
-                class="plan-card"
-                *ngFor="let plan of plans"
-                [class.selected]="selectedPlan === plan"
-                [class.recommended]="plan.recommended"
-              >
+              <div class="plan-card" *ngFor="let plan of plans" [class.selected]="selectedPlan === plan"
+                [class.recommended]="plan.recommended">
                 <span *ngIf="plan.recommended" class="recommended-badge">MOST POPULAR</span>
                 <h3>{{ plan.name }}</h3>
                 <p class="plan-description">Gives you {{ plan.visits }} visits</p>
@@ -195,15 +161,15 @@
           <div class="form-group">
             <label>Select a Time</label>
             <div class="time-grid">
-              <button
-                *ngFor="let slot of timeSlots"
-                class="time-slot"
-                [class.selected]="selectedTime === slot.time"
-                (click)="selectTime(slot.time)"
-              >
+              <button *ngFor="let slot of timeSlots" class="time-slot" [class.selected]="selectedTime === slot.time"
+                (click)="selectTime(slot.time)">
                 {{ slot.label }}
               </button>
             </div>
+          </div>
+
+          <div class="cost-info" style="margin-bottom: 16px; font-weight: 600; color: #0f172a;">
+            Cost per visit: {{ visitCreditsCost }} Credits
           </div>
 
           <button class="primary-btn" (click)="reserveSpot()">Reserve Your Spot</button>
@@ -218,6 +184,15 @@
               <span>{{ selectedPlan?.name || 'No plan selected' }}</span>
               <span>{{ selectedPlan?.credits || 0 }} Credits</span>
             </div>
+
+            <div *ngIf="selectedPlan" class="plan-extra-details">
+              <p class="summary-desc">{{ selectedPlan.description }}</p>
+              <div class="summary-meta" *ngIf="selectedPlan.durationDays">
+                <span>Duration: {{ selectedPlan.durationDays }} Days</span>
+                <span>Visits: {{ selectedPlan.visits }}</span>
+              </div>
+            </div>
+
             <div class="order-row total">
               <span>Total</span>
               <span>{{ selectedPlan?.credits || 0 }} Credits</span>
@@ -237,4 +212,20 @@
       </aside>
     </div>
   </main>
+
+  <!-- Success/Error Modal -->
+  <div class="modal-overlay" *ngIf="showModal">
+    <div class="modal-content" [class.error]="modalType === 'error'">
+      <div class="modal-icon">
+        <span class="material-icons" *ngIf="modalType === 'success'">check_circle</span>
+        <span class="material-icons" *ngIf="modalType === 'error'">error</span>
+      </div>
+      <h3>{{ modalType === 'success' ? 'Success!' : 'Error' }}</h3>
+      <p>{{ modalMessage }}</p>
+      <button class="modal-btn" (click)="closeModal()">{{ modalType === 'success' ? 'View My Bookings' : 'Close'
+        }}</button>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
 </div>

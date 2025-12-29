@@ -9,9 +9,11 @@ import {
 } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
+import { WalletService } from '../../../../services/wallet.service';
 
 interface Plan {
   id: string;
+  planId: number;
   name: string;
   price: number;
   credits: number;
@@ -38,10 +40,12 @@ export class ChoosePlanPaymentComponent implements OnInit {
   selectedPlan: Plan | null = null;
   selectedPaymentMethod: PaymentMethod | null = null;
   saveCardForFuture: boolean = false;
+  isProcessing = false;
 
   plans: Plan[] = [
     {
       id: 'basic',
+      planId: 1, // Assuming IDs based on order
       name: 'Basic',
       price: 250,
       credits: 250,
@@ -50,6 +54,7 @@ export class ChoosePlanPaymentComponent implements OnInit {
     },
     {
       id: 'premium',
+      planId: 2,
       name: 'Premium',
       price: 500,
       credits: 500,
@@ -58,6 +63,7 @@ export class ChoosePlanPaymentComponent implements OnInit {
     },
     {
       id: 'gold',
+      planId: 3,
       name: 'Gold',
       price: 800,
       credits: 800,
@@ -87,7 +93,11 @@ export class ChoosePlanPaymentComponent implements OnInit {
     },
   ];
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private walletService: WalletService
+  ) { }
 
   ngOnInit(): void {
     this.selectedPlan = this.plans[1]; // Premium selected by default
@@ -135,19 +145,24 @@ export class ChoosePlanPaymentComponent implements OnInit {
       return;
     }
 
-    const paymentData = {
-      amount: parseFloat(this.calculateTotal()),
-      baseAmount: this.selectedPlan.price,
-      tax: parseFloat(this.calculateTax()),
-      credits: this.selectedPlan.credits,
-      planName: this.selectedPlan.name,
-      method: 'Credit Card',
-      txnId: `TXN-${Math.floor(10000 + Math.random() * 90000)}`,
-      date: new Date().toISOString(),
-    };
+    this.isProcessing = true;
 
-    // Navigate to payment success
-    this.router.navigate(['/payment-success'], { state: paymentData });
+    this.walletService.rechargeWallet(this.selectedPlan.planId).subscribe({
+      next: (response) => {
+        if (response && response.redirectUrl) {
+          // Redirect the user to the payment gateway
+          window.location.href = response.redirectUrl;
+        } else {
+          console.error('No redirect URL provided');
+          this.isProcessing = false;
+        }
+      },
+      error: (error) => {
+        console.error('Payment initiation failed', error);
+        this.isProcessing = false;
+        // Optionally handle error UI here
+      },
+    });
   }
 
   get totalDue(): number {
@@ -155,41 +170,8 @@ export class ChoosePlanPaymentComponent implements OnInit {
   }
 
   proceedToPayment(): void {
-    if (!this.selectedPlan) {
-      console.warn('Please select a plan');
-      return;
-    }
-
-    if (!this.selectedPaymentMethod) {
-      console.warn('Please select a payment method');
-      return;
-    }
-
-    if (this.selectedPaymentMethod.id === 'card' && this.paymentForm.invalid) {
-      this.paymentForm.markAllAsTouched();
-      console.warn('Please fill in all card details');
-      return;
-    }
-
-    const paymentData = {
-      amount: this.totalDue,
-      credits: this.selectedPlan.credits,
-      planName: this.selectedPlan.name,
-      method: this.selectedPaymentMethod.name,
-      txnId: `TXN-${Math.floor(10000 + Math.random() * 90000)}`,
-      date: new Date().toISOString(),
-    };
-
-    const shouldFail =
-      this.selectedPaymentMethod.id === 'card' &&
-      (this.paymentForm.value.cvv === '000' || this.paymentForm.value.cardNumber?.endsWith('0'));
-
-    if (shouldFail) {
-      this.router.navigate(['/payment-failed'], { state: paymentData });
-      return;
-    }
-
-    this.router.navigate(['/payment-success'], { state: paymentData });
+    // This seems to be an alternative or older method, mapping it to confirmAndPay for consistency if used
+    this.confirmAndPay();
   }
 
   onCardNumberChange(event: any): void {

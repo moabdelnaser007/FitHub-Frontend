@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../../features/auth/services/auth.service';
+import { FooterComponent } from '../../../../shared/components/footer/footer.component';
 
 type ServiceIcon = 'location' | 'plan' | 'ticket';
 
@@ -30,7 +31,7 @@ interface PlanCard {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -69,9 +70,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     { name: 'Gold', price: 800, credits: 800 },
   ];
 
-  readonly currentYear = new Date().getFullYear();
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.checkAuthStatus();

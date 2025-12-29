@@ -1,0 +1,202 @@
+.page-container {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.content-wrapper {
+    max-width: 800px;
+    width: 100%;
+}
+
+.screen-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.screen-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.screen-header p {
+    font-size: 16px;
+    color: #64748b;
+}
+
+/* Visit Type Cards */
+.visit-options {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.option-card {
+    flex: 1;
+    max-width: 400px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.option-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.option-card.selected {
+    border-color: #2563eb;
+    /* Primary Blue */
+    background-color: #eff6ff;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+}
+
+.option-card.selected .icon-wrapper {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.check-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #2563eb;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+}
+
+.option-card.selected .check-icon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.card-description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.card-info {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.info-label {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.info-value.highlight {
+    color: #2563eb;
+}
+
+/* Actions */
+.actions-footer {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.primary-btn,
+.secondary-btn {
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.primary-btn {
+    background-color: #2563eb;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.secondary-btn {
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.secondary-btn:hover {
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .visit-options {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-footer {
+        flex-direction: column;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        width: 100%;
+    }
+}

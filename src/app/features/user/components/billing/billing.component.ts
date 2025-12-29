@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
+import { UsersService, User } from '../../../../services/users.service';
+import { BookingService, BookingItem } from '../../../../services/booking.service';
 
 interface Transaction {
+  id?: number;
   date: string;
   description: string;
   amountPaid: string;
   credits: string;
+  status?: string;
 }
 
 @Component({
@@ -19,67 +23,89 @@ interface Transaction {
   styleUrls: ['./billing.component.css'],
 })
 export class BillingComponent implements OnInit {
-  currentCredits: number = 12;
+  currentUser: User | null = null;
   searchQuery: string = '';
   currentPage: number = 1;
   itemsPerPage: number = 5;
   totalItems: number = 20;
 
-  transactions: Transaction[] = [
-    {
-      date: 'Oct 15, 2023',
-      description: 'Pro Plan (50 Credits)',
-      amountPaid: '$49.99',
-      credits: '+50',
-    },
-    {
-      date: 'Sep 15, 2023',
-      description: 'Pro Plan (50 Credits)',
-      amountPaid: '$49.99',
-      credits: '+50',
-    },
-    {
-      date: 'Aug 15, 2023',
-      description: 'Starter Plan (20 Credits)',
-      amountPaid: '$24.99',
-      credits: '+20',
-    },
-    {
-      date: 'Jul 15, 2023',
-      description: 'Starter Plan (20 Credits)',
-      amountPaid: '$24.99',
-      credits: '+20',
-    },
-    {
-      date: 'Jun 10, 2023',
-      description: 'Top-up (10 Credits)',
-      amountPaid: '$15.00',
-      credits: '+10',
-    },
-    {
-      date: 'May 20, 2023',
-      description: 'Pro Plan (50 Credits)',
-      amountPaid: '$49.99',
-      credits: '+50',
-    },
-    {
-      date: 'Apr 10, 2023',
-      description: 'Starter Plan (20 Credits)',
-      amountPaid: '$24.99',
-      credits: '+20',
-    },
-    {
-      date: 'Mar 5, 2023',
-      description: 'Top-up (15 Credits)',
-      amountPaid: '$20.00',
-      credits: '+15',
-    },
-  ];
-
+  transactions: Transaction[] = [];
   paginatedTransactions: Transaction[] = [];
+  isLoading: boolean = false;
+  userBalance: number = 0;
+
+  constructor(
+    private usersService: UsersService,
+    private bookingService: BookingService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.updatePaginatedTransactions();
+    this.loadUserProfile();
+    this.loadBookings();
+    this.loadWalletBalance();
+  }
+
+  loadBookings(): void {
+    this.isLoading = true;
+    this.bookingService.getMyBookings().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.transactions = response.data.map(item => this.mapBookingToTransaction(item));
+          this.totalItems = this.transactions.length;
+          this.updatePaginatedTransactions();
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading bookings:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private mapBookingToTransaction(item: BookingItem): Transaction {
+    const date = new Date(item.scheduledDateTime);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+
+    return {
+      id: item.id,
+      date: formattedDate,
+      description: `${item.branchName} Visit`,
+      amountPaid: '0.00 Credits', // Bookings typically use credits already purchased
+      credits: `-${item.creditsCost}`,
+      status: item.status
+    };
+  }
+
+  loadWalletBalance(): void {
+    this.usersService.getWalletBalance().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.userBalance = response.data.balance;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading wallet balance:', error);
+      },
+    });
+  }
+
+  loadUserProfile(): void {
+    this.usersService.getMe().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.currentUser = response.data;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+      }
+    });
   }
 
   updatePaginatedTransactions(): void {
@@ -113,7 +139,15 @@ export class BillingComponent implements OnInit {
   }
 
   logout(): void {
-    console.log('Log out clicked');
-    // TODO: Implement logout functionality
+    // Clear authentication data
+    localStorage.removeItem('fitHubToken');
+    localStorage.removeItem('fitHubUser');
+
+    // Navigate to login page
+    this.router.navigate(['/login']);
+  }
+
+  goToRecharge(): void {
+    this.router.navigate(['/gyms']);
   }
 }

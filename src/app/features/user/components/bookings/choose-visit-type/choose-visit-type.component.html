@@ -1,0 +1,106 @@
+<div class="page-container">
+    <!-- Use Shared Header -->
+    <app-header></app-header>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <!-- Screen Header -->
+            <div class="screen-header">
+                <h1>Choose Visit Type</h1>
+                <p>How would you like to book this visit?</p>
+            </div>
+
+            <!-- Visit Type Options -->
+            <div class="visit-options">
+
+                <!-- Option 1: Subscription Plan -->
+                <div class="option-card" *ngIf="activePlanName" [class.selected]="selectedType === 'subscription'"
+                    (click)="selectType('subscription')">
+
+                    <div class="check-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                fill="currentColor" />
+                        </svg>
+                    </div>
+
+                    <div class="card-header">
+                        <div class="icon-wrapper">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z"
+                                    fill="currentColor" />
+                            </svg>
+                        </div>
+                        <span class="card-title">Subscription Plan</span>
+                    </div>
+
+                    <p class="card-description">
+                        Use one of your active subscription visits.
+                    </p>
+
+                    <div class="card-info">
+                        <div class="info-row">
+                            <span class="info-label">Active Plan</span>
+                            <span class="info-value">{{ activePlanName }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Remaining Visits</span>
+                            <span class="info-value highlight">{{ remainingVisits }} visits</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option 2: Single Visit -->
+                <div class="option-card" [class.selected]="selectedType === 'single'" (click)="selectType('single')">
+
+                    <div class="check-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                                fill="currentColor" />
+                        </svg>
+                    </div>
+
+                    <div class="card-header">
+                        <div class="icon-wrapper">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm-1 14H5v-2h14v2zm0-6H5V8h14v4z"
+                                    fill="currentColor" />
+                            </svg>
+                        </div>
+                        <span class="card-title">Single Visit</span>
+                    </div>
+
+                    <p class="card-description">
+                        Book this visit as a one-time visit using credits.
+                    </p>
+
+                    <div class="card-info">
+                        <div class="info-row">
+                            <span class="info-label">Cost</span>
+                            <span class="info-value highlight">{{ cost || 0 }} Credits</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Your Balance</span>
+                            <span class="info-value">{{ currentBalance }} Credits</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="actions-footer">
+                <button class="secondary-btn" (click)="goBack()">Back to Schedule</button>
+                <button class="primary-btn" (click)="continue()">Continue to Confirmation</button>
+            </div>
+
+        </div>
+    </main>
+</div>

@@ -9,7 +9,7 @@ export interface OtpResponse {
 
 @Injectable({ providedIn: 'root' })
 export class OtpService {
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService) { }
 
   sendOtp(email: string): Observable<OtpResponse> {
     return this.auth.sendOtp(email);
@@ -20,6 +20,6 @@ export class OtpService {
   }
 
   resendOtp(email: string): Observable<OtpResponse> {
-    return this.sendOtp(email);
+    return this.auth.resendOtp(email);
   }
 }

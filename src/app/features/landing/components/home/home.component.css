@@ -326,8 +326,7 @@ h1 {
 .about-image {
   border-radius: 16px;
   min-height: 380px;
-  background: url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=80')
-    center/cover no-repeat;
+  background: url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
   box-shadow: 0 24px 48px rgba(15, 23, 42, 0.16);
   animation: fadeUp 1s ease both;
   animation-delay: 0.12s;
@@ -509,91 +508,6 @@ textarea:focus {
   padding-inline: 26px;
 }
 
-.footer {
-  width: 100%;
-  margin: 80px 0 0;
-  padding: 48px 40px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  background: #0f172a;
-  color: #e2e8f0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 32px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.footer-brand {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  flex: 1;
-  min-width: 240px;
-}
-
-.footer-brand-text {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.footer-links {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  color: #e2e8f0;
-  align-items: center;
-}
-
-.footer-links a {
-  color: #e2e8f0;
-  transition: color 0.2s ease;
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-.footer-links a:hover {
-  color: #38bdf8;
-}
-
-.footer-social {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.footer-social svg {
-  width: 20px;
-  height: 20px;
-  fill: #e2e8f0;
-  transition: fill 0.2s ease, transform 0.2s ease;
-}
-
-.footer-social a:hover svg {
-  fill: #38bdf8;
-  transform: translateY(-2px);
-}
-
-.copyright {
-  text-align: center;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(226, 232, 240, 0.7);
-  font-size: 14px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -637,15 +551,5 @@ textarea:focus {
 
   .hero-overlay {
     padding: 52px 32px;
-  }
-
-  .footer-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .footer-links {
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 }

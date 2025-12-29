@@ -18,15 +18,30 @@ export class ProfileComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   showSidebarMenu = false;
+  userBalance: number = 0;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private usersService: UsersService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
+    this.loadWalletBalance();
+  }
+
+  loadWalletBalance(): void {
+    this.usersService.getWalletBalance().subscribe({
+      next: (response) => {
+        if (response.isSuccess && response.data) {
+          this.userBalance = response.data.balance;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading wallet balance:', error);
+      },
+    });
   }
 
   loadUserProfile(): void {

@@ -44,13 +44,18 @@ export interface UpdateUserRequest {
   status: string;
 }
 
+export interface WalletBalance {
+  balance: number;
+  userId: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
   private apiUrl = `${environment.apiBaseUrl}/AdminUsers`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Helper function للـ Headers مع Token
   private getHeaders(): HttpHeaders {
@@ -111,6 +116,14 @@ export class UsersService {
   getMe(): Observable<ApiResponse<User>> {
     return this.http
       .get<ApiResponse<User>>(`${environment.apiBaseUrl}/Users/get-me`, {
+        headers: this.getHeaders(),
+      })
+      .pipe(catchError(this.handleError));
+  }
+
+  getWalletBalance(): Observable<ApiResponse<WalletBalance>> {
+    return this.http
+      .get<ApiResponse<WalletBalance>>(`${environment.apiBaseUrl}/wallet/balance`, {
         headers: this.getHeaders(),
       })
       .pipe(catchError(this.handleError));
