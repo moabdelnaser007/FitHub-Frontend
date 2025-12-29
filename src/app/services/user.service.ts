@@ -11,6 +11,8 @@ export interface UserProfileDto {
     phone: string;
     city: string;
     status: string;
+    branchId?: number;
+    gymId?: number;
 }
 
 

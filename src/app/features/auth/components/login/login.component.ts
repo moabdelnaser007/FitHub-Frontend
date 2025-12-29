@@ -60,6 +60,9 @@ export class LoginComponent {
         } else if (role && (role === 'Admin' || role.toLowerCase() === 'admin')) {
           console.log('🔀 Redirecting to Admin Dashboard (based on token)');
           this.router.navigate(['/admin/dashboard']);
+        } else if (role && (role === 'Staff' || role.toLowerCase() === 'staff')) {
+          console.log('🔀 Redirecting to Staff Check-in (based on token)');
+          this.router.navigate(['/staff/check-in']);
         } else {
           console.log('🔀 Redirecting to Home');
           this.router.navigate(['/']);

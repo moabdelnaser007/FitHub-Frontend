@@ -64,6 +64,10 @@ import { GymOwnerProfileComponent } from './features/gym-owner/components/profil
 import { AdminProfileComponent } from './features/admin/pages/profile/profile.component';
 import { AdminBookingsComponent } from './features/admin/pages/bookings/bookings.component';
 import { AdminSettlementsComponent } from './features/admin/pages/settlements/settlements.component';
+import { CheckInComponent } from './features/staff/components/check-in/check-in.component';
+import { StaffLayoutComponent } from './layouts/staff-dashboard/staff-dashboard.component';
+import { VisitLogComponent } from './features/staff/components/visit-log/visit-log.component';
+import { StaffProfileComponent } from './features/staff/components/profile/profile.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -133,6 +137,16 @@ export const routes: Routes = [
       { path: 'subscriptions', component: GymOwnerSubscriptionsComponent },
       { path: 'settlements', component: SettlementsComponent },
       { path: 'profile', component: GymOwnerProfileComponent }
+    ]
+  },
+  {
+    path: 'staff',
+    component: StaffLayoutComponent,
+    children: [
+      { path: 'check-in', component: CheckInComponent },
+      { path: 'visit-log', component: VisitLogComponent },
+      { path: 'profile', component: StaffProfileComponent },
+      { path: '', redirectTo: 'check-in', pathMatch: 'full' }
     ]
   },
 

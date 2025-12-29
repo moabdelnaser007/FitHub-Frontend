@@ -1,0 +1,32 @@
+<div class="checkin-container">
+    <div class="admin-page-header">
+        <h1>Check In</h1>
+        <p>Verify booking codes for member entry.</p>
+    </div>
+
+    <div class="checkin-card">
+        <div class="content">
+            <h2>Check In Member</h2>
+            <p class="instruction">Enter the member's booking code to verify their visit.</p>
+
+            <div class="form-group">
+                <input type="text" [(ngModel)]="bookingCode" placeholder="Enter Booking Code"
+                    (keyup.enter)="onCheckIn()" [disabled]="isLoading">
+            </div>
+
+            <button class="checkin-btn" (click)="onCheckIn()" [disabled]="isLoading || !bookingCode">
+                <span *ngIf="!isLoading">Check In</span>
+                <span *ngIf="isLoading">Verifying...</span>
+            </button>
+
+            <!-- Feedback Area -->
+            <div *ngIf="message" class="feedback-msg" [class.success]="isSuccess" [class.error]="!isSuccess">
+                <span class="material-symbols-outlined icon">
+                    {{ isSuccess ? 'check_circle' : 'error' }}
+                </span>
+                <p>{{ message }}</p>
+            </div>
+
+        </div>
+    </div>
+</div>
