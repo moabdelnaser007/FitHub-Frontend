@@ -1,0 +1,43 @@
+<div class="upload-page">
+    <div class="page-header">
+        <h1>Upload Branch Images</h1>
+        <p>Add photos to your gym branch to attract more customers.</p>
+    </div>
+
+    <div class="upload-card">
+        <label class="file-drop-zone">
+            <span class="material-symbols-outlined icon">cloud_upload</span>
+            <h3>Select Images</h3>
+            <p>Click to browse files</p>
+            <input type="file" multiple (change)="onFileSelected($event)" accept="image/*">
+        </label>
+
+        <div class="selected-files" *ngIf="selectedFiles.length > 0">
+            <h3>Selected Files ({{ selectedFiles.length }})</h3>
+            <ul>
+                <li *ngFor="let file of selectedFiles">
+                    <span class="material-symbols-outlined">image</span>
+                    {{ file.name }} ({{ (file.size / 1024).toFixed(1) }} KB)
+                </li>
+            </ul>
+        </div>
+
+        <div class="actions">
+            <button class="btn-cancel" (click)="cancel()">Cancel</button>
+            <button class="btn-upload" (click)="uploadImages()" [disabled]="selectedFiles.length === 0 || isUploading">
+                <span *ngIf="!isUploading">Upload Images</span>
+                <span *ngIf="isUploading">Uploading...</span>
+            </button>
+        </div>
+
+        <div class="feedback success" *ngIf="uploadSuccess">
+            <span class="material-symbols-outlined">check_circle</span>
+            Images uploaded successfully! Redirecting...
+        </div>
+
+        <div class="feedback error" *ngIf="uploadError">
+            <span class="material-symbols-outlined">error</span>
+            {{ uploadError }}
+        </div>
+    </div>
+</div>

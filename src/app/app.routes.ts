@@ -68,6 +68,8 @@ import { CheckInComponent } from './features/staff/components/check-in/check-in.
 import { StaffLayoutComponent } from './layouts/staff-dashboard/staff-dashboard.component';
 import { VisitLogComponent } from './features/staff/components/visit-log/visit-log.component';
 import { StaffProfileComponent } from './features/staff/components/profile/profile.component';
+import { BranchImagesComponent } from './features/gym-owner/components/branch-images/branch-images.component';
+
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
@@ -122,6 +124,7 @@ export const routes: Routes = [
       { path: 'add-branch', component: AddBranchComponent },
       { path: 'branch-details/:id', component: BranchDetailsComponent },
       { path: 'edit-branch/:id', component: EditBranchComponent },
+      { path: 'branch-images/:id', component: BranchImagesComponent }, // Added route
       { path: 'subscription-plans/:id', component: SubscriptionPlansComponent },
       { path: 'add-subscription-plan', component: AddSubscriptionPlansComponent },
       { path: 'manage-staff/:id', component: ManageStaffComponent },

@@ -1,5 +1,5 @@
 <div class="branch-details-page">
-  
+
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
@@ -15,7 +15,7 @@
 
   <!-- Main Content -->
   <div *ngIf="!isLoading && !loadError">
-    
+
     <!-- Page Header -->
     <div class="hhh">
       <h1>Branch Details</h1>
@@ -24,10 +24,10 @@
 
     <!-- Main Content Grid -->
     <div class="content-grid">
-      
+
       <!-- Left Column -->
       <div class="left-column">
-        
+
         <!-- Branch Information Section -->
         <section class="info-card">
           <h2>Branch Information</h2>
@@ -90,11 +90,26 @@
           </div>
         </section>
 
+        <!-- Branch Images Section -->
+        <section class="info-card" *ngIf="branchImages.length > 0">
+          <h2>Branch Images</h2>
+          <div class="images-grid">
+            <div *ngFor="let img of branchImages" class="image-item">
+              <!-- Assuming URL pattern based on previous context -->
+              <img [src]="'http://localhost:5024/images/Gym/hero/' + img.imageName" [alt]="img.imageName"
+                onerror="this.src='assets/images/placeholder-gym.jpg'">
+              <button class="delete-btn" (click)="deleteImage(img.imageName)" title="Delete Image">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <!-- Right Column -->
       <div class="right-column">
-        
+
         <!-- Branch Status -->
         <section class="info-card">
           <h2>Branch Status</h2>
@@ -117,15 +132,11 @@
               <p>{{ operatingHours.closingTime }}</p>
             </div>
           </div>
-          
+
           <div class="working-days-section">
             <label>Working Days</label>
             <div class="working-days-grid">
-              <span 
-                *ngFor="let day of workingDays" 
-                class="day-badge"
-                [class.active]="day.active"
-              >
+              <span *ngFor="let day of workingDays" class="day-badge" [class.active]="day.active">
                 {{ day.name }}
               </span>
             </div>
@@ -134,20 +145,20 @@
 
         <!-- Staff Management -->
         <!-- Staff Management Section - استبدل القديم بده -->
-<section class="info-card">
-  <h2>Staff Management</h2>
-  <p class="info-text">Manage your branch staff members</p>
-  <div class="staff-actions">
-    <button class="btn-primary full-width" (click)="onManageStaff()">
-      <span class="material-symbols-outlined">group</span>
-      Manage Staff
-    </button>
-    <button class="btn-secondary full-width" (click)="onAssignNewStaff()">
-      <span class="material-symbols-outlined">person_add</span>
-      Assign New Staff Member
-    </button>
-  </div>
-</section>
+        <section class="info-card">
+          <h2>Staff Management</h2>
+          <p class="info-text">Manage your branch staff members</p>
+          <div class="staff-actions">
+            <button class="btn-primary full-width" (click)="onManageStaff()">
+              <span class="material-symbols-outlined">group</span>
+              Manage Staff
+            </button>
+            <button class="btn-secondary full-width" (click)="onAssignNewStaff()">
+              <span class="material-symbols-outlined">person_add</span>
+              Assign New Staff Member
+            </button>
+          </div>
+        </section>
       </div>
 
     </div>

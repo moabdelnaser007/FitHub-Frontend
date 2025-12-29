@@ -146,6 +146,10 @@ export class BranchesComponent implements OnInit {
     this.router.navigate(['/gym-owner/edit-branch', branch.id]);
   }
 
+  manageImages(branch: Branch): void {
+    this.router.navigate(['/gym-owner/branch-images', branch.id]);
+  }
+
   deleteBranch(branch: Branch): void {
     this.branchToDelete = branch;
     this.showDeleteModal = true;

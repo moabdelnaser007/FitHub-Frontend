@@ -13,6 +13,7 @@ export interface CheckInResponse {
 export interface VisitLog {
     visitId: number;
     branchName: string;
+    memberName: string;
     checkInTime: string;
     creditsDeducted: number;
 }

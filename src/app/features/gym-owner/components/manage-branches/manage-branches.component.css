@@ -255,6 +255,11 @@ p {
   color: #111827;
 }
 
+.action-btn.upload-btn:hover {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
 .loading-state,
 .error-state,
 .empty-state {
