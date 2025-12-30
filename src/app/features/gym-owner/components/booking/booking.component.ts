@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookingsService, Booking } from '../../../../services/bookings.service';
+import { BranchService, BranchData } from '../../../../services/branch.service';
 
 @Component({
   selector: 'app-bookings',
@@ -18,19 +19,53 @@ export class BookingsComponent implements OnInit {
   isLoading: boolean = false;
   error: string | null = null;
 
+  branches: BranchData[] = [];
+  selectedBranch: BranchData | null = null;
+
   showFilterMenu: boolean = false;
   selectedStatus: string | null = null;
   uniqueStatuses: string[] = [];
 
-  constructor(private bookingsService: BookingsService) { }
+  constructor(
+    private bookingsService: BookingsService,
+    private branchService: BranchService
+  ) { }
 
   ngOnInit(): void {
-    this.fetchBookings();
+    this.loadBranches();
   }
 
-  fetchBookings(): void {
+  loadBranches(): void {
     this.isLoading = true;
-    this.bookingsService.getBranchBookings(1).subscribe({
+    this.branchService.getAllBranches().subscribe({
+      next: (data) => {
+        this.branches = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching branches:', err);
+        this.error = 'Failed to load branches.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  viewBranchBookings(branch: BranchData): void {
+    this.selectedBranch = branch;
+    this.fetchBookings(branch.id);
+  }
+
+  backToBranches(): void {
+    this.selectedBranch = null;
+    this.bookings = [];
+    this.allBookings = [];
+    this.filteredBookings = [];
+    this.error = null;
+  }
+
+  fetchBookings(branchId: number): void {
+    this.isLoading = true;
+    this.bookingsService.getBranchBookings(branchId).subscribe({
       next: (response) => {
         if (response.isSuccess) {
           this.allBookings = response.data;
@@ -77,7 +112,7 @@ export class BookingsComponent implements OnInit {
       'NOSHOW': 'status-no-show',
       'CANCELLED': 'status-cancelled'
     };
-    return statusClasses[status] || '';
+    return statusClasses[status] || 'status-default';
   }
 
   onSearch(): void {

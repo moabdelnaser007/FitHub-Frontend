@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookingsService, Booking } from '../../../../services/bookings.service';
+import { BranchService as AdminBranchService, Branch } from '../../../../services/admin-branches.service';
 
 @Component({
     selector: 'app-admin-bookings',
@@ -16,17 +17,56 @@ export class AdminBookingsComponent implements OnInit {
     error: string | null = null;
     searchText = '';
 
+    branches: Branch[] = [];
+    selectedBranch: Branch | null = null;
+
     showFilterMenu = false;
     selectedStatus = 'All';
 
-    constructor(private bookingsService: BookingsService) { }
+    constructor(
+        private bookingsService: BookingsService,
+        private branchService: AdminBranchService
+    ) { }
 
     ngOnInit(): void {
-        this.loadBookings();
+        this.loadBranches();
     }
 
-    loadBookings(): void {
-        this.bookingsService.getBranchBookings(1).subscribe({
+    loadBranches(): void {
+        this.isLoading = true;
+        this.branchService.getAllBranches().subscribe({
+            next: (response) => {
+                if (response.isSuccess) {
+                    this.branches = response.data;
+                } else {
+                    this.error = response.message || 'Failed to load branches';
+                }
+                this.isLoading = false;
+            },
+            error: (err) => {
+                console.error('Error loading branches', err);
+                this.error = 'Failed to load branches';
+                this.isLoading = false;
+            }
+        });
+    }
+
+    viewBranchBookings(branch: Branch): void {
+        this.selectedBranch = branch;
+        this.loadBookings(branch.id);
+    }
+
+    backToBranches(): void {
+        this.selectedBranch = null;
+        this.bookings = [];
+        this.error = null;
+        this.searchText = '';
+        this.selectedStatus = 'All';
+    }
+
+    loadBookings(branchId: number): void {
+        this.isLoading = true;
+        this.bookingsService.getBranchBookings(branchId).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
                     this.bookings = response.data;
@@ -54,17 +94,22 @@ export class AdminBookingsComponent implements OnInit {
 
     get filteredBookings() {
         return this.bookings.filter(b => {
-            const matchesSearch = b.bookingCode.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                b.branchName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                b.status.toLowerCase().includes(this.searchText.toLowerCase());
+            const code = b.bookingCode || '';
+            const bName = b.branchName || '';
+            const status = b.status || '';
 
-            const matchesStatus = this.selectedStatus === 'All' || b.status.toUpperCase() === this.selectedStatus.toUpperCase();
+            const matchesSearch = code.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                bName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                status.toLowerCase().includes(this.searchText.toLowerCase());
+
+            const matchesStatus = this.selectedStatus === 'All' || status.toUpperCase() === this.selectedStatus.toUpperCase();
 
             return matchesSearch && matchesStatus;
         });
     }
 
     getStatusClass(status: string): string {
+        if (!status) return 'status-default';
         switch (status.toUpperCase()) {
             case 'CONFIRMED': return 'status-confirmed';
             case 'COMPLETED': return 'status-completed';

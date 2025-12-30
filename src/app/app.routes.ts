@@ -88,6 +88,7 @@ export const routes: Routes = [
   { path: 'billing', component: BillingComponent },
   { path: 'choose-plan-payment', component: ChoosePlanPaymentComponent },
   { path: 'payment-success', component: PaymentSuccessComponent },
+  { path: 'payment-status', component: PaymentSuccessComponent },
   { path: 'payment-failed', component: PaymentFailedComponent },
   { path: 'subscriptions', component: SubscriptionsComponent },
   { path: 'subscriptions/manage/:id', component: ManageSubscriptionComponent },

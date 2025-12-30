@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -28,7 +28,21 @@ export class BookingsService {
 
     constructor(private http: HttpClient) { }
 
+    private getHeaders(): HttpHeaders {
+        const token = localStorage.getItem('fitHubToken');
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'accept': '*/*',
+        });
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
+        }
+        return headers;
+    }
+
     getBranchBookings(branchId: number): Observable<ApiResponse<Booking[]>> {
-        return this.http.get<ApiResponse<Booking[]>>(`${this.apiUrl}/bookings/BranchBookings/${branchId}`);
+        return this.http.get<ApiResponse<Booking[]>>(`${this.apiUrl}/bookings/BranchBookings/${branchId}`, {
+            headers: this.getHeaders()
+        });
     }
 }

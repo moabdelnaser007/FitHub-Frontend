@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GymSubscriptionsService, Subscription } from '../../../../services/gym-subscriptions.service';
+import { BranchService, BranchData } from '../../../../services/branch.service';
 
 @Component({
     selector: 'app-gym-owner-subscriptions',
@@ -18,19 +19,53 @@ export class GymOwnerSubscriptionsComponent implements OnInit {
     isLoading: boolean = false;
     error: string | null = null;
 
+    branches: BranchData[] = [];
+    selectedBranch: BranchData | null = null;
+
     showFilterMenu: boolean = false;
     selectedStatus: string | null = null;
     uniqueStatuses: string[] = [];
 
-    constructor(private subscriptionsService: GymSubscriptionsService) { }
+    constructor(
+        private subscriptionsService: GymSubscriptionsService,
+        private branchService: BranchService
+    ) { }
 
     ngOnInit(): void {
-        this.fetchSubscriptions();
+        this.loadBranches();
     }
 
-    fetchSubscriptions(): void {
+    loadBranches(): void {
         this.isLoading = true;
-        this.subscriptionsService.getBranchSubscriptions(1).subscribe({
+        this.branchService.getAllBranches().subscribe({
+            next: (data) => {
+                this.branches = data;
+                this.isLoading = false;
+            },
+            error: (err) => {
+                console.error('Error fetching branches:', err);
+                this.error = 'Failed to load branches';
+                this.isLoading = false;
+            }
+        });
+    }
+
+    viewBranchSubscriptions(branch: BranchData): void {
+        this.selectedBranch = branch;
+        this.fetchSubscriptions(branch.id);
+    }
+
+    backToBranches(): void {
+        this.selectedBranch = null;
+        this.subscriptions = [];
+        this.allSubscriptions = [];
+        this.filteredSubscriptions = [];
+        this.error = null;
+    }
+
+    fetchSubscriptions(branchId: number): void {
+        this.isLoading = true;
+        this.subscriptionsService.getBranchSubscriptions(branchId).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
                     this.allSubscriptions = response.data;

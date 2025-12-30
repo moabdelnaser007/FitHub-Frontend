@@ -2,79 +2,122 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="content-wrapper">
-            <div class="header-section">
-                <div class="header-text">
-                    <h1>Subscriptions</h1>
-                    <p>Manage and track all subscriptions for your gym branches.</p>
-                </div>
-                <div class="header-actions">
-                    <div class="search-box">
-                        <span class="material-symbols-outlined search-icon">search</span>
-                        <input type="text" placeholder="Search by branch..." [(ngModel)]="searchText"
-                            (keyup)="onSearch()" />
+
+            <!-- Branch Selection View -->
+            <div *ngIf="!selectedBranch">
+                <div class="header-section">
+                    <div class="header-text">
+                        <h1>My Branches</h1>
+                        <p>Select a branch to view its subscriptions.</p>
                     </div>
-                    <div class="filter-container" style="position: relative;">
-                        <button class="filter-btn" (click)="onFilter()">
-                            <span class="material-symbols-outlined">filter_list</span>
-                            {{ selectedStatus ? selectedStatus : 'Filter' }}
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div *ngFor="let branch of branches"
+                        style="background: white; padding: 1.5rem; border: 1px solid #cfe7d7; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: #0d1b12; margin-bottom: 0.5rem;">{{
+                            branch.branchName }}</h3>
+                        <p
+                            style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">location_on</span> {{
+                            branch.city }}
+                        </p>
+                        <button (click)="viewBranchSubscriptions(branch)" class="filter-btn"
+                            style="width: 100%; justify-content: center; background-color: #2563EB; color: #ffffff; border: none;">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> View
+                            Subscriptions
                         </button>
-                        <div *ngIf="showFilterMenu" class="filter-dropdown">
-                            <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
-                            <div *ngFor="let status of uniqueStatuses" class="filter-item"
-                                (click)="selectStatusFilter(status)">
-                                {{ status }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscriptions View -->
+            <div *ngIf="selectedBranch">
+                <div class="header-section">
+                    <div class="header-text">
+                        <button (click)="backToBranches()"
+                            style="display: flex; align-items: center; gap: 0.5rem; border: none; background: none; color: #2563EB; cursor: pointer; padding: 0; margin-bottom: 0.5rem; font-weight: 500;">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span> Back to
+                            Branches
+                        </button>
+                        <h1>{{ selectedBranch.branchName }} Subscriptions</h1>
+                        <p>Manage and track all subscriptions for this branch.</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <span class="material-symbols-outlined search-icon">search</span>
+                            <input type="text" placeholder="Search by name..." [(ngModel)]="searchText"
+                                (keyup)="onSearch()" />
+                        </div>
+                        <div class="filter-container" style="position: relative;">
+                            <button class="filter-btn" (click)="onFilter()">
+                                <span class="material-symbols-outlined">filter_list</span>
+                                {{ selectedStatus ? selectedStatus : 'Filter' }}
+                            </button>
+                            <div *ngIf="showFilterMenu" class="filter-dropdown">
+                                <div class="filter-item" (click)="selectStatusFilter(null)">All</div>
+                                <div *ngFor="let status of uniqueStatuses" class="filter-item"
+                                    (click)="selectStatusFilter(status)">
+                                    {{ status }}
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-wrapper">
+                        <table *ngIf="!isLoading && !error && subscriptions.length > 0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>BRANCH</th>
+                                    <th>PLAN</th>
+                                    <th>REMAINING VISITS</th>
+                                    <th>END DATE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let sub of subscriptions">
+                                    <td>#{{ sub.subscriptionId }}</td>
+                                    <td>{{ sub.branchName }}</td>
+                                    <td>{{ sub.planName }}</td>
+                                    <td>{{ sub.remainingVisits }}</td>
+                                    <td>{{ sub.endDate | date:'medium' }}</td>
+                                    <td>
+                                        <span [class]="'status-badge ' + getStatusClass(sub.status)">
+                                            {{ sub.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div *ngIf="isLoading" class="loading-state" style="padding: 2rem; text-align: center;">
+                            <p>Loading subscriptions...</p>
+                        </div>
+
+                        <div *ngIf="error" class="error-state" style="padding: 2rem; text-align: center; color: red;">
+                            <p>{{ error }}</p>
+                        </div>
+
+                        <div *ngIf="!isLoading && !error && subscriptions.length === 0"
+                            style="padding: 2rem; text-align: center; color: #6b7280;">
+                            <p>No subscriptions found.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-footer" *ngIf="!isLoading && !error && subscriptions.length > 0">
+                        <span class="footer-text">Showing {{ subscriptions.length }} entries</span>
+                        <div class="pagination">
+                            <button (click)="onPrevious()">Previous</button>
+                            <button (click)="onNext()">Next</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="table-container">
-                <div class="table-wrapper">
-                    <table *ngIf="!isLoading && !error">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>BRANCH</th>
-                                <th>PLAN</th>
-                                <th>REMAINING VISITS</th>
-                                <th>END DATE</th>
-                                <th>STATUS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let sub of subscriptions">
-                                <td>#{{ sub.subscriptionId }}</td>
-                                <td>{{ sub.branchName }}</td>
-                                <td>{{ sub.planName }}</td>
-                                <td>{{ sub.remainingVisits }}</td>
-                                <td>{{ sub.endDate | date:'medium' }}</td>
-                                <td>
-                                    <span [class]="'status-badge ' + getStatusClass(sub.status)">
-                                        {{ sub.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div *ngIf="isLoading" class="loading-state">
-                        <p>Loading subscriptions...</p>
-                    </div>
-
-                    <div *ngIf="error" class="error-state">
-                        <p>{{ error }}</p>
-                    </div>
-                </div>
-
-                <div class="table-footer" *ngIf="!isLoading && !error">
-                    <span class="footer-text">Showing {{ subscriptions.length }} entries</span>
-                    <div class="pagination">
-                        <button (click)="onPrevious()">Previous</button>
-                        <button (click)="onNext()">Next</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
 </div>

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../../shared/components/header/header.component';
 import { SubscriptionService, ActiveSubscription } from '../../../../../services/subscription.service';
 import { BookingService } from '../../../../../services/booking.service';
+import { UsersService } from '../../../../../services/users.service';
 
 @Component({
     selector: 'app-choose-visit-type',
@@ -32,7 +33,8 @@ export class ChooseVisitTypeComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private subscriptionService: SubscriptionService,
-        private bookingService: BookingService
+        private bookingService: BookingService,
+        private usersService: UsersService
     ) { }
 
     ngOnInit(): void {
@@ -49,6 +51,20 @@ export class ChooseVisitTypeComponent implements OnInit {
             } else {
                 this.selectedType = 'single';
             }
+        });
+
+        // Load wallet balance
+        this.loadWalletBalance();
+    }
+
+    loadWalletBalance(): void {
+        this.usersService.getWalletBalance().subscribe({
+            next: (response) => {
+                if (response.isSuccess) {
+                    this.currentBalance = response.data.balance;
+                }
+            },
+            error: (err) => console.error('Failed to load wallet balance', err)
         });
     }
 

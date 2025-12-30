@@ -147,8 +147,12 @@ export class GymDetailComponent implements OnInit {
     this.loadReviews(idNum);
 
     // Set min date to today
+    // Set min date to today (Local time to avoid UTC issues)
     const today = new Date();
-    this.minDate = today.toISOString().split('T')[0];
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    this.minDate = `${year}-${month}-${day}`;
   }
 
   private loadReviews(branchId: number): void {

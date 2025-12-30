@@ -1,35 +1,46 @@
 <div class="dashboard-wrapper">
   <!-- Page Header -->
-  <div >
+  <div>
     <h1 class="page-title">Dashboard</h1>
     <p class="page-description">Welcome back, here's a summary of your gym's performance.</p>
     <br>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" style="text-align: center; padding: 2rem;">
+    <p>Loading stats...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading"
+    style="color: var(--error-color, red); text-align: center; margin-bottom: 1rem;">
+    <p>{{ errorMessage }}</p>
+  </div>
+
   <!-- Stats Content -->
-  <div class="stats-content">
-    <!-- Today Stats -->
+  <div class="stats-content" *ngIf="!isLoading && !errorMessage && stats">
     <div class="stats-grid">
-      <div *ngFor="let stat of todayStats" class="stat-card">
-        <p class="stat-label">{{ stat.label }}</p>
-        <p class="stat-value">{{ stat.value }}</p>
-      </div>
-    </div>
 
-    <!-- Month Stats -->
-    <div class="stats-grid">
-      <div *ngFor="let stat of monthStats" class="stat-card">
-        <p class="stat-label">{{ stat.label }}</p>
-        <p class="stat-value">{{ stat.value }}</p>
+      <div class="stat-card">
+        <p class="stat-label">Total Branches</p>
+        <p class="stat-value">{{ stats.totalBranches }}</p>
       </div>
-    </div>
 
-    <!-- Year Stats -->
-    <div class="stats-grid">
-      <div *ngFor="let stat of yearStats" class="stat-card">
-        <p class="stat-label">{{ stat.label }}</p>
-        <p class="stat-value">{{ stat.value }}</p>
+      <div class="stat-card">
+        <p class="stat-label">Total Visits</p>
+        <p class="stat-value">{{ stats.totalVisits }}</p>
       </div>
+
+      <div class="stat-card">
+        <p class="stat-label">Total Credits</p>
+        <p class="stat-value">{{ stats.totalCredits }}</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="stat-label">Total Subscriptions</p>
+        <p class="stat-value">{{ stats.totalSubscriptions }}</p>
+      </div>
+
     </div>
   </div>
 </div>

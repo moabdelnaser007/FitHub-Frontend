@@ -1,70 +1,130 @@
 <div class="bookings-page">
-    <div class="header-actions">
-        <h1>Detailed Bookings</h1>
-        <div class="actions-wrapper">
-            <div class="search-box">
-                <span class="material-symbols-outlined">search</span>
-                <input type="text" placeholder="Search bookings..." [(ngModel)]="searchText">
-            </div>
 
-            <div class="filter-dropdown">
-                <button class="btn-filter" (click)="toggleFilterMenu()">
-                    <span class="material-symbols-outlined">filter_list</span>
-                    <span>{{ selectedStatus }}</span>
-                    <span class="material-symbols-outlined">expand_more</span>
-                </button>
+    <!-- View 1: Branch Selection -->
+    <div *ngIf="!selectedBranch">
+        <h1 style="font-size: 1.875rem; font-weight: 700; color: #1f2937; margin-bottom: 2rem;">Select Branch</h1>
 
-                <div class="dropdown-menu" *ngIf="showFilterMenu">
-                    <button (click)="selectStatusFilter('All')" [class.active]="selectedStatus === 'All'">All</button>
-                    <button (click)="selectStatusFilter('Confirmed')"
-                        [class.active]="selectedStatus === 'Confirmed'">Confirmed</button>
-                    <button (click)="selectStatusFilter('Completed')"
-                        [class.active]="selectedStatus === 'Completed'">Completed</button>
-                    <button (click)="selectStatusFilter('Cancelled')"
-                        [class.active]="selectedStatus === 'Cancelled'">Cancelled</button>
-                    <button (click)="selectStatusFilter('NoShow')" [class.active]="selectedStatus === 'NoShow'">No
-                        Show</button>
+        <div *ngIf="isLoading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading branches...</p>
+        </div>
+
+        <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+        <div *ngIf="!isLoading && !error"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div *ngFor="let branch of branches"
+                style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e5e7eb; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;"
+                (click)="viewBranchBookings(branch)"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">{{
+                    branch.branchName }}</h3>
+
+                <div
+                    style="display: flex; flex-direction: column; gap: 0.5rem; color: #6b7280; font-size: 0.875rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">location_on</span>
+                        {{ branch.city }}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">phone</span>
+                        {{ branch.phone }}
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                    <button
+                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background-color: #f3f4f6; color: #374151; border: none; border-radius: 6px; font-weight: 500; font-size: 0.875rem;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">visibility</span>
+                        View Bookings
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div *ngIf="isLoading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Loading bookings...</p>
-    </div>
+    <!-- View 2: Bookings List -->
+    <div *ngIf="selectedBranch">
+        <div class="header-actions" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
+            <button (click)="backToBranches()"
+                style="display: flex; align-items: center; gap: 0.5rem; background: none; border: none; color: #6b7280; font-weight: 500; cursor: pointer; padding: 0;">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Back to Branches
+            </button>
 
-    <div *ngIf="error" class="error-msg">
-        {{ error }}
-    </div>
+            <div
+                style="display: flex; justify-content: space-between; width: 100%; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <h1 style="margin: 0;">{{ selectedBranch.branchName }} Bookings</h1>
 
-    <div class="table-container" *ngIf="!isLoading && !error">
-        <table>
-            <thead>
-                <tr>
-                    <th>Booking Code</th>
-                    <th>Branch</th>
-                    <th>Date & Time</th>
-                    <th>Cost</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let booking of filteredBookings">
-                    <td class="code">{{ booking.bookingCode }}</td>
-                    <td><span class="branch-badge">{{ booking.branchName }}</span></td>
-                    <td>{{ booking.scheduledDateTime | date:'medium' }}</td>
-                    <td>{{ booking.creditsCost }} Credits</td>
-                    <td>
-                        <span class="status-badge" [ngClass]="getStatusClass(booking.status)">
-                            {{ booking.status }}
-                        </span>
-                    </td>
-                </tr>
-                <tr *ngIf="filteredBookings.length === 0">
-                    <td colspan="5" class="empty-state">No bookings found</td>
-                </tr>
-            </tbody>
-        </table>
+                <div class="actions-wrapper">
+                    <div class="search-box">
+                        <span class="material-symbols-outlined">search</span>
+                        <input type="text" placeholder="Search bookings..." [(ngModel)]="searchText">
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="btn-filter" (click)="toggleFilterMenu()">
+                            <span class="material-symbols-outlined">filter_list</span>
+                            <span>{{ selectedStatus }}</span>
+                            <span class="material-symbols-outlined">expand_more</span>
+                        </button>
+
+                        <div class="dropdown-menu" *ngIf="showFilterMenu">
+                            <button (click)="selectStatusFilter('All')"
+                                [class.active]="selectedStatus === 'All'">All</button>
+                            <button (click)="selectStatusFilter('Confirmed')"
+                                [class.active]="selectedStatus === 'Confirmed'">Confirmed</button>
+                            <button (click)="selectStatusFilter('Completed')"
+                                [class.active]="selectedStatus === 'Completed'">Completed</button>
+                            <button (click)="selectStatusFilter('Cancelled')"
+                                [class.active]="selectedStatus === 'Cancelled'">Cancelled</button>
+                            <button (click)="selectStatusFilter('NoShow')"
+                                [class.active]="selectedStatus === 'NoShow'">No Show</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="isLoading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading bookings...</p>
+        </div>
+
+        <div *ngIf="error" class="error-msg">
+            {{ error }}
+        </div>
+
+        <div class="table-container" *ngIf="!isLoading && !error">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking Code</th>
+                        <th>Branch</th>
+                        <th>Date & Time</th>
+                        <th>Cost</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let booking of filteredBookings">
+                        <td class="code">{{ booking.bookingCode }}</td>
+                        <td><span class="branch-badge">{{ booking.branchName }}</span></td>
+                        <td>{{ booking.scheduledDateTime | date:'medium' }}</td>
+                        <td>{{ booking.creditsCost }} Credits</td>
+                        <td>
+                            <span class="status-badge" [ngClass]="getStatusClass(booking.status)">
+                                {{ booking.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr *ngIf="filteredBookings.length === 0">
+                        <td colspan="5" class="empty-state">No bookings found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
