@@ -3,19 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { UsersService, User } from '../../../../services/users.service';
-import { BookingService, BookingItem as ApiBookingItem } from '../../../../services/booking.service';
+import { BookingService, BookingItem } from '../../../../services/booking.service';
 import { FormsModule } from '@angular/forms';
 
 type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled' | 'No-Show';
-
-interface BookingItem {
-  id: number;
-  branchName: string;
-  scheduledDateTime: string;
-  creditsCost: number;
-  status: string;
-  hasReview: boolean;
-}
 
 @Component({
   selector: 'app-booking-history',

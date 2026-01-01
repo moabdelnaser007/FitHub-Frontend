@@ -105,7 +105,7 @@
 
       <div class="empty-state" *ngIf="!isLoading && !errorMessage && subscriptions.length === 0">
         <p>You don't have any active subscriptions yet.</p>
-        <button class="btn-primary" routerLink="/gyms">Explore Gyms</button>
+        <button class="btn-primary" routerLink="/find-gym">Explore Gyms</button>
       </div>
 
       <div class="subscriptions-grid" *ngIf="!isLoading && !errorMessage && subscriptions.length > 0">

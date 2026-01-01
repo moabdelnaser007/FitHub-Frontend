@@ -36,7 +36,7 @@ export class AdminDashboardComponent implements OnInit {
   isSidebarOpen = true;
   isLoading = false;
   loadError = '';
-  
+
   stats: StatCard[] = [
     {
       title: 'Total Users',
@@ -52,13 +52,7 @@ export class AdminDashboardComponent implements OnInit {
       changeType: 'positive',
       isLoading: true
     },
-    {
-      title: 'Monthly Revenue',
-      value: '$0',
-      change: '+0%',
-      changeType: 'positive',
-      isLoading: false
-    },
+
     {
       title: 'Pending Gym Owners',
       value: '0',
@@ -73,7 +67,7 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private router: Router,
     private gymOwnersService: GymOwnersService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadAllDashboardData();
@@ -124,7 +118,7 @@ export class AdminDashboardComponent implements OnInit {
         this.loadError = error.message || 'Failed to load dashboard data. Please try again.';
         console.error('❌ Error loading dashboard data:', error);
         this.isLoading = false;
-        
+
         // إيقاف loading للـ stats
         this.stats.forEach(stat => stat.isLoading = false);
       }
@@ -160,10 +154,10 @@ export class AdminDashboardComponent implements OnInit {
   formatDate(dateString: string): string {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 
@@ -171,23 +165,23 @@ export class AdminDashboardComponent implements OnInit {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
- /* // ✅ عرض تفاصيل Gym Owner
-  viewGym(gym: PendingGym): void {
-    console.log('👁️ View gym owner:', gym);
-    
-    // عرض التفاصيل في Alert
-    alert(`📋 Gym Owner Details:
-
-Name: ${gym.owner}
-Email: ${gym.email}
-Phone: ${gym.phone}
-City: ${gym.location}
-Commercial Reg: ${gym.commercialRegNumber}
-Applied: ${gym.appliedDate}`);
-    
-    // أو يمكنك التوجيه لصفحة التفاصيل
-    // this.router.navigate(['/admin/gym-owner-details', gym.id]);
-  }*/
+  /* // ✅ عرض تفاصيل Gym Owner
+   viewGym(gym: PendingGym): void {
+     console.log('👁️ View gym owner:', gym);
+     
+     // عرض التفاصيل في Alert
+     alert(`📋 Gym Owner Details:
+ 
+ Name: ${gym.owner}
+ Email: ${gym.email}
+ Phone: ${gym.phone}
+ City: ${gym.location}
+ Commercial Reg: ${gym.commercialRegNumber}
+ Applied: ${gym.appliedDate}`);
+     
+     // أو يمكنك التوجيه لصفحة التفاصيل
+     // this.router.navigate(['/admin/gym-owner-details', gym.id]);
+   }*/
 
   // ✅ قبول Gym Owner
   approveGym(gym: PendingGym): void {
@@ -201,16 +195,16 @@ Applied: ${gym.appliedDate}`);
       next: (response) => {
         if (response.isSuccess) {
           alert(`✅ ${gym.owner} has been approved successfully!`);
-          
+
           // ✅ إزالة الـ Owner من القائمة
           this.pendingGyms = this.pendingGyms.filter(g => g.id !== gym.id);
-          
+
           // ✅ تحديث العدد في الـ Stats
           this.stats[3].value = this.pendingGyms.length.toString();
-          
+
           // ✅ تحديث عدد Active Gyms (لأن في gym جديد اتضاف)
           this.updateActiveGymsCount();
-          
+
           console.log('✅ Gym owner approved successfully');
         } else {
           alert(`❌ ${response.message || 'Failed to approve gym owner'}`);
@@ -235,13 +229,13 @@ Applied: ${gym.appliedDate}`);
       next: (response) => {
         if (response.isSuccess) {
           alert(`✅ ${gym.owner} has been rejected.`);
-          
+
           // ✅ إزالة الـ Owner من القائمة
           this.pendingGyms = this.pendingGyms.filter(g => g.id !== gym.id);
-          
+
           // ✅ تحديث العدد في الـ Stats
           this.stats[3].value = this.pendingGyms.length.toString();
-          
+
           console.log('✅ Gym owner rejected successfully');
         } else {
           alert(`❌ ${response.message || 'Failed to reject gym owner'}`);

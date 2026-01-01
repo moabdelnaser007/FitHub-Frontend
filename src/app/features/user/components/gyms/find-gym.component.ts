@@ -18,6 +18,8 @@ import { FooterComponent } from '../../../../shared/components/footer/footer.com
 })
 export class FindGymComponent implements OnInit {
   searchQuery = '';
+  selectedCity = '';
+  selectedRating = 0;
   currentFilters: GymSearchFilters = {};
   showReview = false;
   selectedGym?: Gym;
@@ -48,7 +50,7 @@ export class FindGymComponent implements OnInit {
 
   handleNav(link: any, event: Event) {
     if (!link.isRoute) {
-      // For find-gym, we redirect to home anchors if needed (though I made them routes above)
+      // For find-gym, we redirect to home anchors if needed
     }
   }
 
@@ -63,17 +65,27 @@ export class FindGymComponent implements OnInit {
   }
 
   onSearch(): void {
-    this.currentFilters = {
-      ...this.currentFilters,
-      name: this.searchQuery.trim() || undefined,
-    };
+    this.applyAllFilters();
   }
 
-  onFilterChange(filters: FilterChange): void {
+  // New method for inline rating filter
+  selectRating(rating: number): void {
+    // Toggle rating: if same rating clicked, deselect it
+    this.selectedRating = this.selectedRating === rating ? 0 : rating;
+    this.applyAllFilters();
+  }
+
+  // New unified filter method
+  onFilterChange(): void {
+    this.applyAllFilters();
+  }
+
+  // Apply all filters together
+  private applyAllFilters(): void {
     this.currentFilters = {
       name: this.searchQuery.trim() || undefined,
-      city: filters.location || undefined,
-      minRating: filters.rating > 0 ? filters.rating : undefined,
+      city: this.selectedCity || undefined,
+      minRating: this.selectedRating > 0 ? this.selectedRating : undefined,
     };
   }
 

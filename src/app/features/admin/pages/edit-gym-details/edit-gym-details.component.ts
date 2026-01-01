@@ -308,7 +308,7 @@ export class EditGymComponent implements OnInit {
         if (response.isSuccess) {
           console.log('✅ Branch updated successfully:', response.data);
           alert('Gym updated successfully!');
-          this.router.navigate(['/admin/gym-management']);
+          this.router.navigate(['/admin/manage-gyms']);
         } else {
           console.error('Failed to update gym:', response.message);
           alert(`Failed to update gym: ${response.message}`);

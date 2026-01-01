@@ -128,7 +128,7 @@
               @for (booking of paginatedBookings; track booking.id) {
               <tr>
                 <td>{{ booking.branchName }}</td>
-                <td class="muted">#{{ booking.id }}</td>
+                <td class="muted">{{ booking.bookingCode }}</td>
                 <td class="muted">{{ booking.scheduledDateTime | date:'medium' }}</td>
                 <td class="credits">{{ booking.creditsCost }}</td>
                 <td>

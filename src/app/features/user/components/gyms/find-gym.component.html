@@ -30,24 +30,90 @@
   </header>
 
   <main class="page-main">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <app-gym-filter (filterChange)="onFilterChange($event)"></app-gym-filter>
-    </aside>
-
     <!-- Main Content -->
     <section class="content">
       <div class="content-header">
         <h1>Find a Gym</h1>
         <p class="subtitle">Search by gym, activity, or location</p>
 
-        <div class="search-bar">
-          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-          </svg>
-          <input type="text" placeholder="Search by gym name, location..." [(ngModel)]="searchQuery"
-            (keyup.enter)="onSearch()" />
+        <div class="search-filter-container">
+          <!-- Search Bar -->
+          <div class="search-bar">
+            <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+            </svg>
+            <input type="text" placeholder="Search by gym name, location..." [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()" />
+          </div>
+
+          <!-- Inline Filters -->
+          <div class="inline-filters">
+            <!-- City Filter -->
+            <!-- City Filter -->
+            <div class="filter-group">
+              <label class="filter-group-label">City</label>
+              <select class="filter-dropdown" [(ngModel)]="selectedCity" (change)="onFilterChange()">
+                <option value="">All Cities</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Giza">Giza</option>
+                <option value="Alexandria">Alexandria</option>
+                <option value="Shubra El Kheima">Shubra El Kheima</option>
+                <option value="Port Said">Port Said</option>
+                <option value="Suez">Suez</option>
+                <option value="El Mahalla El Kubra">El Mahalla El Kubra</option>
+                <option value="Luxor">Luxor</option>
+                <option value="Mansoura">Mansoura</option>
+                <option value="Tanta">Tanta</option>
+                <option value="Asyut">Asyut</option>
+                <option value="Ismailia">Ismailia</option>
+                <option value="Fayoum">Fayoum</option>
+                <option value="Zagazig">Zagazig</option>
+                <option value="Aswan">Aswan</option>
+                <option value="Damietta">Damietta</option>
+                <option value="Damanhur">Damanhur</option>
+                <option value="Minya">Minya</option>
+                <option value="Beni Suef">Beni Suef</option>
+                <option value="Qena">Qena</option>
+                <option value="Sohag">Sohag</option>
+                <option value="Hurghada">Hurghada</option>
+                <option value="6th of October">6th of October</option>
+                <option value="Shibin El Kom">Shibin El Kom</option>
+                <option value="Banha">Banha</option>
+                <option value="Kafr El Sheikh">Kafr El Sheikh</option>
+                <option value="Arish">Arish</option>
+                <option value="Mallawi">Mallawi</option>
+                <option value="10th of Ramadan">10th of Ramadan</option>
+                <option value="Bilbais">Bilbais</option>
+                <option value="Marsa Matruh">Marsa Matruh</option>
+                <option value="Idfu">Idfu</option>
+                <option value="Mit Ghamr">Mit Ghamr</option>
+                <option value="Al-Hamidiyya">Al-Hamidiyya</option>
+                <option value="Desouk">Desouk</option>
+                <option value="Qalyub">Qalyub</option>
+                <option value="Abu Kabir">Abu Kabir</option>
+                <option value="Kafr El Dawwar">Kafr El Dawwar</option>
+                <option value="Girga">Girga</option>
+                <option value="Akhmim">Akhmim</option>
+                <option value="Matareya">Matareya</option>
+              </select>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="filter-group">
+              <label class="filter-group-label">Rating</label>
+              <div class="star-filter">
+                <button *ngFor="let star of [1, 2, 3, 4, 5]" class="star-filter-btn"
+                  [class.active]="star <= selectedRating" (click)="selectRating(star)" type="button"
+                  [attr.aria-label]="'Filter by ' + star + ' stars'">
+                  <svg class="star-filter-icon" viewBox="0 0 24 24">
+                    <path
+                      d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

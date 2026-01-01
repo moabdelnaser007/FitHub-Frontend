@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 
 export interface BookingItem {
     id: number;
+    bookingCode: string;
     branchName: string;
     scheduledDateTime: string;
     creditsCost: number;
