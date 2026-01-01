@@ -1,7 +1,7 @@
 <div class="edit-plan-page">
   <!-- Page Header -->
-  <div >
-    <div >
+  <div>
+    <div>
       <h1>Edit Plan</h1>
       <p>Update the subscription plan details below.</p>
       <br>
@@ -24,20 +24,14 @@
   <!-- Main Form -->
   <div *ngIf="!isLoading && !loadError" class="form-container">
     <form [formGroup]="planForm" (ngSubmit)="onSubmit()">
-      
+
       <!-- Plan Name -->
       <div class="form-group">
         <label for="name" class="form-label">
           Plan Name <span class="required">*</span>
         </label>
-        <input
-          id="name"
-          type="text"
-          class="form-input"
-          formControlName="name"
-          placeholder="Enter plan name"
-          [class.error]="hasError('name')"
-        />
+        <input id="name" type="text" class="form-input" formControlName="name" placeholder="Enter plan name"
+          [class.error]="hasError('name')" />
         <div *ngIf="hasError('name')" class="error-message">
           {{ getErrorMessage('name') }}
         </div>
@@ -48,30 +42,18 @@
         <label for="description" class="form-label">
           Description
         </label>
-        <textarea
-          id="description"
-          class="form-input textarea"
-          formControlName="description"
-          placeholder="Enter plan description (optional)"
-          rows="3"
-        ></textarea>
+        <textarea id="description" class="form-input textarea" formControlName="description"
+          placeholder="Enter plan description (optional)" rows="3"></textarea>
       </div>
 
       <!-- Credits Cost & Visits Limit -->
       <div class="form-row">
         <div class="form-group">
           <label for="creditsCost" class="form-label">
-            Credits Cost <span class="required">*</span>
+            Subscription Price <span class="required">*</span>
           </label>
-          <input
-            id="creditsCost"
-            type="number"
-            class="form-input"
-            formControlName="creditsCost"
-            placeholder="0"
-            min="0"
-            [class.error]="hasError('creditsCost')"
-          />
+          <input id="creditsCost" type="number" class="form-input" formControlName="creditsCost" placeholder="0" min="0"
+            [class.error]="hasError('creditsCost')" />
           <div *ngIf="hasError('creditsCost')" class="error-message">
             {{ getErrorMessage('creditsCost') }}
           </div>
@@ -81,15 +63,8 @@
           <label for="visitsLimit" class="form-label">
             Visits Limit <span class="required">*</span>
           </label>
-          <input
-            id="visitsLimit"
-            type="number"
-            class="form-input"
-            formControlName="visitsLimit"
-            placeholder="0"
-            min="1"
-            [class.error]="hasError('visitsLimit')"
-          />
+          <input id="visitsLimit" type="number" class="form-input" formControlName="visitsLimit" placeholder="0" min="1"
+            [class.error]="hasError('visitsLimit')" />
           <div *ngIf="hasError('visitsLimit')" class="error-message">
             {{ getErrorMessage('visitsLimit') }}
           </div>
@@ -101,15 +76,8 @@
         <label for="durationDays" class="form-label">
           Duration (Days) <span class="required">*</span>
         </label>
-        <input
-          id="durationDays"
-          type="number"
-          class="form-input"
-          formControlName="durationDays"
-          placeholder="30"
-          min="1"
-          [class.error]="hasError('durationDays')"
-        />
+        <input id="durationDays" type="number" class="form-input" formControlName="durationDays" placeholder="30"
+          min="1" [class.error]="hasError('durationDays')" />
         <div class="duration-hint">
           {{ getDurationText(planForm.get('durationDays')?.value || 0) }}
         </div>
@@ -123,11 +91,7 @@
         <label for="status" class="form-label">
           Status <span class="required">*</span>
         </label>
-        <select
-          id="status"
-          class="form-input"
-          formControlName="status"
-        >
+        <select id="status" class="form-input" formControlName="status">
           <option value="ACTIVE">Active</option>
           <option value="INACTIVE">Inactive</option>
         </select>
@@ -141,19 +105,10 @@
 
       <!-- Action Buttons -->
       <div class="form-actions">
-        <button
-          type="button"
-          class="btn-cancel"
-          (click)="onCancel()"
-          [disabled]="isSaving"
-        >
+        <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="isSaving">
           Cancel
         </button>
-        <button
-          type="submit"
-          class="btn-save"
-          [disabled]="planForm.invalid || isSaving"
-        >
+        <button type="submit" class="btn-save" [disabled]="planForm.invalid || isSaving">
           <span *ngIf="!isSaving">Save Changes</span>
           <span *ngIf="isSaving" class="saving-state">
             <div class="spinner-small"></div>

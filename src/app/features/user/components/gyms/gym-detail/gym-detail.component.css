@@ -448,8 +448,9 @@
 /* Sidebar Cards */
 .sidebar {
   position: sticky;
-  top: 24px;
+  top: 100px;
   align-self: start;
+  z-index: 90;
 }
 
 .booking-card,

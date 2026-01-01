@@ -1,27 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { environment } from '../../../../../environments/environment';
-
-interface CreatePlanDto {
-  branchId: number;
-  name: string;
-  description: string;
-  price: number;
-  creditsCost: number;
-  visitsLimit: number;
-  durationDays: number;
-  status: string;
-}
-
-interface ApiResponse {
-  data: any;
-  isSuccess: boolean;
-  message: string;
-  errorCode: string;
-}
+import { PlansService, CreatePlanRequest } from '../../../../services/plans.service';
 
 @Component({
   selector: 'app-add-subscription-plans',
@@ -37,11 +18,8 @@ export class AddSubscriptionPlansComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  private apiUrl = `${environment.apiBaseUrl}/owner/Plans`;
-  private token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJyb2NrZ3ltQG93bmVyLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Ik93bmVyIiwiZXhwIjoxNzY2ODY0ODY3LCJpc3MiOiJGaXRIdWIiLCJhdWQiOiJGaXRIdWJVc2VycyJ9.ZhboWQLNWYenZdFK6fBhsh2RtNtfwApbzwbvw2HD2mE';
-
   durationOptions = [
+    { value: 7, label: '7 Days (Weekly)' },
     { value: 30, label: '30 Days (Monthly)' },
     { value: 90, label: '90 Days (Quarterly)' },
     { value: 365, label: '365 Days (Yearly)' },
@@ -49,13 +27,13 @@ export class AddSubscriptionPlansComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private plansService: PlansService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    // احصل على branchId من الـ URL
+    // Get branchId from URL
     this.route.queryParams.subscribe((params) => {
       this.branchId = +params['branchId'] || 1;
       console.log('🔵 Branch ID:', this.branchId);
@@ -69,7 +47,6 @@ export class AddSubscriptionPlansComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       creditsCost: [0, [Validators.required, Validators.min(1)]],
-      price: [0, [Validators.required, Validators.min(0)]],
       durationDays: [30, [Validators.required, Validators.min(1)]],
       visitsLimit: [0, [Validators.required, Validators.min(0)]],
       status: [true], // true = ACTIVE, false = INACTIVE
@@ -88,11 +65,10 @@ export class AddSubscriptionPlansComponent implements OnInit {
     this.successMessage = '';
 
     const formValue = this.planForm.value;
-    const planData: CreatePlanDto = {
+    const planData: CreatePlanRequest = {
       branchId: this.branchId,
       name: formValue.name,
       description: formValue.description,
-      price: +formValue.price,
       creditsCost: +formValue.creditsCost,
       visitsLimit: +formValue.visitsLimit,
       durationDays: +formValue.durationDays,
@@ -101,35 +77,24 @@ export class AddSubscriptionPlansComponent implements OnInit {
 
     console.log('🟢 Creating plan:', planData);
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'Content-Type': 'application/json',
-      accept: 'application/json',
+    this.plansService.createPlan(this.branchId, planData).subscribe({
+      next: (response) => {
+        this.loading = false;
+        // Verify response content here if needed, but service throws error if not success
+        console.log('✅ Plan created successfully:', response);
+        this.successMessage = 'Plan created successfully!';
+
+        // Return to plans page
+        setTimeout(() => {
+          this.router.navigate(['/gym-owner/subscription-plans', this.branchId]);
+        }, 2000);
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('🔴 Error creating plan:', error);
+        this.errorMessage = error.message || 'Error creating plan. Please try again.';
+      }
     });
-
-    this.http
-      .post<ApiResponse>(`${this.apiUrl}/${this.branchId}/Create`, planData, { headers })
-      .subscribe({
-        next: (response) => {
-          this.loading = false;
-          if (response.isSuccess) {
-            console.log('✅ Plan created successfully:', response);
-            this.successMessage = response.message || 'Plan created successfully!';
-
-            // ارجع لصفحة الـ Plans بعد 2 ثانية
-            setTimeout(() => {
-              this.router.navigate(['/gym-owner/subscription-plans', this.branchId]);
-            }, 2000);
-          } else {
-            this.errorMessage = response.message || 'Failed to create plan.';
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          console.error('🔴 Error creating plan:', error);
-          this.errorMessage = error.error?.message || 'Error creating plan. Please try again.';
-        },
-      });
   }
 
   onCancel(): void {

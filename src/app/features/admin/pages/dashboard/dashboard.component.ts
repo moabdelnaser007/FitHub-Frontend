@@ -108,8 +108,8 @@ export class AdminDashboardComponent implements OnInit {
           appliedDate: this.formatDate(owner.createdAt)
         }));
 
-        this.stats[3].value = this.pendingGyms.length.toString();
-        this.stats[3].isLoading = false;
+        this.stats[2].value = this.pendingGyms.length.toString();
+        this.stats[2].isLoading = false;
         console.log('✅ Pending Gym Owners:', this.pendingGyms.length);
 
         this.isLoading = false;
@@ -141,7 +141,7 @@ export class AdminDashboardComponent implements OnInit {
           appliedDate: this.formatDate(owner.createdAt)
         }));
 
-        this.stats[3].value = this.pendingGyms.length.toString();
+        this.stats[2].value = this.pendingGyms.length.toString();
         console.log('✅ Pending gym owners reloaded:', this.pendingGyms);
       },
       error: (error) => {
@@ -200,7 +200,7 @@ export class AdminDashboardComponent implements OnInit {
           this.pendingGyms = this.pendingGyms.filter(g => g.id !== gym.id);
 
           // ✅ تحديث العدد في الـ Stats
-          this.stats[3].value = this.pendingGyms.length.toString();
+          this.stats[2].value = this.pendingGyms.length.toString();
 
           // ✅ تحديث عدد Active Gyms (لأن في gym جديد اتضاف)
           this.updateActiveGymsCount();
@@ -234,7 +234,7 @@ export class AdminDashboardComponent implements OnInit {
           this.pendingGyms = this.pendingGyms.filter(g => g.id !== gym.id);
 
           // ✅ تحديث العدد في الـ Stats
-          this.stats[3].value = this.pendingGyms.length.toString();
+          this.stats[2].value = this.pendingGyms.length.toString();
 
           console.log('✅ Gym owner rejected successfully');
         } else {

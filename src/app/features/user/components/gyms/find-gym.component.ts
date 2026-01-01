@@ -20,6 +20,11 @@ export class FindGymComponent implements OnInit {
   searchQuery = '';
   selectedCity = '';
   selectedRating = 0;
+  address = '';
+
+  amenitiesList = ['Locker', 'Shower', 'Air Conditioning', 'Wifi', 'Parking', 'Pool', 'Sauna'];
+  selectedAmenities: string[] = [];
+
   currentFilters: GymSearchFilters = {};
   showReview = false;
   selectedGym?: Gym;
@@ -75,6 +80,15 @@ export class FindGymComponent implements OnInit {
     this.applyAllFilters();
   }
 
+  toggleAmenity(amenity: string): void {
+    if (this.selectedAmenities.includes(amenity)) {
+      this.selectedAmenities = this.selectedAmenities.filter(a => a !== amenity);
+    } else {
+      this.selectedAmenities.push(amenity);
+    }
+    this.applyAllFilters();
+  }
+
   // New unified filter method
   onFilterChange(): void {
     this.applyAllFilters();
@@ -86,6 +100,8 @@ export class FindGymComponent implements OnInit {
       name: this.searchQuery.trim() || undefined,
       city: this.selectedCity || undefined,
       minRating: this.selectedRating > 0 ? this.selectedRating : undefined,
+      address: this.address.trim() || undefined,
+      amenities: this.selectedAmenities.length > 0 ? this.selectedAmenities : undefined,
     };
   }
 

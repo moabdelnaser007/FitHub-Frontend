@@ -70,6 +70,7 @@
         <thead>
           <tr>
             <th>Staff Name</th>
+            <th *ngIf="!isViewingBranchStaff">Branch</th>
 
             <th>Email</th>
             <th>Phone Number</th>
@@ -88,6 +89,7 @@
                 <span class="staff-name">{{ staff.fullName }}</span>
               </div>
             </td>
+            <td *ngIf="!isViewingBranchStaff">{{ getBranchName(staff.branchId) }}</td>
 
             <td>{{ staff.email }}</td>
             <td>{{ staff.phone }}</td>
@@ -97,9 +99,7 @@
                 <input type="checkbox" [checked]="staff.status === 'ACTIVE'" (change)="toggleStatus(staff)" />
                 <span class="toggle-slider"></span>
               </label>
-              <span class="status-text" [ngClass]="getStatusClass(staff.status)">
-                {{ getStatusText(staff.status) }}
-              </span>
+
             </td>
             <td>
               <div class="action-buttons">

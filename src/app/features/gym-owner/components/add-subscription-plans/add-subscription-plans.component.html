@@ -1,5 +1,5 @@
 <div class="app-container">
-  
+
   <!-- Main Content -->
   <main class="main-content">
     <div class="content-wrapper">
@@ -21,18 +21,14 @@
 
       <div class="card">
         <form [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
-          
+
           <!-- Plan Name -->
           <div class="form-group">
             <label class="form-label">
               Plan Name <span class="required">*</span>
             </label>
-            <input 
-              formControlName="name"
-              type="text"
-              class="form-input"
-              [class.error]="isFieldInvalid('name')"
-              placeholder="e.g., Gold Tier Monthly"/>
+            <input formControlName="name" type="text" class="form-input" [class.error]="isFieldInvalid('name')"
+              placeholder="e.g., Gold Tier Monthly" />
             <p *ngIf="isFieldInvalid('name')" class="error-message">{{ getFieldError('name') }}</p>
           </div>
 
@@ -41,20 +37,16 @@
             <label class="form-label">
               Plan Description <span class="required">*</span>
             </label>
-            <textarea 
-              formControlName="description"
-              class="form-textarea"
-              [class.error]="isFieldInvalid('description')"
-              placeholder="Briefly describe what this plan offers users."
-              rows="6"></textarea>
+            <textarea formControlName="description" class="form-textarea" [class.error]="isFieldInvalid('description')"
+              placeholder="Briefly describe what this plan offers users." rows="6"></textarea>
             <p *ngIf="isFieldInvalid('description')" class="error-message">{{ getFieldError('description') }}</p>
           </div>
 
-          <!-- Credits & Price Row -->
+          <!-- Subscription Price & Visits Limit Row -->
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">
-                <span>Credits per Cycle <span class="required">*</span></span>
+                <span>Subscription Price <span class="required">*</span></span>
                 <div class="tooltip-wrapper">
                   <span class="material-symbols-outlined help-icon">help</span>
                   <div class="tooltip">
@@ -62,37 +54,9 @@
                   </div>
                 </div>
               </label>
-              <input 
-                formControlName="creditsCost"
-                type="number"
-                class="form-input"
-                [class.error]="isFieldInvalid('creditsCost')"
-                placeholder="e.g., 10"
-                min="0"/>
+              <input formControlName="creditsCost" type="number" class="form-input"
+                [class.error]="isFieldInvalid('creditsCost')" placeholder="e.g., 10" min="0" />
               <p *ngIf="isFieldInvalid('creditsCost')" class="error-message">{{ getFieldError('creditsCost') }}</p>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Price <span class="required">*</span></label>
-              <input 
-                formControlName="price"
-                type="number"
-                class="form-input"
-                [class.error]="isFieldInvalid('price')"
-                placeholder="e.g., 49.99"
-                step="0.01"
-                min="0"/>
-              <p *ngIf="isFieldInvalid('price')" class="error-message">{{ getFieldError('price') }}</p>
-            </div>
-          </div>
-
-          <!-- Duration & Visits Row -->
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Plan Duration <span class="required">*</span></label>
-              <select formControlName="durationDays" class="form-select">
-                <option *ngFor="let option of durationOptions" [value]="option.value">{{ option.label }}</option>
-              </select>
             </div>
 
             <div class="form-group">
@@ -105,47 +69,44 @@
                   </div>
                 </div>
               </label>
-              <input 
-                formControlName="visitsLimit"
-                type="number"
-                class="form-input"
-                [class.error]="isFieldInvalid('visitsLimit')"
-                placeholder="e.g., 8"
-                min="0"/>
+              <input formControlName="visitsLimit" type="number" class="form-input"
+                [class.error]="isFieldInvalid('visitsLimit')" placeholder="e.g., 8" min="0" />
               <p *ngIf="isFieldInvalid('visitsLimit')" class="error-message">{{ getFieldError('visitsLimit') }}</p>
             </div>
           </div>
 
-          <!-- Active Status Toggle -->
-          <div class="form-group toggle-group">
-            <div class="toggle-label">
-              <span>Set as Active</span>
-              <div class="tooltip-wrapper">
-                <span class="material-symbols-outlined help-icon">help</span>
-                <div class="tooltip">
-                  Active plans are visible to customers. Inactive plans are saved as drafts.
+          <!-- Duration & Status Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Plan Duration <span class="required">*</span></label>
+              <select formControlName="durationDays" class="form-select">
+                <option *ngFor="let option of durationOptions" [value]="option.value">{{ option.label }}</option>
+              </select>
+            </div>
+
+            <div class="form-group toggle-group">
+              <div class="toggle-label">
+                <span>Set as Active</span>
+                <div class="tooltip-wrapper">
+                  <span class="material-symbols-outlined help-icon">help</span>
+                  <div class="tooltip">
+                    Active plans are visible to customers. Inactive plans are saved as drafts.
+                  </div>
                 </div>
               </div>
+              <label class="toggle-switch">
+                <input formControlName="status" type="checkbox" />
+                <span class="slider"></span>
+              </label>
             </div>
-            <label class="toggle-switch">
-              <input formControlName="status" type="checkbox"/>
-              <span class="slider"></span>
-            </label>
           </div>
 
           <!-- Form Actions -->
           <div class="form-actions">
-            <button 
-              type="button"
-              (click)="onCancel()"
-              [disabled]="loading"
-              class="btn-secondary">
+            <button type="button" (click)="onCancel()" [disabled]="loading" class="btn-secondary">
               Cancel
             </button>
-            <button 
-              type="submit"
-              [disabled]="loading || planForm.invalid"
-              class="btn-primary">
+            <button type="submit" [disabled]="loading || planForm.invalid" class="btn-primary">
               <span *ngIf="!loading">Create Plan</span>
               <span *ngIf="loading">Creating...</span>
             </button>

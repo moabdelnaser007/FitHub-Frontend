@@ -127,7 +127,11 @@ export class GymDetailComponent implements OnInit {
           .split(',')
           .map((a) => a.trim())
           .filter((a) => a.length > 0);
-        this.amenities = amenities.map((label) => ({ icon: 'check', label }));
+
+        this.amenities = amenities.map((label) => ({
+          icon: this.getAmenityIconKey(label),
+          label
+        }));
 
         // About from backend
         this.aboutText = branch.description || '';
@@ -153,6 +157,16 @@ export class GymDetailComponent implements OnInit {
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = today.getDate().toString().padStart(2, '0');
     this.minDate = `${year}-${month}-${day}`;
+  }
+
+  private getAmenityIconKey(label: string): string {
+    const lower = label.toLowerCase().replace(/\s/g, '');
+    if (lower.includes('locker')) return 'locker';
+    if (lower.includes('shower')) return 'shower';
+    if (lower.includes('air') || lower.includes('ac') || lower.includes('condition')) return 'ac';
+    if (lower.includes('wifi')) return 'wifi';
+    if (lower.includes('park')) return 'parking';
+    return 'check';
   }
 
   private loadReviews(branchId: number): void {
@@ -248,8 +262,8 @@ export class GymDetailComponent implements OnInit {
       return;
     }
 
-    if (!this.selectedDate || !this.selectedTime) {
-      alert('Please select a date and time');
+    if (!this.selectedDate) {
+      alert('Please select a date');
       return;
     }
 
@@ -259,12 +273,11 @@ export class GymDetailComponent implements OnInit {
         gymId: this.gymId, // Pass the Gym ID (Branch ID)
         gymName: this.gymName,
         date: this.selectedDate,
-        time: this.selectedTime,
+        time: this.selectedTime || '09:00 AM', // Default to 09:00 AM since selection is hidden
         cost: this.visitCreditsCost
       }
     });
   }
-
   proceedToPayment(): void {
     if (!this.isLoggedIn) {
       alert('You must be logged in to subscribe to a plan. Please log in first.');

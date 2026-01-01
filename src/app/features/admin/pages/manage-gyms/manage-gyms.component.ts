@@ -1,9 +1,9 @@
-// manage-gyms.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BranchService, Branch } from '../../../../services/admin-branches.service';
+import { UsersService } from '../../../../services/users.service';
 
 interface Gym {
   id: string;
@@ -33,34 +33,55 @@ export class ManageGymsComponent implements OnInit {
   searchQuery: string = '';
   statusFilter: string = 'all';
   cityFilter: string = 'all';
-  
+
   selectAll: boolean = false;
-  
+
   // Loading & Error States
   isLoading: boolean = false;
   errorMessage: string = '';
-  
+
   // Pagination
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalItems: number = 0;
-  
+
   // Delete Modal
   showDeleteModal: boolean = false;
   gymToDelete: Gym | null = null;
   isDeleting: boolean = false;
 
+  ownersMap: Map<number, string> = new Map();
+
   constructor(
     private router: Router,
-    private branchService: BranchService
-  ) {}
+    private branchService: BranchService,
+    private usersService: UsersService
+  ) { }
 
   ngOnInit(): void {
-    this.loadGyms();
+    this.loadOwnersAndGyms();
+  }
+
+  loadOwnersAndGyms(): void {
+    this.isLoading = true;
+    this.usersService.getAllUsers().subscribe({
+      next: (users) => {
+        users.forEach(u => this.ownersMap.set(u.id, u.fullName));
+        this.loadGyms();
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.loadGyms();
+      }
+    });
   }
 
   // Load Gyms from API
   loadGyms(): void {
+    // If called directly without wrapper or after error, assume loading handled upstream or start it
+    // But since we set isLoading=true in loadOwnersAndGyms, we are good.
+    // If called from Retry? Retry calls loadGyms.
+    // Let's make sure loadGyms sets isLoading if not set.
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -86,10 +107,11 @@ export class ManageGymsComponent implements OnInit {
 
   // Map Branch data to Gym interface
   private mapBranchToGym(branch: Branch): Gym {
+    const ownerName = this.ownersMap.get(branch.ownerId);
     return {
       id: branch.id.toString(),
       name: branch.branchName,
-      owner: `Owner #${branch.ownerId}`,
+      owner: ownerName || `Owner #${branch.ownerId}`,
       location: branch.city,
       phone: branch.phone,
       address: branch.address,
@@ -130,17 +152,17 @@ export class ManageGymsComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredGyms = this.gyms.filter(gym => {
-      const matchesSearch = 
+      const matchesSearch =
         gym.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         gym.owner.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         gym.location.toLowerCase().includes(this.searchQuery.toLowerCase());
-      
-      const matchesStatus = this.statusFilter === 'all' || 
-                           gym.status.toLowerCase() === this.statusFilter.toLowerCase();
-      
-      const matchesCity = this.cityFilter === 'all' || 
-                         gym.location.toLowerCase() === this.cityFilter.toLowerCase();
-      
+
+      const matchesStatus = this.statusFilter === 'all' ||
+        gym.status.toLowerCase() === this.statusFilter.toLowerCase();
+
+      const matchesCity = this.cityFilter === 'all' ||
+        gym.location.toLowerCase() === this.cityFilter.toLowerCase();
+
       return matchesSearch && matchesStatus && matchesCity;
     });
 
@@ -157,7 +179,7 @@ export class ManageGymsComponent implements OnInit {
 
   onToggleStatus(gym: Gym): void {
     const branchId = parseInt(gym.id);
-    const apiCall = gym.isActive 
+    const apiCall = gym.isActive
       ? this.branchService.suspendBranch(branchId)
       : this.branchService.resumeBranch(branchId);
 
@@ -196,10 +218,10 @@ export class ManageGymsComponent implements OnInit {
 
   confirmDelete(): void {
     if (!this.gymToDelete) return;
-    
+
     this.isDeleting = true;
     const branchId = parseInt(this.gymToDelete.id);
-    
+
     // استخدام Suspend بدلاً من Delete (لأن مفيش Delete API)
     this.branchService.suspendBranch(branchId).subscribe({
       next: (response) => {
@@ -244,11 +266,11 @@ export class ManageGymsComponent implements OnInit {
     const half = Math.floor(maxPages / 2);
     let start = Math.max(1, this.currentPage - half);
     let end = Math.min(this.totalPages, start + maxPages - 1);
-    
+
     if (end - start < maxPages - 1) {
       start = Math.max(1, end - maxPages + 1);
     }
-    
+
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 

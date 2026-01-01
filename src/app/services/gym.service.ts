@@ -46,6 +46,8 @@ export interface GymSearchFilters {
   name?: string;
   city?: string;
   minRating?: number;
+  address?: string;
+  amenities?: string[];
 }
 
 export interface Gym {
@@ -105,6 +107,22 @@ export class GymService {
         if (filters.city && filters.city.trim()) {
           const cityTerm = filters.city.toLowerCase().trim();
           filteredGyms = filteredGyms.filter((gym) => gym.city?.toLowerCase().includes(cityTerm));
+        }
+
+        // Filter by address
+        if (filters.address && filters.address.trim()) {
+          const addressTerm = filters.address.toLowerCase().trim();
+          filteredGyms = filteredGyms.filter(gym =>
+            (gym.address && gym.address.toLowerCase().includes(addressTerm))
+          );
+        }
+
+        // Filter by amenities
+        if (filters.amenities && filters.amenities.length > 0) {
+          filteredGyms = filteredGyms.filter(gym => {
+            const gymAmenities = (gym.amenitiesAvailable || '').toLowerCase();
+            return filters.amenities!.every(a => gymAmenities.includes(a.toLowerCase()));
+          });
         }
 
         // Filter by minimum rating
@@ -186,7 +204,7 @@ export class GymService {
           : 'assets/default-gym.jpg',
       rating: 0, // Default rating - update when backend provides it
       reviewCount: 0, // Default - update when backend provides it
-      location: `${branch.city}`,
+      location: `${branch.address ? branch.address + ', ' : ''}${branch.city}`,
       activities: this.parseAmenities(branch.amenitiesAvailable),
       branchName: branch.branchName,
       phone: branch.phone,

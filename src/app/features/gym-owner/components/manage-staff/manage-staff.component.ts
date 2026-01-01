@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StaffService, StaffMember } from '../../../../services/staff.service';
+import { BranchService, BranchData } from '../../../../services/branch.service';
 
 @Component({
   selector: 'app-manage-staff',
@@ -26,6 +27,8 @@ export class ManageStaffComponent implements OnInit {
   isLoading: boolean = true;
   loadError: string | null = null;
 
+  branchesMap: Map<number, string> = new Map();
+
   // Delete Modal
   showDeleteModal: boolean = false;
   staffToDelete: StaffMember | null = null;
@@ -36,11 +39,15 @@ export class ManageStaffComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private staffService: StaffService
+    private staffService: StaffService,
+    private branchService: BranchService
   ) { }
 
   ngOnInit(): void {
     const branchIdParam = this.route.snapshot.paramMap.get('id');
+
+    // Load branches map for displaying names
+    this.loadBranches();
 
     if (branchIdParam) {
       this.branchId = parseInt(branchIdParam);
@@ -52,6 +59,15 @@ export class ManageStaffComponent implements OnInit {
       console.log('🔵 Viewing all staff');
       this.loadAllStaff();
     }
+  }
+
+  loadBranches(): void {
+    this.branchService.getAllBranches().subscribe({
+      next: (branches) => {
+        branches.forEach(b => this.branchesMap.set(b.id, b.branchName));
+      },
+      error: (err) => console.error('Error loading branches map:', err)
+    });
   }
 
   loadAllStaff(): void {
@@ -222,5 +238,9 @@ export class ManageStaffComponent implements OnInit {
 
   getStatusText(status: string): string {
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  }
+
+  getBranchName(branchId: number): string {
+    return this.branchesMap.get(branchId) || `Branch #${branchId}`;
   }
 }

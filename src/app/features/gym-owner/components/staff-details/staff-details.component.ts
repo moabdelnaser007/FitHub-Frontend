@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StaffService, StaffMember } from '../../../../services/staff.service';
+import { BranchService } from '../../../../services/branch.service';
 
 @Component({
   selector: 'app-staff-details',
@@ -11,23 +12,25 @@ import { StaffService, StaffMember } from '../../../../services/staff.service';
   styleUrls: ['./staff-details.component.css']
 })
 export class StaffDetailsComponent implements OnInit {
-  
+
   staffId: number = 0;
   staff: StaffMember | null = null;
   isLoading: boolean = true;
   loadError: string | null = null;
+  branchName: string = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private staffService: StaffService
-  ) {}
+    private staffService: StaffService,
+    private branchService: BranchService
+  ) { }
 
   ngOnInit(): void {
     const staffIdParam = this.route.snapshot.paramMap.get('id');
-    
+
     console.log('Staff ID from URL:', staffIdParam);
-    
+
     if (staffIdParam) {
       this.staffId = parseInt(staffIdParam);
       this.loadStaffDetails();
@@ -48,11 +51,27 @@ export class StaffDetailsComponent implements OnInit {
         console.log('Staff details loaded:', staff);
         this.staff = staff;
         this.isLoading = false;
+
+        if (staff.branchId) {
+          this.loadBranchName(staff.branchId);
+        }
       },
       error: (error) => {
         console.error('Error loading staff details:', error);
         this.loadError = 'Failed to load staff details';
         this.isLoading = false;
+      }
+    });
+  }
+
+  loadBranchName(branchId: number): void {
+    this.branchService.getBranchById(branchId).subscribe({
+      next: (branch) => {
+        this.branchName = branch.branchName;
+      },
+      error: (error) => {
+        console.error('Error loading branch name:', error);
+        this.branchName = `Branch #${branchId}`;
       }
     });
   }
@@ -80,6 +99,6 @@ export class StaffDetailsComponent implements OnInit {
     if (!this.staff || !this.staff.branchId) {
       return 'Not Assigned';
     }
-    return `Branch #${this.staff.branchId}`;
+    return this.branchName || `Branch #${this.staff.branchId}`;
   }
 }

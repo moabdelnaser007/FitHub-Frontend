@@ -10,7 +10,7 @@
             <h1>Dashboard Overview</h1>
             <p>Welcome back, Admin! Here's a look at the platform's performance.</p>
           </div>
-          
+
         </div>
 
         <!-- Stats Cards -->
@@ -45,7 +45,7 @@
             <p>{{ loadError }}</p>
             <button class="btn-retry" (click)="retryLoad()">Retry</button>
           </div>
-          
+
           <!-- Table -->
           <div class="table-wrapper" *ngIf="!isLoading && !loadError">
             <table class="gyms-table">
@@ -56,7 +56,6 @@
                   <th>Phone</th>
                   <th>City</th>
                   <th>Commercial Reg</th>
-                  <th>Applied Date</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -73,13 +72,12 @@
                     </span>
                   </td>
                   <td class="reg-number">{{ gym.commercialRegNumber }}</td>
-                  <td class="date-cell">{{ gym.appliedDate }}</td>
                   <td>
                     <span class="status-badge pending">{{ gym.status }}</span>
                   </td>
                   <td>
-                   <div class="action-buttons">
-                     <!--  <button (click)="viewGym(gym)" class="btn-icon" title="View Details">
+                    <div class="action-buttons">
+                      <!--  <button (click)="viewGym(gym)" class="btn-icon" title="View Details">
                         <span class="material-symbols-outlined">visibility</span>
                       </button>-->
                       <button (click)="approveGym(gym)" class="btn-approve" title="Approve">
@@ -96,7 +94,7 @@
 
                 <!-- Empty State -->
                 <tr *ngIf="pendingGyms.length === 0">
-                  <td colspan="8" class="empty-state">
+                  <td colspan="7" class="empty-state">
                     <span class="material-symbols-outlined">check_circle</span>
                     <p>No pending gym owner applications</p>
                     <span class="empty-subtitle">All applications have been processed</span>

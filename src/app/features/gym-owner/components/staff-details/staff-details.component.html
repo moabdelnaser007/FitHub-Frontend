@@ -1,5 +1,5 @@
 <div class="staff-details-page">
-  
+
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
@@ -15,19 +15,19 @@
 
   <!-- Main Content -->
   <div *ngIf="!isLoading && !loadError && staff">
-    
+
     <!-- Page Header -->
-    <div >
-      <div >
+    <div>
+      <div>
         <h1>Staff Member Details</h1>
         <p>View the information for {{ staff.fullName }}.</p>
       </div>
-     
+
     </div>
 
     <!-- Details Card -->
     <div class="details-card">
-      
+
       <!-- Profile Section -->
       <div class="profile-section">
         <div class="avatar-wrapper">
@@ -63,11 +63,6 @@
           <dd class="info-value">{{ staff.city }}</dd>
         </div>
 
-        <div class="info-item">
-          <dt class="info-label">User ID</dt>
-          <dd class="info-value">{{ staff.userId }}</dd>
-        </div>
-
         <div class="info-item full-width">
           <dt class="info-label">Status</dt>
           <dd class="info-value">
@@ -77,13 +72,15 @@
             </span>
           </dd>
         </div>
+
+
       </div>
 
     </div>
- <button class="btn-edit" (click)="editStaff()">
-        <span class="material-symbols-outlined">edit</span>
-        <span>Edit Staff Member</span>
-      </button>
+    <button class="btn-edit" (click)="editStaff()">
+      <span class="material-symbols-outlined">edit</span>
+      <span>Edit Staff Member</span>
+    </button>
     <!-- Back Button -->
     <div class="back-button-container">
       <button class="btn-back" (click)="goBack()">
