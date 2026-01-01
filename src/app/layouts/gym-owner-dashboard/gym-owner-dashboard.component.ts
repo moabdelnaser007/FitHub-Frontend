@@ -28,9 +28,20 @@ export class GymOwnerLayoutComponent {
     { icon: 'payments', label: 'Settlements', route: '/gym-owner/settlements' },
   ];
 
+  isSidebarOpen = false;
+
   setActiveMenuItem(item: MenuItem): void {
     this.menuItems.forEach(menuItem => menuItem.active = false);
     item.active = true;
+    this.closeSidebar();
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
   }
 
   constructor(private router: Router, private authService: AuthService) { }

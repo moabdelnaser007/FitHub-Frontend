@@ -23,9 +23,20 @@ export class StaffLayoutComponent {
         { icon: 'history', label: 'Visit Log', route: '/staff/visit-log' }
     ];
 
+    isSidebarOpen = false;
+
     setActiveMenuItem(item: MenuItem): void {
         this.menuItems.forEach(menuItem => menuItem.active = false);
         item.active = true;
+        this.closeSidebar();
+    }
+
+    toggleSidebar(): void {
+        this.isSidebarOpen = !this.isSidebarOpen;
+    }
+
+    closeSidebar(): void {
+        this.isSidebarOpen = false;
     }
 
     constructor(private router: Router, private authService: AuthService) { }

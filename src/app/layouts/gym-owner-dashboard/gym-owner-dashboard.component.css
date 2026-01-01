@@ -231,80 +231,78 @@
   all: revert;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .admin-layout>.content>.header {
-    padding: 1rem 1.5rem;
-    left: 16rem;
-  }
-
-  .admin-layout>.content>.page {
-    padding: 1.5rem;
-  }
+/* Mobile Elements */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 90;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
 }
 
-@media (max-width: 768px) {
+.sidebar-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-btn {
+  display: none;
+  /* Hidden on Desktop */
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .admin-layout>.gym-owner-sidebar {
-    width: 14rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .admin-layout>.gym-owner-sidebar.open {
+    transform: translateX(0);
   }
 
   .admin-layout>.content {
-    margin-left: 14rem;
+    margin-left: 0;
+    width: 100%;
   }
 
   .admin-layout>.content>.header {
-    padding: 1rem;
-    flex-wrap: wrap;
+    left: 0;
+    width: 100%;
+    padding: 0 1rem;
+    justify-content: flex-start;
     gap: 1rem;
-    left: 14rem;
   }
 
-  .admin-layout .header>.header-left,
-  .admin-layout .header>.header-right {
+  .admin-layout .header-left {
     flex: 0 0 auto;
   }
 
-  .admin-layout .header>.header-center {
-    flex: 1 1 100%;
-    order: 3;
-  }
-
-  .admin-layout .header-center>.search-container {
-    max-width: 100%;
-  }
-
   .admin-layout>.content>.page {
-    padding: 1rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .admin-layout>.gym-owner-sidebar {
-    width: 12rem;
-  }
-
-  .admin-layout>.content {
-    margin-left: 12rem;
-  }
-
-  .admin-layout>.content>.header {
-    padding: 0.75rem;
-    left: 12rem;
-  }
-
-  .admin-layout .header-right>.icon-btn,
-  .admin-layout .header-right>.user-avatar {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-
-  .admin-layout .search-container>.search-input {
-    padding: 0.625rem 0.875rem 0.625rem 2.75rem;
-    font-size: 0.875rem;
-  }
-
-  .admin-layout>.content>.page {
-    padding: 0.75rem;
+    padding: 80px 1rem 1rem 1rem;
   }
 }
 

@@ -2,46 +2,55 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<aside class="staff-sidebar">
-    <div class="sidebar-header">
-        <div class="brand">
-            <div class="brand-mark">F</div>
-            FitHub
-        </div>
-    </div>
 
-    <div class="sidebar-content">
-        <div class="logo-section">
-            <nav class="nav-menu">
-                <a *ngFor="let item of menuItems" [routerLink]="item.route" class="nav-item"
-                    [class.active]="item.active" (click)="setActiveMenuItem(item)">
-                    <span class="material-symbols-outlined">{{ item.icon }}</span>
-                    <p>{{ item.label }}</p>
+<div class="staff-layout">
+    <div class="sidebar-overlay" [class.show]="isSidebarOpen" (click)="closeSidebar()"></div>
+
+    <aside class="staff-sidebar" [class.open]="isSidebarOpen">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="brand-mark">F</div>
+                FitHub
+            </div>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="logo-section">
+                <nav class="nav-menu">
+                    <a *ngFor="let item of menuItems" [routerLink]="item.route" class="nav-item"
+                        [class.active]="item.active" (click)="setActiveMenuItem(item)">
+                        <span class="material-symbols-outlined">{{ item.icon }}</span>
+                        <p>{{ item.label }}</p>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="bottom-section">
+                <a class="nav-item" (click)="onProfile()">
+                    <span class="material-symbols-outlined">account_circle</span>
+                    <p>Profile</p>
                 </a>
-            </nav>
+                <a class="nav-item" (click)="onLogout()">
+                    <span class="material-symbols-outlined">logout</span>
+                    <p>Logout</p>
+                </a>
+            </div>
         </div>
+    </aside>
 
-        <div class="bottom-section">
-            <a class="nav-item" (click)="onProfile()">
-                <span class="material-symbols-outlined">account_circle</span>
-                <p>Profile</p>
-            </a>
-            <a class="nav-item" (click)="onLogout()">
-                <span class="material-symbols-outlined">logout</span>
-                <p>Logout</p>
-            </a>
-        </div>
+    <div class="content">
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-btn" (click)="toggleSidebar()">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+            <div class="header-center"></div>
+            <div class="header-right"></div>
+        </header>
+
+        <main class="page">
+            <router-outlet></router-outlet>
+        </main>
     </div>
-</aside>
-
-<div class="content">
-    <header class="header">
-        <div class="header-left"></div>
-        <div class="header-center"></div>
-        <div class="header-right"></div>
-    </header>
-
-    <main class="page">
-        <router-outlet></router-outlet>
-    </main>
 </div>

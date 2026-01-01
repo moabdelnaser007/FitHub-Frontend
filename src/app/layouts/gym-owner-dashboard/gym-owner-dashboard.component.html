@@ -3,10 +3,9 @@
   rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="admin-layout">
+  <div class="sidebar-overlay" [class.show]="isSidebarOpen" (click)="closeSidebar()"></div>
 
-
-
-  <aside class="gym-owner-sidebar">
+  <aside class="gym-owner-sidebar" [class.open]="isSidebarOpen">
     <!-- New Sidebar Header matching Admin -->
     <div class="sidebar-header">
       <div class="brand">
@@ -47,10 +46,9 @@
     <!-- Header -->
     <header class="header">
       <div class="header-left">
-        <!-- Removed Brand text as per Admin refinements if implied, but user said "like admin header" which has Brand text/Logo in Sidebar and Brand Text in Header originally, then removed 
-      Wait, in Step 858 I removed the brand from Top Header. Admin Top Header is CLEAN (Empty).
-      I will follow the CLEAN Admin Top Header style. Empty left, empty center, empty right. 
-      Actually, let's keep it consistent: Sidebar has Brand. Top Header is Dark Bar. -->
+        <button class="menu-btn" (click)="toggleSidebar()">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
       </div>
 
       <div class="header-center">

@@ -3,10 +3,9 @@
   rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="admin-layout">
+  <div class="sidebar-overlay" [class.show]="isSidebarOpen" (click)="closeSidebar()"></div>
 
-
-
-  <aside class="sidebar">
+  <aside class="sidebar" [class.open]="isSidebarOpen">
     <div class="sidebar-header">
       <div class="brand">
         <div class="brand-mark">F</div>
@@ -47,7 +46,9 @@
     <!-- Header -->
     <header class="header">
       <div class="header-left">
-        <!-- Brand removed as requested -->
+        <button class="menu-btn" (click)="toggleSidebar()">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
       </div>
 
       <div class="header-center">

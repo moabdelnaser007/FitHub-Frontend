@@ -64,8 +64,19 @@ export class DashboardLayoutComponent implements OnInit {
     this.logoutClicked.emit();
   }
 
+  isSidebarOpen = false;
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
+  }
+
   setActiveMenuItem(item: MenuItem): void {
     this.menuItems.forEach(menuItem => menuItem.active = false);
     item.active = true;
+    this.closeSidebar();
   }
 }
