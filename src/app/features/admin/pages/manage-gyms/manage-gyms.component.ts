@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BranchService, Branch } from '../../../../services/admin-branches.service';
-import { UsersService } from '../../../../services/users.service';
 
 interface Gym {
   id: string;
@@ -50,30 +49,13 @@ export class ManageGymsComponent implements OnInit {
   gymToDelete: Gym | null = null;
   isDeleting: boolean = false;
 
-  ownersMap: Map<number, string> = new Map();
-
   constructor(
     private router: Router,
-    private branchService: BranchService,
-    private usersService: UsersService
+    private branchService: BranchService
   ) { }
 
   ngOnInit(): void {
-    this.loadOwnersAndGyms();
-  }
-
-  loadOwnersAndGyms(): void {
-    this.isLoading = true;
-    this.usersService.getAllUsers().subscribe({
-      next: (users) => {
-        users.forEach(u => this.ownersMap.set(u.id, u.fullName));
-        this.loadGyms();
-      },
-      error: (err) => {
-        console.error('Error loading users:', err);
-        this.loadGyms();
-      }
-    });
+    this.loadGyms();
   }
 
   // Load Gyms from API
@@ -107,11 +89,10 @@ export class ManageGymsComponent implements OnInit {
 
   // Map Branch data to Gym interface
   private mapBranchToGym(branch: Branch): Gym {
-    const ownerName = this.ownersMap.get(branch.ownerId);
     return {
       id: branch.id.toString(),
       name: branch.branchName,
-      owner: ownerName || `Owner #${branch.ownerId}`,
+      owner: `Owner #${branch.ownerId}`,
       location: branch.city,
       phone: branch.phone,
       address: branch.address,
