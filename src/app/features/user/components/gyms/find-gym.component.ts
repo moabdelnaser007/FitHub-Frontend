@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { GymFilterComponent, FilterChange } from './gym-filter/gym-filter.component';
+
 import { GymListComponent } from './gym-list/gym-list.component';
 import { Gym } from '../../../../shared/components/gym-card/gym-card.component';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -12,7 +12,7 @@ import { FooterComponent } from '../../../../shared/components/footer/footer.com
 @Component({
   selector: 'app-find-gym',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, GymFilterComponent, GymListComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, RouterModule, GymListComponent, FooterComponent],
   templateUrl: './find-gym.component.html',
   styleUrl: './find-gym.component.css',
 })
@@ -20,6 +20,7 @@ export class FindGymComponent implements OnInit {
   searchQuery = '';
   selectedCity = '';
   selectedRating = 0;
+  selectedMaxCredits: number | null = null;
   address = '';
 
   amenitiesList = ['Locker', 'Shower', 'Air Conditioning', 'Wifi', 'Parking', 'Pool', 'Sauna'];
@@ -65,6 +66,16 @@ export class FindGymComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
+  mobileMenuOpen = false;
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+  }
+
   navigateToProfile(): void {
     this.router.navigate(['/profile']);
   }
@@ -100,6 +111,7 @@ export class FindGymComponent implements OnInit {
       name: this.searchQuery.trim() || undefined,
       city: this.selectedCity || undefined,
       minRating: this.selectedRating > 0 ? this.selectedRating : undefined,
+      maxCredits: this.selectedMaxCredits || undefined,
       address: this.address.trim() || undefined,
       amenities: this.selectedAmenities.length > 0 ? this.selectedAmenities : undefined,
     };

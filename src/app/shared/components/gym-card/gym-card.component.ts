@@ -10,6 +10,9 @@ export interface Gym {
   reviewCount: number;
   location: string;
   activities: string[];
+  city?: string;
+  address?: string;
+  visitCreditsCost?: number;
 }
 
 @Component({

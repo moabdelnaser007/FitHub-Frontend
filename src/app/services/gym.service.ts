@@ -46,6 +46,7 @@ export interface GymSearchFilters {
   name?: string;
   city?: string;
   minRating?: number;
+  maxCredits?: number;
   address?: string;
   amenities?: string[];
 }
@@ -97,19 +98,24 @@ export class GymService {
       map((gyms) => {
         let filteredGyms = gyms;
 
-        // Filter by name
+        // Filter by name (General Search: Name, Address, or City)
         if (filters.name && filters.name.trim()) {
           const searchTerm = filters.name.toLowerCase().trim();
-          filteredGyms = filteredGyms.filter((gym) => gym.name.toLowerCase().includes(searchTerm));
+          filteredGyms = filteredGyms.filter((gym) =>
+            gym.name.toLowerCase().includes(searchTerm) ||
+            (gym.address && gym.address.toLowerCase().includes(searchTerm)) ||
+            (gym.location && gym.location.toLowerCase().includes(searchTerm)) ||
+            (gym.city && gym.city.toLowerCase().includes(searchTerm))
+          );
         }
 
-        // Filter by city
+        // Filter by city (Specific Dropdown)
         if (filters.city && filters.city.trim()) {
           const cityTerm = filters.city.toLowerCase().trim();
           filteredGyms = filteredGyms.filter((gym) => gym.city?.toLowerCase().includes(cityTerm));
         }
 
-        // Filter by address
+        // Filter by address (Specific Filter if used)
         if (filters.address && filters.address.trim()) {
           const addressTerm = filters.address.toLowerCase().trim();
           filteredGyms = filteredGyms.filter(gym =>
@@ -117,11 +123,22 @@ export class GymService {
           );
         }
 
+        // Filter by max credits
+        if (filters.maxCredits && filters.maxCredits > 0) {
+          filteredGyms = filteredGyms.filter((gym) =>
+            gym.visitCreditsCost !== undefined && gym.visitCreditsCost <= filters.maxCredits!
+          );
+        }
+
         // Filter by amenities
         if (filters.amenities && filters.amenities.length > 0) {
           filteredGyms = filteredGyms.filter(gym => {
-            const gymAmenities = (gym.amenitiesAvailable || '').toLowerCase();
-            return filters.amenities!.every(a => gymAmenities.includes(a.toLowerCase()));
+            // Check if every selected amenity is present in gym.activities
+            return filters.amenities!.every(selectedAmenity =>
+              gym.activities && gym.activities.some(gymActivity =>
+                gymActivity.toLowerCase() === selectedAmenity.toLowerCase()
+              )
+            );
           });
         }
 

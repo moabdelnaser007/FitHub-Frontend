@@ -41,6 +41,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
+  mobileMenuOpen = false;
   private destroy$ = new Subject<void>();
 
   // Contact Form
@@ -142,5 +143,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     } else {
       alert('Please fill in all fields');
     }
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
   }
 }

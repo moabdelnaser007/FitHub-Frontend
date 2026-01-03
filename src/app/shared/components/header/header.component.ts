@@ -133,4 +133,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   goToHome(): void {
     this.router.navigate(['/']);
   }
+
+  mobileMenuOpen = false;
+
+  toggleMobileMenuBtn(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    this.cdr.markForCheck();
+  }
+
+  closeMobileMenuDrawer(): void {
+    this.mobileMenuOpen = false;
+    this.cdr.markForCheck();
+  }
 }

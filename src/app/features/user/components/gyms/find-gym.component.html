@@ -1,11 +1,15 @@
 <div class="find-gym-page">
   <header class="top-nav">
     <a class="brand" routerLink="/"> FitHub </a>
-    <nav class="nav-links">
+
+    <!-- Desktop Nav -->
+    <nav class="nav-links desktop-only">
       <a *ngFor="let link of navLinks" [routerLink]="link.isRoute ? link.href : null"
         [href]="link.isRoute ? null : link.href" (click)="handleNav(link, $event)">{{ link.label }}</a>
     </nav>
-    <div class="auth-actions">
+
+    <!-- Desktop Auth -->
+    <div class="auth-actions desktop-only">
       <ng-container *ngIf="!isLoggedIn">
         <button class="ghost" routerLink="/login">Log in</button>
         <button class="primary" routerLink="/register">Sign Up</button>
@@ -27,6 +31,56 @@
         </button>
       </ng-container>
     </div>
+
+    <!-- Mobile Hamburger -->
+    <button class="hamburger-btn mobile-only" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" [class.open]="mobileMenuOpen" (click)="closeMobileMenu()"></div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="mobile-menu-drawer" [class.open]="mobileMenuOpen">
+      <div class="mobile-menu-header">
+        <span class="brand">FitHub</span>
+        <button class="close-btn" (click)="closeMobileMenu()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="mobile-nav-links">
+        <a *ngFor="let link of navLinks" [routerLink]="link.isRoute ? link.href : null"
+          [href]="link.isRoute ? null : link.href" (click)="handleNav(link, $event); closeMobileMenu()">
+          {{ link.label }}
+        </a>
+      </nav>
+
+      <div class="mobile-auth-actions">
+        <ng-container *ngIf="!isLoggedIn">
+          <button class="ghost w-full" routerLink="/login" (click)="closeMobileMenu()">Log in</button>
+          <button class="primary w-full" routerLink="/register" (click)="closeMobileMenu()">Sign Up</button>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <button class="profile-btn-mobile" (click)="navigateToProfile(); closeMobileMenu()">
+            Profile
+          </button>
+          <button class="logout-btn-mobile" (click)="logout(); closeMobileMenu()">
+            Logout
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
   </header>
 
   <main class="page-main">
@@ -35,98 +89,79 @@
       <div class="content-header">
         <h1>Find a Gym</h1>
         <p class="subtitle">Search by gym, activity, or location</p>
+      </div>
 
-        <div class="search-filter-container filters-wrapper"
-          style="flex-wrap: wrap; display: flex; gap: 12px; align-items: flex-end;">
-          <!-- Search Bar (Name) -->
-          <div class="filter-group" style="flex: 2; min-width: 250px;">
-            <label class="filter-group-label">Gym Name</label>
-            <div class="search-bar">
-              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+      <!-- Filter Card -->
+      <div class="filter-card">
+        <!-- Top Row: Search, City, Rating -->
+        <div class="filter-row top-row">
+          <!-- Search -->
+          <div class="filter-group group-search">
+            <label class="label">Search</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
-              <input type="text" placeholder="Search by gym name..." [(ngModel)]="searchQuery"
-                (keyup.enter)="onSearch()" />
+              <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                placeholder="Search by gym name or address..." class="input-field" />
             </div>
           </div>
 
-          <!-- Address Filter -->
-          <div class="filter-group" style="flex: 1.5; min-width: 200px;">
-            <label class="filter-group-label">Address</label>
-            <input type="text" class="filter-input" placeholder="Address/Street" [(ngModel)]="address"
-              (input)="onFilterChange()" style="width: 100%;" />
-          </div>
-
-          <!-- City Filter -->
-          <div class="filter-group">
-            <label class="filter-group-label">City</label>
-            <select class="filter-dropdown" [(ngModel)]="selectedCity" (change)="onFilterChange()">
-              <option value="">All Cities</option>
-              <option value="Cairo">Cairo</option>
-              <option value="Giza">Giza</option>
-              <option value="Alexandria">Alexandria</option>
-              <option value="Shubra El Kheima">Shubra El Kheima</option>
-              <option value="Port Said">Port Said</option>
-              <option value="Suez">Suez</option>
-              <option value="El Mahalla El Kubra">El Mahalla El Kubra</option>
-              <option value="Luxor">Luxor</option>
-              <option value="Mansoura">Mansoura</option>
-              <option value="Tanta">Tanta</option>
-              <option value="Asyut">Asyut</option>
-              <option value="Ismailia">Ismailia</option>
-              <option value="Fayoum">Fayoum</option>
-              <option value="Zagazig">Zagazig</option>
-              <option value="Aswan">Aswan</option>
-              <option value="Damietta">Damietta</option>
-              <option value="Damanhur">Damanhur</option>
-              <option value="Minya">Minya</option>
-              <option value="Beni Suef">Beni Suef</option>
-              <option value="Qena">Qena</option>
-              <option value="Sohag">Sohag</option>
-              <option value="Hurghada">Hurghada</option>
-              <option value="6th of October">6th of October</option>
-              <option value="Shibin El Kom">Shibin El Kom</option>
-              <option value="Banha">Banha</option>
-              <option value="Kafr El Sheikh">Kafr El Sheikh</option>
-              <option value="Arish">Arish</option>
-              <option value="Mallawi">Mallawi</option>
-              <option value="10th of Ramadan">10th of Ramadan</option>
-              <option value="Bilbais">Bilbais</option>
-              <option value="Marsa Matruh">Marsa Matruh</option>
-              <option value="Idfu">Idfu</option>
-              <option value="Mit Ghamr">Mit Ghamr</option>
-              <option value="Al-Hamidiyya">Al-Hamidiyya</option>
-              <option value="Desouk">Desouk</option>
-              <option value="Qalyub">Qalyub</option>
-              <option value="Abu Kabir">Abu Kabir</option>
-              <option value="Kafr El Dawwar">Kafr El Dawwar</option>
-              <option value="Girga">Girga</option>
-              <option value="Akhmim">Akhmim</option>
-              <option value="Matareya">Matareya</option>
-            </select>
-          </div>
-
-          <!-- Rating Filter -->
-          <div class="filter-group">
-            <label class="filter-group-label">Rating</label>
-            <div class="star-filter">
-              <button *ngFor="let star of [1, 2, 3, 4, 5]" class="star-filter-btn"
-                [class.active]="star <= selectedRating" (click)="selectRating(star)" type="button"
-                [attr.aria-label]="'Filter by ' + star + ' stars'">
-                <svg class="star-filter-icon" viewBox="0 0 24 24">
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-              </button>
+          <!-- City -->
+          <div class="filter-group group-city">
+            <label class="label">City</label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="selectedCity" (change)="onFilterChange()" class="select-field">
+                <option value="">All Cities</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Giza">Giza</option>
+                <option value="Alexandria">Alexandria</option>
+                <!-- Add other cities as needed -->
+              </select>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
             </div>
           </div>
 
-          <!-- Amenities Filter -->
-          <div class="filter-group full-width">
-            <label class="filter-group-label">Amenities</label>
-            <div class="amenities-list">
-              <button type="button" *ngFor="let amenity of amenitiesList" class="amenity-chip"
-                [class.selected]="selectedAmenities.includes(amenity)" (click)="toggleAmenity(amenity)">
+          <!-- Rating -->
+          <div class="filter-group group-rating">
+            <label class="label">Min Rating</label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="selectedRating" (change)="onFilterChange()" class="select-field">
+                <option [ngValue]="0">Any Rating</option>
+                <option [ngValue]="4.5">4.5+</option>
+                <option [ngValue]="4.0">4.0+</option>
+                <option [ngValue]="3.5">3.5+</option>
+                <option [ngValue]="3.0">3.0+</option>
+              </select>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Max Credits -->
+          <div class="filter-group group-credits">
+            <label class="label">Max Credits</label>
+            <div class="input-wrapper">
+              <input type="number" [(ngModel)]="selectedMaxCredits" (change)="onFilterChange()" placeholder="Ex. 50"
+                min="0" class="input-field" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row: Amenities -->
+        <div class="filter-row bottom-row">
+          <div class="filter-group group-amenities">
+            <label class="label">Amenities:</label>
+            <div class="amenities-chips">
+              <button *ngFor="let amenity of amenitiesList" class="chip"
+                [class.active]="selectedAmenities.includes(amenity)" (click)="toggleAmenity(amenity)">
                 {{ amenity }}
               </button>
             </div>

@@ -1,11 +1,15 @@
 <div class="page" id="top">
   <header class="top-nav">
     <a class="brand" href="#top"> FitHub </a>
-    <nav class="nav-links">
+
+    <!-- Desktop Navigation -->
+    <nav class="nav-links desktop-only">
       <a *ngFor="let link of navLinks" [routerLink]="link.isRoute ? link.href : null"
         [href]="link.isRoute ? null : link.href" (click)="handleNav(link, $event)">{{ link.label }}</a>
     </nav>
-    <div class="auth-actions">
+
+    <!-- Desktop Auth Actions -->
+    <div class="auth-actions desktop-only">
       <ng-container *ngIf="!isLoggedIn">
         <button class="ghost" routerLink="/login">Log in</button>
         <button class="primary" routerLink="/register">Sign Up</button>
@@ -26,6 +30,55 @@
           </svg>
         </button>
       </ng-container>
+    </div>
+
+    <!-- Mobile Hamburger Toggle -->
+    <button class="hamburger-btn mobile-only" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" [class.open]="mobileMenuOpen" (click)="closeMobileMenu()"></div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="mobile-menu-drawer" [class.open]="mobileMenuOpen">
+      <div class="mobile-menu-header">
+        <span class="brand">FitHub</span>
+        <button class="close-btn" (click)="closeMobileMenu()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="mobile-nav-links">
+        <a *ngFor="let link of navLinks" [routerLink]="link.isRoute ? link.href : null"
+          [href]="link.isRoute ? null : link.href" (click)="handleNav(link, $event); closeMobileMenu()">
+          {{ link.label }}
+        </a>
+      </nav>
+
+      <div class="mobile-auth-actions">
+        <ng-container *ngIf="!isLoggedIn">
+          <button class="ghost w-full" routerLink="/login" (click)="closeMobileMenu()">Log in</button>
+          <button class="primary w-full" routerLink="/register" (click)="closeMobileMenu()">Sign Up</button>
+        </ng-container>
+        <ng-container *ngIf="isLoggedIn">
+          <button class="profile-btn-mobile" (click)="navigateToProfile(); closeMobileMenu()">
+            Profile
+          </button>
+          <button class="logout-btn-mobile" (click)="logout(); closeMobileMenu()">
+            Logout
+          </button>
+        </ng-container>
+      </div>
     </div>
   </header>
 
