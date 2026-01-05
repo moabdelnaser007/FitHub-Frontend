@@ -31,7 +31,7 @@ export class FindGymComponent implements OnInit {
     'Qena', 'North Sinai', 'Sohag'
   ].sort();
 
-  amenitiesList = ['Locker', 'Shower', 'Air Conditioning', 'Wifi', 'Parking', 'Pool', 'Sauna'];
+  amenitiesList = ['Locker', 'Shower', 'AirConditioning', 'Wifi', 'Parking', 'SwimmingPool', 'Sauna'];
   selectedAmenities: string[] = [];
 
   currentFilters: GymSearchFilters = {};
