@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, throwError, of, forkJoin } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface GymImage {
@@ -36,10 +36,11 @@ export interface GymApiResponse<T> {
 export interface SearchGymResponse {
   id: number;
   name: string;
-  image: string | null;
   address: string;
+  city: string;
   rating: number;
-  amenities: string[];
+  visitCreditsCost: number;
+  amenities: string;
 }
 
 export interface GymSearchFilters {
@@ -93,61 +94,87 @@ export class GymService {
   }
 
   searchGyms(filters: GymSearchFilters): Observable<Gym[]> {
-    // Backend search API doesn't return images, so we fetch all branches and filter client-side
-    return this.getAllActiveBranches().pipe(
-      map((gyms) => {
-        let filteredGyms = gyms;
+    const buildParams = (f: GymSearchFilters, overrideKey?: 'Name' | 'Address'): HttpParams => {
+      let params = new HttpParams();
+      // If overrideKey is provided, we only set that specific filter from the generic search term
+      if (overrideKey === 'Name' && f.name) params = params.set('Name', f.name);
+      if (overrideKey === 'Address' && f.address) params = params.set('Address', f.address);
 
-        // Filter by name (General Search: Name, Address, or City)
-        if (filters.name && filters.name.trim()) {
-          const searchTerm = filters.name.toLowerCase().trim();
-          filteredGyms = filteredGyms.filter((gym) =>
-            gym.name.toLowerCase().includes(searchTerm) ||
-            (gym.address && gym.address.toLowerCase().includes(searchTerm)) ||
-            (gym.location && gym.location.toLowerCase().includes(searchTerm)) ||
-            (gym.city && gym.city.toLowerCase().includes(searchTerm))
-          );
-        }
+      // If no override, behave normally (for specific filters)
+      if (!overrideKey) {
+        if (f.name) params = params.set('Name', f.name);
+        if (f.address) params = params.set('Address', f.address);
+      }
 
-        // Filter by city (Specific Dropdown)
-        if (filters.city && filters.city.trim()) {
-          const cityTerm = filters.city.toLowerCase().trim();
-          filteredGyms = filteredGyms.filter((gym) => gym.city?.toLowerCase().includes(cityTerm));
-        }
+      // Set other common filters
+      if (f.city) params = params.set('City', f.city);
+      if (f.minRating) params = params.set('MinRating', f.minRating);
+      if (f.maxCredits) params = params.set('MaxVisitCredits', f.maxCredits); // Ensure property matches interface
 
-        // Filter by address (Specific Filter if used)
-        if (filters.address && filters.address.trim()) {
-          const addressTerm = filters.address.toLowerCase().trim();
-          filteredGyms = filteredGyms.filter(gym =>
-            (gym.address && gym.address.toLowerCase().includes(addressTerm))
-          );
-        }
+      if (f.amenities && f.amenities.length > 0) {
+        f.amenities.forEach(amenity => {
+          params = params.append('Amenities', amenity);
+        });
+      }
+      return params;
+    };
 
-        // Filter by max credits
-        if (filters.maxCredits && filters.maxCredits > 0) {
-          filteredGyms = filteredGyms.filter((gym) =>
-            gym.visitCreditsCost !== undefined && gym.visitCreditsCost <= filters.maxCredits!
-          );
-        }
+    // Check if this is a "Generic Search" where name and address are identical (set by component)
+    const isGenericSearch = filters.name && filters.address && filters.name === filters.address;
 
-        // Filter by amenities
-        if (filters.amenities && filters.amenities.length > 0) {
-          filteredGyms = filteredGyms.filter(gym => {
-            // Check if every selected amenity is present in gym.activities
-            return filters.amenities!.every(selectedAmenity =>
-              gym.activities && gym.activities.some(gymActivity =>
-                gymActivity.toLowerCase() === selectedAmenity.toLowerCase()
-              )
-            );
-          });
-        }
+    let searchObs: Observable<SearchGymResponse[]>;
 
-        // Filter by minimum rating
-        if (filters.minRating !== undefined && filters.minRating > 0) {
-          filteredGyms = filteredGyms.filter((gym) => gym.rating >= filters.minRating!);
-        }
+    if (isGenericSearch) {
+      // Create two independent requests: one for Name matching, one for Address matching
+      const paramsName = buildParams(filters, 'Name');
+      const paramsAddress = buildParams(filters, 'Address');
 
-        return filteredGyms;
+      const reqName = this.http.get<GymApiResponse<SearchGymResponse[]>>(`${environment.apiBaseUrl}/gyms`, { params: paramsName })
+        .pipe(map(res => res.isSuccess && res.data ? res.data : []));
+
+      const reqAddress = this.http.get<GymApiResponse<SearchGymResponse[]>>(`${environment.apiBaseUrl}/gyms`, { params: paramsAddress })
+        .pipe(map(res => res.isSuccess && res.data ? res.data : []));
+
+      // Combine and deduplicate
+      searchObs = forkJoin([reqName, reqAddress]).pipe(
+        map(([resultsName, resultsAddress]) => {
+          const combined = [...resultsName, ...resultsAddress];
+          // Deduplicate by ID
+          const unique = new Map();
+          combined.forEach(item => unique.set(item.id, item));
+          return Array.from(unique.values());
+        })
+      );
+    } else {
+      // Standard specific filtering (AND logic)
+      const params = buildParams(filters);
+      searchObs = this.http.get<GymApiResponse<SearchGymResponse[]>>(`${environment.apiBaseUrl}/gyms`, { params })
+        .pipe(map(res => res.isSuccess && res.data ? res.data : []));
+    }
+
+    return searchObs.pipe(
+      map(data => data.map(item => this.transformSearchResponseToGym(item))),
+      // Enrich with images by fetching details for each gym
+      switchMap((gyms: Gym[]) => {
+        if (gyms.length === 0) return of([]);
+
+        const detailRequests = gyms.map(gym =>
+          this.getActiveBranchById(Number(gym.id)).pipe(
+            map(branch => {
+              if (branch.images && branch.images.length > 0) {
+                gym.image = this.getImageUrl(branch.branchName, branch.images[0].imageName);
+              }
+              return gym;
+            }),
+            catchError(() => of(gym))
+          )
+        );
+
+        return forkJoin(detailRequests);
+      }),
+      catchError(error => {
+        console.error('Search error', error);
+        return of([]);
       })
     );
   }
@@ -160,7 +187,6 @@ export class GymService {
       .pipe(
         map((response) => {
           if (response.isSuccess && response.data) {
-            // Transform backend branches to Gym interface
             return response.data.map((branch) => this.transformBranchToGym(branch));
           }
           throw new Error(response.message || 'Failed to fetch gyms');
@@ -172,7 +198,6 @@ export class GymService {
       );
   }
 
-  // Fetch active branch details by ID for gym details page
   getActiveBranchById(branchId: number): Observable<Branch> {
     return this.http
       .get<GymApiResponse<Branch>>(`${this.apiUrl}/GetActiveBranchById/${branchId}`, {
@@ -219,8 +244,8 @@ export class GymService {
         branch.images && branch.images.length > 0
           ? this.getImageUrl(branch.branchName, branch.images[0].imageName)
           : 'assets/default-gym.jpg',
-      rating: 0, // Default rating - update when backend provides it
-      reviewCount: 0, // Default - update when backend provides it
+      rating: 0,
+      reviewCount: 0,
       location: `${branch.address ? branch.address + ', ' : ''}${branch.city}`,
       activities: this.parseAmenities(branch.amenitiesAvailable),
       branchName: branch.branchName,
@@ -239,11 +264,7 @@ export class GymService {
   }
 
   getImageUrl(branchName: string, imageName: string): string {
-    // Backend stores images at: wwwroot/images/Gym/{BranchName}/{ImageName}
-    // We construct the URL to serve from backend
     if (!branchName || !imageName) return 'assets/default-gym.jpg';
-
-    // URL format: http://localhost:5024/images/Gym/Oxygen/569279a6...
     return `http://localhost:5024/images/Gym/${encodeURIComponent(
       branchName
     )}/${encodeURIComponent(imageName)}`;
@@ -261,11 +282,13 @@ export class GymService {
     return {
       id: searchResult.id.toString(),
       name: searchResult.name,
-      image: searchResult.image || 'assets/default-gym.jpg',
+      image: 'assets/default-gym.jpg',
       rating: searchResult.rating || 0,
       reviewCount: 0,
       location: searchResult.address || '',
-      activities: searchResult.amenities || [],
+      activities: this.parseAmenities(searchResult.amenities),
+      city: searchResult.city,
+      visitCreditsCost: searchResult.visitCreditsCost
     };
   }
 }

@@ -13,50 +13,29 @@
   <!-- Gyms Display -->
   <div *ngIf="!isLoading && gyms.length > 0">
     <div class="result-count">
-      <p>Showing {{ gyms.length }} results</p>
+      <p>Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, gyms.length) }} of {{
+        gyms.length }} results</p>
     </div>
 
     <div class="gym-grid">
-      <app-gym-card *ngFor="let gym of gyms" [gym]="gym" (rate)="openReview(gym)"></app-gym-card>
+      <app-gym-card *ngFor="let gym of paginatedGyms" [gym]="gym" (rate)="openReview(gym)"></app-gym-card>
     </div>
 
     <div class="pagination" *ngIf="totalPages > 1">
-      <button
-        class="page-btn"
-        [disabled]="currentPage === 1"
-        (click)="goToPage(currentPage - 1)"
-        aria-label="Previous page"
-      >
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)"
+        aria-label="Previous page">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
         </svg>
       </button>
 
-      <button
-        *ngFor="let page of pages"
-        class="page-btn"
-        [class.active]="page === currentPage"
-        (click)="goToPage(page)"
-      >
+      <button *ngFor="let page of pages" class="page-btn" [class.active]="page === currentPage"
+        (click)="goToPage(page)">
         {{ page }}
       </button>
 
-      <button class="page-btn" disabled>...</button>
-
-      <button
-        class="page-btn"
-        [class.active]="currentPage === totalPages"
-        (click)="goToPage(totalPages)"
-      >
-        {{ totalPages }}
-      </button>
-
-      <button
-        class="page-btn"
-        [disabled]="currentPage === totalPages"
-        (click)="goToPage(currentPage + 1)"
-        aria-label="Next page"
-      >
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)"
+        aria-label="Next page">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
         </svg>

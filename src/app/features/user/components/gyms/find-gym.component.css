@@ -187,6 +187,7 @@
 /* Content Header */
 .content-header {
   margin-bottom: 0;
+  text-align: center;
 }
 
 .content-header h1 {

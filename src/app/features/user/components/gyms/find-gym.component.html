@@ -115,10 +115,7 @@
             <div class="select-wrapper">
               <select [(ngModel)]="selectedCity" (change)="onFilterChange()" class="select-field">
                 <option value="">All Cities</option>
-                <option value="Cairo">Cairo</option>
-                <option value="Giza">Giza</option>
-                <option value="Alexandria">Alexandria</option>
-                <!-- Add other cities as needed -->
+                <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
               </select>
               <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2">

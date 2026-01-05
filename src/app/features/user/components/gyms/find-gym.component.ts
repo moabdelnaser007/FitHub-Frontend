@@ -23,6 +23,14 @@ export class FindGymComponent implements OnInit {
   selectedMaxCredits: number | null = null;
   address = '';
 
+  cities = [
+    'Cairo', 'Giza', 'Alexandria', 'Dakahlia', 'Red Sea', 'Beheira', 'Fayoum',
+    'Gharbiya', 'Ismailia', 'Menofia', 'Minya', 'Qaliubiya', 'New Valley',
+    'Suez', 'Aswan', 'Assiut', 'Beni Suef', 'Port Said', 'Damietta',
+    'Sharkia', 'South Sinai', 'Kafr Al Sheikh', 'Matrouh', 'Luxor',
+    'Qena', 'North Sinai', 'Sohag'
+  ].sort();
+
   amenitiesList = ['Locker', 'Shower', 'Air Conditioning', 'Wifi', 'Parking', 'Pool', 'Sauna'];
   selectedAmenities: string[] = [];
 
@@ -107,12 +115,13 @@ export class FindGymComponent implements OnInit {
 
   // Apply all filters together
   private applyAllFilters(): void {
+    const term = this.searchQuery.trim();
     this.currentFilters = {
-      name: this.searchQuery.trim() || undefined,
+      name: term || undefined, // Search name
       city: this.selectedCity || undefined,
       minRating: this.selectedRating > 0 ? this.selectedRating : undefined,
       maxCredits: this.selectedMaxCredits || undefined,
-      address: this.address.trim() || undefined,
+      address: term || undefined, // Search address with same term
       amenities: this.selectedAmenities.length > 0 ? this.selectedAmenities : undefined,
     };
   }
