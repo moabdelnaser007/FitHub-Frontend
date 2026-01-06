@@ -322,7 +322,7 @@ export class GymDetailComponent implements OnInit {
     this.showModal = false;
     if (this.modalType === 'success') {
       // Navigate to subscriptions page or booking history after success
-      this.router.navigate(['/booking-history']);
+      this.router.navigate(['/subscriptions']);
     }
   }
 
