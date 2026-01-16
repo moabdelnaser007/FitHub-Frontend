@@ -38,13 +38,13 @@ interface GymApplication {
   selector: 'app-gym-owner-details',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './gym-owner-Application-details.component.html',
-  styleUrls: ['./gym-owner-Application-details.component.css']
+  templateUrl: './gym-owner-application-details.component.html',
+  styleUrls: ['./gym-owner-application-details.component.css']
 })
 export class GymOwnerDetailsComponent implements OnInit {
   gymId: string = '';
   isLoading: boolean = true;
-  
+
   ownerInfo: OwnerInfo = {
     fullName: '',
     email: '',
@@ -166,27 +166,27 @@ export class GymOwnerDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // جلب الـ ID من الـ URL
     this.gymId = this.route.snapshot.params['id'];
     console.log('Loading gym application with ID:', this.gymId);
-    
+
     // تحميل البيانات
     this.loadGymData(this.gymId);
   }
 
   loadGymData(id: string): void {
     this.isLoading = true;
-    
+
     // هنا هتستبدلي بـ API call
     // this.gymService.getGymApplicationById(id).subscribe(data => { ... });
-    
+
     // Mock data للتجربة
     setTimeout(() => {
       const gymData = this.mockGymApplications.find(gym => gym.id === id);
-      
+
       if (gymData) {
         this.ownerInfo = gymData.ownerInfo;
         this.businessInfo = gymData.businessInfo;
@@ -197,7 +197,7 @@ export class GymOwnerDetailsComponent implements OnInit {
         alert('Gym application not found!');
         this.router.navigate(['/admin/dashboard']);
       }
-      
+
       this.isLoading = false;
     }, 500); // Simulate API delay
   }
@@ -215,7 +215,7 @@ export class GymOwnerDetailsComponent implements OnInit {
     console.log('Approving gym:', this.gymId);
     // هنا تضيفي API call للـ approval
     // this.gymService.approveGym(this.gymId).subscribe(() => { ... });
-    
+
     this.ownerInfo.status = 'Approved';
     alert('Gym application approved!');
   }
@@ -224,7 +224,7 @@ export class GymOwnerDetailsComponent implements OnInit {
     console.log('Denying gym:', this.gymId);
     // هنا تضيفي API call للـ denial
     // this.gymService.denyGym(this.gymId).subscribe(() => { ... });
-    
+
     this.ownerInfo.status = 'Denied';
     alert('Gym application denied!');
   }
@@ -238,7 +238,7 @@ export class GymOwnerDetailsComponent implements OnInit {
     console.log('To gym:', this.gymId);
     // هنا تضيفي API call لإرسال الإيميل
     // this.gymService.sendEmail(this.gymId, this.adminNotes).subscribe(() => { ... });
-    
+
     alert('Email sent successfully!');
     this.adminNotes = '';
   }
