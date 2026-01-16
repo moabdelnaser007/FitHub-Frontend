@@ -38,7 +38,7 @@ export class SubscriptionService {
     }
 
     getActiveSubscriptions(branchId: number): Observable<ActiveSubscription[]> {
-        // Note: API endpoint specified in prompt: http://localhost:24357/api/subscriptions/GetActiveSubscriptions?branchId=7
+
         return this.http.get<SubscriptionApiResponse>(
             `${this.apiUrl}/GetActiveSubscriptions?branchId=${branchId}`,
             { headers: this.getHeaders() }
