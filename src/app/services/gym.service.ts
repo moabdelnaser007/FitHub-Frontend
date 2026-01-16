@@ -265,7 +265,7 @@ export class GymService {
 
   getImageUrl(branchName: string, imageName: string): string {
     if (!branchName || !imageName) return 'assets/default-gym.jpg';
-    return `http://localhost:5024/images/Gym/${encodeURIComponent(
+    return `${environment.apiBaseUrl}/images/Gym/${encodeURIComponent(
       branchName
     )}/${encodeURIComponent(imageName)}`;
   }

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BranchService, BranchData } from '../../../../services/branch.service';
+import { environment } from '../../../../../environments/environment';
 
 interface BranchInfo {
   name: string;
@@ -144,7 +145,7 @@ export class BranchDetailsComponent implements OnInit {
 
   getImageUrl(imageName: string): string {
     if (!this.branchInfo.name || !imageName) return 'assets/images/placeholder-gym.jpg';
-    return `http://localhost:5024/images/Gym/${encodeURIComponent(this.branchInfo.name)}/${encodeURIComponent(imageName)}`;
+    return `${environment.apiBaseUrl}/images/Gym/${encodeURIComponent(this.branchInfo.name)}/${encodeURIComponent(imageName)}`;
   }
 
   deleteImage(imageName: string): void {
