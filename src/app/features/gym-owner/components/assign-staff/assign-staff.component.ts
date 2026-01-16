@@ -12,7 +12,7 @@ import { StaffService, StaffMember } from '../../../../services/staff.service';
   styleUrls: ['./assign-staff.component.css']
 })
 export class AssignUnassignedStaffComponent implements OnInit {
-  
+
   branchId: number = 0;
   isLoading: boolean = true;
   isAssigning: boolean = false;
@@ -24,27 +24,27 @@ export class AssignUnassignedStaffComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private staffService: StaffService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const branchId = this.route.snapshot.params['id'];
     this.branchId = parseInt(branchId);
     console.log('🔵 Assign Staff to Branch ID:', this.branchId);
-    
+
     this.loadUnassignedStaff();
   }
 
   loadUnassignedStaff(): void {
     this.isLoading = true;
-    
+
     // جيب كل الـ Staff
     this.staffService.getAllBranchStaff().subscribe({
       next: (allStaff) => {
         console.log('✅ All staff loaded:', allStaff);
-        
+
         // فلتر الـ Staff اللي مالهمش branchId (unassigned)
         this.unassignedStaff = allStaff.filter(staff => !staff.branchId || staff.branchId === 0);
-        
+
         console.log('✅ Unassigned staff:', this.unassignedStaff);
         this.isLoading = false;
       },
@@ -58,7 +58,7 @@ export class AssignUnassignedStaffComponent implements OnInit {
 
   toggleStaffSelection(staffId: number): void {
     const index = this.selectedStaffIds.indexOf(staffId);
-    
+
     if (index > -1) {
       // Remove from selection
       this.selectedStaffIds.splice(index, 1);
@@ -66,10 +66,10 @@ export class AssignUnassignedStaffComponent implements OnInit {
       // Add to selection
       this.selectedStaffIds.push(staffId);
     }
-    
+
     // Update select all checkbox
     this.selectAll = this.selectedStaffIds.length === this.unassignedStaff.length;
-    
+
     console.log('Selected staff IDs:', this.selectedStaffIds);
   }
 
@@ -85,7 +85,7 @@ export class AssignUnassignedStaffComponent implements OnInit {
       // Deselect all
       this.selectedStaffIds = [];
     }
-    
+
     console.log('Select all toggled:', this.selectedStaffIds);
   }
 
@@ -129,7 +129,7 @@ export class AssignUnassignedStaffComponent implements OnInit {
     // Wait for all assignments to complete
     Promise.all(assignPromises).then(() => {
       this.isAssigning = false;
-      
+
       if (successCount > 0) {
         alert(`Successfully assigned ${successCount} staff member(s)!`);
         this.router.navigate(['/gym-owner/manage-staff', this.branchId]);
