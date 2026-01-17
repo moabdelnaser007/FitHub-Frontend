@@ -1,8 +1,8 @@
-// gym-owner-details.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GymOwnersService, PendingOwner } from '../../../../services/gym-owners.service';
 
 interface Document {
   name: string;
@@ -27,13 +27,6 @@ interface BusinessInfo {
   documents: Document[];
 }
 
-interface GymApplication {
-  id: string;
-  ownerInfo: OwnerInfo;
-  businessInfo: BusinessInfo;
-  submissionDate: string;
-}
-
 @Component({
   selector: 'app-gym-owner-details',
   standalone: true,
@@ -54,11 +47,11 @@ export class GymOwnerDetailsComponent implements OnInit {
   };
 
   businessInfo: BusinessInfo = {
-    gymName: '',
-    gymType: '',
+    gymName: 'Pending Info',
+    gymType: 'General',
     address: '',
     city: '',
-    country: '',
+    country: 'Egypt',
     website: '',
     documents: []
   };
@@ -66,140 +59,67 @@ export class GymOwnerDetailsComponent implements OnInit {
   submissionDate: string = '';
   adminNotes: string = '';
 
-  // Mock data للتجربة - هتستبدليها بـ API call
-  private mockGymApplications: GymApplication[] = [
-    {
-      id: '1',
-      submissionDate: '2023-10-26',
-      ownerInfo: {
-        fullName: 'John Doe',
-        email: 'john.doe@powerhouse.com',
-        phone: '+1 (234) 567-8901',
-        creationDate: '2023-10-26',
-        status: 'Pending'
-      },
-      businessInfo: {
-        gymName: 'Powerhouse Fitness',
-        gymType: 'Strength & Conditioning',
-        address: '123 Muscle Ave, Fitville',
-        city: 'New York',
-        country: 'USA',
-        website: 'www.powerhousefitness.com',
-        documents: [
-          { name: 'business_license.pdf', url: '#' },
-          { name: 'commercial_registration.pdf', url: '#' },
-          { name: 'ownership_contract.pdf', url: '#' }
-        ]
-      }
-    },
-    {
-      id: '2',
-      submissionDate: '2023-10-25',
-      ownerInfo: {
-        fullName: 'Jane Smith',
-        email: 'jane.smith@irontemple.com',
-        phone: '+1 (555) 123-4567',
-        creationDate: '2023-10-25',
-        status: 'Pending'
-      },
-      businessInfo: {
-        gymName: 'Iron Temple Gym',
-        gymType: 'Bodybuilding & CrossFit',
-        address: '456 Steel Street',
-        city: 'Los Angeles',
-        country: 'USA',
-        website: 'www.irontemple.com',
-        documents: [
-          { name: 'business_license.pdf', url: '#' },
-          { name: 'tax_certificate.pdf', url: '#' }
-        ]
-      }
-    },
-    {
-      id: '3',
-      submissionDate: '2023-10-24',
-      ownerInfo: {
-        fullName: 'Mike Johnson',
-        email: 'mike@flexappeal.com',
-        phone: '+1 (777) 888-9999',
-        creationDate: '2023-10-24',
-        status: 'Pending'
-      },
-      businessInfo: {
-        gymName: 'Flex Appeal',
-        gymType: 'Fitness & Yoga',
-        address: '789 Flex Boulevard',
-        city: 'Chicago',
-        country: 'USA',
-        website: 'www.flexappeal.com',
-        documents: [
-          { name: 'business_license.pdf', url: '#' }
-        ]
-      }
-    },
-    {
-      id: '4',
-      submissionDate: '2023-10-23',
-      ownerInfo: {
-        fullName: 'Emily Chen',
-        email: 'emily@zenithwellness.com',
-        phone: '+1 (999) 111-2222',
-        creationDate: '2023-10-23',
-        status: 'Pending'
-      },
-      businessInfo: {
-        gymName: 'Zenith Wellness',
-        gymType: 'Wellness & Recovery',
-        address: '321 Wellness Way',
-        city: 'San Francisco',
-        country: 'USA',
-        website: 'www.zenithwellness.com',
-        documents: [
-          { name: 'business_license.pdf', url: '#' },
-          { name: 'health_permit.pdf', url: '#' },
-          { name: 'insurance_certificate.pdf', url: '#' }
-        ]
-      }
-    }
-  ];
-
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private gymOwnersService: GymOwnersService
   ) { }
 
   ngOnInit(): void {
-    // جلب الـ ID من الـ URL
+    // Get ID from URL
     this.gymId = this.route.snapshot.params['id'];
     console.log('Loading gym application with ID:', this.gymId);
 
-    // تحميل البيانات
+    // Load Data
     this.loadGymData(this.gymId);
   }
 
   loadGymData(id: string): void {
+    const numericId = Number(id);
+    if (!numericId) {
+      this.handleError('Invalid Gym ID');
+      return;
+    }
+
     this.isLoading = true;
 
-    // هنا هتستبدلي بـ API call
-    // this.gymService.getGymApplicationById(id).subscribe(data => { ... });
+    this.gymOwnersService.getOwnerById(numericId).subscribe({
+      next: (owner: PendingOwner) => {
+        // Map API response to Component Interface
+        this.ownerInfo = {
+          fullName: owner.fullName,
+          email: owner.email,
+          phone: owner.phone,
+          creationDate: new Date(owner.createdAt).toLocaleDateString(),
+          status: 'Pending'
+        };
 
-    // Mock data للتجربة
-    setTimeout(() => {
-      const gymData = this.mockGymApplications.find(gym => gym.id === id);
+        this.businessInfo = {
+          gymName: 'N/A',
+          gymType: 'General',
+          address: owner.city, // Using city as address placeholder as we might not have full address in PendingOwner list
+          city: owner.city,
+          country: 'Egypt',
+          website: '',
+          documents: []
+        };
 
-      if (gymData) {
-        this.ownerInfo = gymData.ownerInfo;
-        this.businessInfo = gymData.businessInfo;
-        this.submissionDate = gymData.submissionDate;
-        console.log('Loaded gym data:', gymData);
-      } else {
-        console.error('Gym not found with ID:', id);
-        alert('Gym application not found!');
-        this.router.navigate(['/admin/dashboard']);
+        this.submissionDate = new Date(owner.createdAt).toLocaleDateString();
+        this.isLoading = false;
+        console.log('✅ Loaded owner details:', owner);
+      },
+      error: (err) => {
+        console.error('Failed to load owner', err);
+        // Fallback to mock if API fails (optional, but better to show error in production)
+        this.handleError('Gym application not found or error loading data');
       }
+    });
+  }
 
-      this.isLoading = false;
-    }, 500); // Simulate API delay
+  handleError(msg: string): void {
+    alert(msg);
+    this.router.navigate(['/admin/dashboard']);
+    this.isLoading = false;
   }
 
   getStatusClass(status: string): string {
@@ -212,21 +132,45 @@ export class GymOwnerDetailsComponent implements OnInit {
   }
 
   onApprove(): void {
-    console.log('Approving gym:', this.gymId);
-    // هنا تضيفي API call للـ approval
-    // this.gymService.approveGym(this.gymId).subscribe(() => { ... });
+    if (!confirm('Are you sure you want to approve this application?')) return;
 
-    this.ownerInfo.status = 'Approved';
-    alert('Gym application approved!');
+    const numericId = Number(this.gymId);
+    this.gymOwnersService.approveOwner(numericId).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.ownerInfo.status = 'Approved';
+          alert('Gym application approved successfully!');
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          alert('Failed to approve: ' + res.message);
+        }
+      },
+      error: (err) => {
+        console.error('Approve error', err);
+        alert('Error approving application');
+      }
+    });
   }
 
   onDeny(): void {
-    console.log('Denying gym:', this.gymId);
-    // هنا تضيفي API call للـ denial
-    // this.gymService.denyGym(this.gymId).subscribe(() => { ... });
+    if (!confirm('Are you sure you want to deny this application?')) return;
 
-    this.ownerInfo.status = 'Denied';
-    alert('Gym application denied!');
+    const numericId = Number(this.gymId);
+    this.gymOwnersService.rejectOwner(numericId).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.ownerInfo.status = 'Denied';
+          alert('Gym application denied.');
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          alert('Failed to deny: ' + res.message);
+        }
+      },
+      error: (err) => {
+        console.error('Deny error', err);
+        alert('Error denying application');
+      }
+    });
   }
 
   onBackToDashboard(): void {
@@ -235,19 +179,11 @@ export class GymOwnerDetailsComponent implements OnInit {
 
   onSendEmail(): void {
     console.log('Sending email with notes:', this.adminNotes);
-    console.log('To gym:', this.gymId);
-    // هنا تضيفي API call لإرسال الإيميل
-    // this.gymService.sendEmail(this.gymId, this.adminNotes).subscribe(() => { ... });
-
-    alert('Email sent successfully!');
+    alert('Email feature pending backend integration.');
     this.adminNotes = '';
   }
 
   onViewDocument(document: Document): void {
-    console.log('Viewing document:', document.name);
-    console.log('For gym:', this.gymId);
-    // هنا تفتحي الـ document في tab جديد
     window.open(document.url, '_blank');
   }
 }
-

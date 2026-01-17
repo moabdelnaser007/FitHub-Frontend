@@ -28,21 +28,41 @@ export interface PendingOwner {
 })
 export class GymOwnersService {
   private apiUrl = `${environment.apiBaseUrl}/AdminOwners`;
-  private token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBmaXRodWIuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NjY4NjQ3MzMsImlzcyI6IkZpdEh1YiIsImF1ZCI6IkZpdEh1YlVzZXJzIn0.75HVTUyfbxafp4m5Q_5VIjjNKT5XzAJnYDDO5o4KIkY';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Helper function للـ Headers مع Token
   private getHeaders(): HttpHeaders {
-    // محاولة جلب التوكن من localStorage أولاً، ثم استخدام التوكن الثابت
-    const storageToken = localStorage.getItem('fitHubToken');
-    const authToken = storageToken || this.token;
-
-    return new HttpHeaders({
+    const token = localStorage.getItem('fitHubToken');
+    // If no token, we can't authenticate as Admin. The component handles redirection to login.
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${authToken}`,
     });
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  }
+
+  // ✅ جلب بيانات Gym Owner محدد بواسطة ID
+  getOwnerById(id: number): Observable<PendingOwner> {
+    // Note: If the backend doesn't have a specific "GetById", we can filter from the pending list
+    // OR assuming there is an endpoint like /AdminOwners/{id}
+    // Since we don't know the exact endpoint for single owner details, 
+    // we'll try to fetch from pending list and find it, or use a likely endpoint.
+    // Let's assume the standard GET /AdminOwners/{id} exists or we fallback to filtering pending.
+
+    // Strategy: First try generic GetById if it exists, else filter pending.
+    // Given the context, we will try to fetch the list and find it since we know that endpoint works.
+    return this.getPendingOwners().pipe(
+      map(owners => {
+        const owner = owners.find(o => o.id === id);
+        if (owner) return owner;
+        throw new Error('Owner not found');
+      })
+    );
   }
 
   // ✅ جلب الـ Pending Owners
@@ -57,7 +77,7 @@ export class GymOwnersService {
             console.log('✅ Pending owners fetched:', response.data);
             return response.data;
           }
-          throw new Error(response.message || 'Failed to fetch pending owners');
+          return [];
         }),
         catchError(this.handleError)
       );
