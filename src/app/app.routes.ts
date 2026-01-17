@@ -71,7 +71,12 @@ import { VisitLogComponent } from './features/staff/components/visit-log/visit-l
 import { StaffProfileComponent } from './features/staff/components/profile/profile.component';
 import { BranchImagesComponent } from './features/gym-owner/components/branch-images/branch-images.component';
 
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+
 export const routes: Routes = [
+  { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -100,6 +105,8 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: DashboardLayoutComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Admin'] },
     children: [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'gym-owner-application/:id', component: GymOwnerDetailsComponent },
@@ -121,6 +128,8 @@ export const routes: Routes = [
   },
   {
     path: 'gym-owner', component: GymOwnerLayoutComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['GymOwner'] },
     children: [
       { path: 'dashboard', component: GymOwnerDashboardComponent },
       { path: 'manage-branches', component: BranchesComponent },
@@ -148,6 +157,8 @@ export const routes: Routes = [
   {
     path: 'staff',
     component: StaffLayoutComponent,
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['Staff'] },
     children: [
       { path: 'check-in', component: CheckInComponent },
       { path: 'visit-log', component: VisitLogComponent },
