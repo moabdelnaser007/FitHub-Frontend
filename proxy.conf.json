@@ -1,0 +1,8 @@
+{
+    "/api": {
+        "target": "http://fithub-api.runasp.net",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

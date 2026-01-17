@@ -54,7 +54,8 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "development": {
-              "buildTarget": "FitHub:build:development"
+              "buildTarget": "FitHub:build:development",
+              "proxyConfig": "proxy.conf.json"
             },
             "production": {
               "buildTarget": "FitHub:build:production"
