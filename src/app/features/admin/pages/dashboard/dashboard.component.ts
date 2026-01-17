@@ -97,7 +97,7 @@ export class AdminDashboardComponent implements OnInit {
 
         // ✅ تحديث Pending Gym Owners
         this.pendingGyms = results.pendingOwners.map(owner => ({
-          id: owner.id.toString(),
+          id: (owner.userId || owner.id).toString(), // Prefer userId if available (fixes mismatch)
           name: owner.fullName,
           owner: owner.fullName,
           email: owner.email,
@@ -130,7 +130,7 @@ export class AdminDashboardComponent implements OnInit {
     this.gymOwnersService.getPendingOwners().subscribe({
       next: (owners: PendingOwner[]) => {
         this.pendingGyms = owners.map(owner => ({
-          id: owner.id.toString(),
+          id: (owner.userId || owner.id).toString(),
           name: owner.fullName,
           owner: owner.fullName,
           email: owner.email,

@@ -238,15 +238,23 @@ export class AuthService {
 
   // ================= Get Current User من الـ API =================
   getCurrentUser(): Observable<UserResponseDto> {
+    const url = `${environment.apiBaseUrl}/Users/get-me`;
+    console.log('🔄 Calling current user:', url);
     return this.http
       .get<ResponseViewModel<UserResponseDto>>(
-        `${this.base}/current-user`,
+        url,
         { headers: { accept: '*/*' } }
       )
       .pipe(
         map((res) => {
-          if (!res.isSuccess) throw new Error(res.message || 'Failed to get user');
-          const user = res.data as UserResponseDto;
+          console.log('✅ Current user response:', res);
+          // Handle both casing scenarios manually if parseResponse doesn't cover this specific DTO nesting
+          // Or rely on parseResponse
+          const { isSuccess, message, data } = this.parseResponse(res);
+
+          if (!isSuccess) throw new Error(message || 'Failed to get user');
+
+          const user = data as UserResponseDto;
           // خزن بيانات المستخدم
           this.setUser(user);
           return user;

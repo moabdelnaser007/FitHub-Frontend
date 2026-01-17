@@ -12,6 +12,8 @@ interface PaymentState {
   method?: string;
 }
 
+import { WalletService } from '../../../../services/wallet.service';
+
 @Component({
   selector: 'app-payment-success',
   standalone: true,
@@ -23,7 +25,11 @@ export class PaymentSuccessComponent implements OnInit {
   state: PaymentState = {};
   redirectMessage = 'Redirecting to billing in 2 seconds...';
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private walletService: WalletService
+  ) {
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras.state) {
       this.state = nav.extras.state as PaymentState;
@@ -42,6 +48,12 @@ export class PaymentSuccessComponent implements OnInit {
           credits: 0 // Paymob doesn't return this, backend would need to sync it
         };
       }
+    });
+
+    // 🔄 Sync Balance immediately
+    this.walletService.getTransactions().subscribe({
+      next: () => console.log('✅ Transactions & Balance Synced'),
+      error: (err) => console.error('⚠️ Sync failed:', err)
     });
 
     // Auto-redirect to billing as requested

@@ -129,7 +129,7 @@ export const routes: Routes = [
   {
     path: 'gym-owner', component: GymOwnerLayoutComponent,
     canActivate: [authGuard, roleGuard],
-    data: { roles: ['GymOwner'] },
+    data: { roles: ['Owner'] },
     children: [
       { path: 'dashboard', component: GymOwnerDashboardComponent },
       { path: 'manage-branches', component: BranchesComponent },

@@ -52,35 +52,8 @@ export class ChoosePlanPaymentComponent implements OnInit {
   saveCardForFuture: boolean = false;
   isProcessing = false;
   // ... (code omitted for brevity)
-  plans: Plan[] = [
-    {
-      id: 'basic',
-      planId: 1, // Assuming IDs based on order
-      name: 'Basic',
-      price: 250,
-      credits: 250,
-      isPopular: false,
-      selected: false,
-    },
-    {
-      id: 'premium',
-      planId: 2,
-      name: 'Premium',
-      price: 500,
-      credits: 500,
-      isPopular: true,
-      selected: true,
-    },
-    {
-      id: 'gold',
-      planId: 3,
-      name: 'Gold',
-      price: 800,
-      credits: 800,
-      isPopular: false,
-      selected: false,
-    },
-  ];
+  plans: Plan[] = [];
+
 
   paymentMethods: PaymentMethod[] = [
     {
@@ -112,9 +85,35 @@ export class ChoosePlanPaymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkAuthStatus();
-    this.selectedPlan = this.plans[1]; // Premium selected by default
-    this.selectedPaymentMethod = this.paymentMethods[0]; // Card selected by default
+    this.loadFitHubPlans();
+    this.selectedPaymentMethod = this.paymentMethods[0];
     this.initializeForm();
+  }
+
+  loadFitHubPlans(): void {
+    this.walletService.getAllFitHubPlans().subscribe({
+      next: (res) => {
+        // Handle various response structures
+        const data = res.data || res;
+
+        if (data && Array.isArray(data)) {
+          this.plans = data.map((p: any, index: number) => ({
+            id: p.name.toLowerCase().replace(/\s+/g, '-'),
+            planId: p.id,
+            name: p.name,
+            price: p.price,
+            credits: p.creditsValue,
+            isPopular: index === 1,
+            selected: index === 1,
+          }));
+
+          if (this.plans.length > 0) {
+            this.selectedPlan = this.plans.find(p => p.selected) || this.plans[0];
+          }
+        }
+      },
+      error: err => console.error('Failed to load plans', err)
+    });
   }
 
   initializeForm(): void {

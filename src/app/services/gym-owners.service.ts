@@ -15,6 +15,7 @@ export interface ApiResponse<T> {
 // ✅ Interface متوافق مع الـ API Response الفعلي
 export interface PendingOwner {
   id: number;
+  userId?: number; // Added to handle potential ID mismatch
   fullName: string;
   email: string;
   phone: string;
@@ -88,7 +89,7 @@ export class GymOwnersService {
     return this.http
       .put<ApiResponse<any>>(
         `${this.apiUrl}/${ownerId}/approve`,
-        {},
+        null,
         { headers: this.getHeaders() }
       )
       .pipe(
@@ -103,7 +104,7 @@ export class GymOwnersService {
   // ✅ رفض Gym Owner
   rejectOwner(ownerId: number): Observable<ApiResponse<any>> {
     return this.http
-      .put<ApiResponse<any>>(`${this.apiUrl}/${ownerId}/reject`, {}, { headers: this.getHeaders() })
+      .put<ApiResponse<any>>(`${this.apiUrl}/${ownerId}/reject`, null, { headers: this.getHeaders() })
       .pipe(
         map((response) => {
           console.log('✅ Owner rejected:', response);

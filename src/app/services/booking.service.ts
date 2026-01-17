@@ -32,56 +32,45 @@ export interface BookingResponse<T = string> {
     providedIn: 'root',
 })
 export class BookingService {
-    private apiUrl = `${environment.apiBaseUrl}/bookings`;
+    private api = `${environment.apiBaseUrl}/bookings`;
 
     constructor(private http: HttpClient) { }
 
-    private getHeaders(): HttpHeaders {
-        const token = localStorage.getItem('fitHubToken');
-        let headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'accept': '*/*',
-        });
-        if (token) {
-            headers = headers.set('Authorization', `Bearer ${token}`);
-        }
-        return headers;
+    createBooking(
+        branchId: number,
+        scheduledDateTime: string,
+        subscriptionId?: number
+    ) {
+        const body: any = { branchId, scheduledDateTime };
+        if (subscriptionId) body.subscriptionId = subscriptionId;
+
+        return this.http.post<BookingResponse<string>>(this.api, body);
     }
 
-    createBooking(branchId: number, scheduledDateTime: string, subscriptionId?: number): Observable<BookingResponse> {
-        const body: any = {
-            branchId,
-            scheduledDateTime,
-        };
-        if (subscriptionId) {
-            body.subscriptionId = subscriptionId;
-        }
-        return this.http.post<BookingResponse>(this.apiUrl, body, {
-            headers: this.getHeaders(),
-        });
+    getMyBookings() {
+        return this.http.get<BookingResponse<BookingItem[]>>(`${this.api}/my`);
     }
 
-    getMyBookings(): Observable<BookingResponse<BookingItem[]>> {
-        return this.http.get<BookingResponse<BookingItem[]>>(`${this.apiUrl}/my`, {
-            headers: this.getHeaders(),
-        });
+    cancelBooking(bookingId: number) {
+        return this.http.post<BookingResponse<boolean>>(
+            `${this.api}/${bookingId}/cancel`,
+            {}
+        );
     }
 
-    submitReview(bookingId: number, rating: number, comment: string, isAnonymous: boolean): Observable<BookingResponse<boolean>> {
-        const body = {
-            bookingId,
-            rating,
-            comment,
-            isAnonymous,
-        };
-        return this.http.post<BookingResponse<boolean>>(`${environment.apiBaseUrl}/reviews`, body, {
-            headers: this.getHeaders(),
-        });
+    submitReview(
+        bookingId: number,
+        rating: number,
+        comment: string,
+        isAnonymous: boolean
+    ) {
+        return this.http.post<BookingResponse<boolean>>(
+            `${environment.apiBaseUrl}/reviews`,
+            { bookingId, rating, comment, isAnonymous }
+        );
     }
 
     getReviewsByBranch(branchId: number): Observable<Review[]> {
-        return this.http.get<Review[]>(`${environment.apiBaseUrl}/reviews/branch/${branchId}`, {
-            headers: this.getHeaders(),
-        });
+        return this.http.get<Review[]>(`${environment.apiBaseUrl}/reviews/branch/${branchId}`);
     }
 }

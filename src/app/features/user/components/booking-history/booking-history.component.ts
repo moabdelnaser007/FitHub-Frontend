@@ -212,6 +212,18 @@ export class BookingHistoryComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  cancelBooking(bookingId: number) {
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+    this.bookingService.cancelBooking(bookingId).subscribe({
+      next: (res) => {
+        alert(res.message || 'Booking cancelled');
+        this.loadBookings();
+      },
+      error: () => alert('Failed to cancel booking')
+    });
+  }
+
   goToRecharge(): void {
     this.router.navigate(['/choose-plan-payment']);
   }

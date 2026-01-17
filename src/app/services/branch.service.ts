@@ -214,16 +214,17 @@ export class BranchService {
 
   addImagesToBranch(id: number, images: File[]): Observable<any> {
     const formData = new FormData();
+
+    // Append Branch ID (Backends sometimes look for this in body)
+    formData.append('branchId', id.toString());
+
     images.forEach((file) => {
       formData.append('images', file);
     });
 
-    const token = localStorage.getItem('fitHubToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    return this.http.post(`${this.apiUrl}/AddImagesToBranch/${id}`, formData, { headers });
+    // Reverting to Path Parameter as Query Param caused 404
+    // Removing manual Content-Type header to let browser set multipart/form-data boundary
+    return this.http.post(`${this.apiUrl}/AddImagesToBranch/${id}`, formData);
   }
 
   getBranchImages(branchId: number): Observable<any> {

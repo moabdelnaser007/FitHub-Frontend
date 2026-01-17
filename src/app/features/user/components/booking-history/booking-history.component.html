@@ -121,7 +121,7 @@
                 <th>Date & Time</th>
                 <th>Credits Cost</th>
                 <th>Status</th>
-                <th>Reviews</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -137,10 +137,15 @@
                     }}</span>
                 </td>
                 <td>
+                  @if (booking.status.toUpperCase() === 'CONFIRMED') {
+                  <button class="link cancel-btn" style="color: #ef4444;"
+                    (click)="cancelBooking(booking.id)">Cancel</button>
+                  } @else if (booking.status.toUpperCase() === 'COMPLETED') {
                   @if (!booking.hasReview) {
                   <button class="link" (click)="leaveReview(booking.id)">☆ Leave Review</button>
                   } @else {
                   <span class="muted">Review Submitted</span>
+                  }
                   }
                 </td>
               </tr>
