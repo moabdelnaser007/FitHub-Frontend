@@ -1,0 +1,2 @@
+/api/*  http://fithub-api.runasp.net/api/:splat  200
+/* /index.html 200
