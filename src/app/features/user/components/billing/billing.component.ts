@@ -52,7 +52,14 @@ export class BillingComponent implements OnInit {
     this.walletService.getTransactions().subscribe({
       next: (response) => {
         if (response.isSuccess && response.data) {
-          this.transactions = response.data;
+          // Filter out duplicates based on ID
+          const seen = new Set();
+          this.transactions = response.data.filter((t: Transaction) => {
+            const duplicate = seen.has(t.id);
+            seen.add(t.id);
+            return !duplicate;
+          });
+
           this.totalItems = this.transactions.length;
           this.updatePaginatedTransactions();
         }

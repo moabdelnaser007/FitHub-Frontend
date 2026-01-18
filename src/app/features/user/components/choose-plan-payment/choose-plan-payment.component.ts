@@ -166,9 +166,12 @@ export class ChoosePlanPaymentComponent implements OnInit {
 
     this.walletService.rechargeWallet(this.selectedPlan.planId).subscribe({
       next: (response: any) => {
-        // Handle potential ResponseViewModel wrapper
-        const data = response.data || response;
-        const redirectUrl = data.redirectUrl || data.RedirectUrl;
+        // Handle various response wrappers (ApiResponse<T> or direct)
+        // If response has 'data' property which contains the actual payload
+        const payload = response.data || response;
+
+        // Sometimes payload itself might be wrapped again or properties are capitalized differently
+        const redirectUrl = payload.redirectUrl || payload.RedirectUrl || response.redirectUrl;
 
         if (redirectUrl) {
           // Redirect the user to the payment gateway
